@@ -7,6 +7,8 @@ never edited by hand. To change one, change the script and rerun it.
 
 - `baseline/`: the original `nginx:1.25-bookworm`, produced by `make scan-baseline`
   and `make triage`.
+- `probe-libraries/`: a fresh base with the libraries but no nginx, scanned to measure
+  what the version bumps alone achieve. Built by hand, see its `README.md`.
 - A folder for the patched image (suggested name `patched/`) will be added in step 6,
   with the same file names so the two can be diffed.
 

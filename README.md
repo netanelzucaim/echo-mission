@@ -125,9 +125,23 @@ same reasoning applies to the other three modules.
 
 **What this costs.** All four modules are built from source and shipped, and their
 libraries stay in the image. The fresh Debian base updates every one that has a fixed
-version. What remains is accepted risk and is listed under residual risk once the
-final image is scanned. The 166 figure is from the original image, so the number that
-actually remains will be lower; it has not been measured yet.
+version. Measured on a probe image (fresh base plus the same libraries, without nginx;
+see `scans/probe-libraries/`):
+
+| Libraries of | Baseline CVEs | After the fresh base | Fixed | Critical or High, before to after |
+|---|---|---|---|---|
+| image-filter | 166 | 89 | 77 | 65 to 25 |
+| xslt | 42 | 12 | 30 | 23 to 7 |
+| njs | 34 | 9 | 25 | 20 to 7 |
+| geoip | 0 | 0 | 0 | 0 to 0 |
+| All four (overlaps counted once) | 208 | 101 | 107 | 88 to 32 |
+
+So keeping image-filter leaves 89 CVEs in its libraries, not 166, and none of the 89
+has a fixed version in Debian bookworm today. Most are in `libheif1` (42) and
+`libtiff6` (24). The known-exploited CVE-2025-27363 in `libfreetype6` is among the
+ones the update fixes. These 89 are accepted risk for the sake of compatibility. The
+numbers come from the probe, not the final image, and will be re-measured in the
+final scan.
 
 **What I would do with more time.** Publish a second, slimmer variant without
 image-filter for users who do not need it, so the default stays compatible and the

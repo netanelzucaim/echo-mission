@@ -1,0 +1,251 @@
+rank,id,score,danger,reach,loaded_by_main_program,trivy,grype,packages,fix_available,fixed_versions,known_exploited,epss,cvss,title
+1,CVE-2026-5450,30.4,0.304,1.00,yes,Medium,Critical,libc-bin libc6,no,,no,0.0072,9.8,glibc: glibc: Heap Buffer Overflow in `scanf` with `%mc` format specifier and large width
+2,CVE-2026-84782,30.2,0.302,1.00,yes,High,High,libssl3 openssl,no,,no,0.0039,8.2,openssl: compat-openssl: openssl: Information disclosure via DTLS handshake retransmission
+3,CVE-2026-85091,25.4,0.254,1.00,yes,Medium,High,zlib1g,no,,no,0.0059,8.3,zlib versions 1.3.1.2 through 1.3.2 contain a heap buffer overflow vul ...
+4,CVE-2026-5928,25.3,0.253,1.00,yes,Medium,High,libc-bin libc6,no,,no,0.0049,7.5,glibc: glibc: Information disclosure or denial of service via ungetwc function with specific wide character encodings
+5,CVE-2026-5435,25.2,0.252,1.00,yes,Medium,High,libc-bin libc6,no,,no,0.0039,7.3,glibc: glibc: Out-of-bounds write via TSIG record processing
+6,CVE-2026-19499,25.2,0.252,1.00,yes,Medium,High,libc-bin libc6,no,,no,0.0030,7.7,glibc: Buffer Overflow in strfmon right-justification padding
+7,CVE-2026-6238,20.3,0.203,1.00,yes,Medium,Medium,libc-bin libc6,no,,no,0.0044,6.5,glibc: glibc: Application crash or uninitialized memory read via crafted DNS response
+8,CVE-2026-80489,20.2,0.202,1.00,yes,Medium,Medium,libc-bin libc6,no,,no,0.0041,5.9,glibc: Non-progress DoS in EUC_JISX0213 -> UCS-4 conversion state
+9,CVE-2026-77117,20.2,0.202,1.00,yes,Medium,Medium,libc-bin libc6,no,,no,0.0041,5.9,glibc: Non-progress DoS in SHIFT_JISX0213 -&gt
+10,CVE-2026-75806,20.2,0.202,1.00,yes,Medium,Medium,libssl3 openssl,no,,no,0.0039,5.3,openssl: OpenSSL: Denial of Service via undersized DTLS record
+11,CVE-2026-8674,20.2,0.202,1.00,yes,Medium,Medium,libc-bin libc6,no,,no,0.0034,5.3,glibc: glibc DNS stub resolver: Denial of Service via long search domain in configuration
+12,CVE-2026-6791,20.2,0.202,1.00,yes,Medium,Medium,libc-bin libc6,no,,no,0.0033,6.6,glibc: Glibc: Denial of Service via stack exhaustion during tilde expansion
+13,CVE-2026-89092,20.2,0.202,1.00,yes,Medium,Medium,libc-bin libc6,no,,no,0.0027,4.2,glibc: nscd stack overflow leads to degraded DNS resolution
+14,CVE-2026-19542,20.1,0.201,1.00,yes,Medium,Medium,libc-bin libc6,no,,no,0.0023,5.6,glibc: Fix out-of-bounds array write in tdelete
+15,CVE-2026-75805,20.1,0.201,1.00,yes,Medium,Medium,libssl3 openssl,no,,no,0.0022,5.9,openssl: openssl: Denial of Service via crafted CMP certificate revocation response
+16,CVE-2026-27171,20.1,0.201,1.00,yes,Medium,Medium,zlib1g,no,,no,0.0019,5.5,zlib: zlib: Denial of Service via infinite loop in CRC32 combine functions
+17,CVE-2026-18374,20.1,0.201,1.00,yes,Medium,Medium,libc-bin libc6,no,,no,0.0014,4.9,glibc: glibc: Heap buffer overflow via attacker-controlled fopen mode string
+18,CVE-2026-86805,20.1,0.201,1.00,yes,Medium,Medium,libc-bin libc6,no,,no,0.0012,7,glibc: glibc: Privilege escalation and arbitrary code execution via TOCTOU race condition in dynamic loader
+19,CVE-2023-45853,20.0,0.200,1.00,yes,Critical,-,zlib1g,no,,no,0.0000,9.8,zlib: integer overflow and resultant heap-based buffer overflow in zipOpenNewFileInZip4_6
+20,CVE-2011-3389,19.6,0.490,0.40,no,Low,Negligible/Unknown,libgnutls30,no,,no,0.7333,0.0,HTTPS: block-wise chosen-plaintext attack against SSL/TLS (BEAST)
+21,CVE-2026-76642,16.6,0.301,0.55,no,High,High,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0022,8.5,util-linux: util-linux: failed external mount helper still runs privileged X-mount post-hooks
+22,CVE-2026-78408,16.6,0.301,0.55,no,High,High,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0019,7.9,util-linux: util-linux: nsenter --join-cgroup leaks root cgroup migration authority
+23,CVE-2026-78410,16.6,0.301,0.55,no,High,High,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0016,7.8,"util-linux: util-linux: restricted bind mounts do not pin the source, allowing X-mount.owner/group/mode redirection"
+24,CVE-2026-78409,16.6,0.301,0.55,no,High,High,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0015,7,util-linux: util-linux: X-mount.subdir detached-tree resolution can escape via intermediate symlinks
+25,CVE-2023-6879,16.3,0.407,0.40,no,Critical,Critical,libaom3,no,,no,0.0118,9.8,aom: heap-buffer-overflow on frame size change
+26,CVE-2026-6653,16.1,0.402,0.40,no,Critical,Critical,libxml2,no,,no,0.0036,9.8,libxml2: mingw-libxml2: libxml2: Denial of Service via crafted XML input due to use-after-free
+27,CVE-2026-8927,15.9,0.353,0.45,no,High,Critical,curl libcurl4,no,,no,0.0050,9.1,curl: Information disclosure due to uncleared proxy authentication state
+28,CVE-2026-35189,15.2,0.152,1.00,yes,Low,Medium,libssl3 openssl,no,,no,0.0027,5.3,openssl: openssl: Denial of Service via excessive memory allocation in CRL distribution point processing
+29,CVE-2026-54872,15.2,0.152,1.00,yes,Medium,Low,libssl3 openssl,no,,no,0.0026,5.9,openssl: OpenSSL: Private key recovery via timing side-channel in generic elliptic curve operations
+30,CVE-2026-77696,15.1,0.151,1.00,yes,Medium,Low,libssl3 openssl,no,,no,0.0024,5.9,openssl: OpenSSL: Private key recovery via SM2 timing side-channel
+31,CVE-2025-69720,15.1,0.303,0.50,no,High,High,libtinfo6 ncurses-base ncurses-bin,no,,no,0.0045,7.8,ncurses: ncurses: Buffer overflow vulnerability may lead to arbitrary code execution.
+32,CVE-2026-6368,15.1,0.151,1.00,yes,Medium,Low,libc-bin libc6,no,,no,0.0015,5.5,glibc: glibc: Process abort due to invalid memory in wordexp
+33,CVE-2026-95818,15.1,0.151,1.00,yes,Medium,Low,libc-bin libc6,no,,no,0.0013,7,glibc: glibc: Local attacker can cause denial of service and information disclosure via stack-based buffer overflow.
+34,CVE-2026-52490,14.1,0.353,0.40,no,High,Critical,libtiff6,no,,no,0.0051,9.8,libtiff: libtiff: Arbitrary code execution via process_command_opts() function
+35,CVE-2026-19931,13.7,0.304,0.45,no,Medium,Critical,curl libcurl4,no,,no,0.0075,9.8,curl: libcurl: Information disclosure via incorrect connection reuse with Negotiate authentication
+36,CVE-2026-11856,13.7,0.304,0.45,no,Medium,Critical,curl libcurl4,no,,no,0.0069,9.8,curl: curl: Information disclosure via incorrect Digest authentication header reuse
+37,CVE-2026-8924,13.7,0.304,0.45,no,Medium,Critical,curl libcurl4,no,,no,0.0066,9.1,curl: curl: Cookie injection via malicious HTTP server using super cookies
+38,CVE-2026-10536,13.7,0.304,0.45,no,Medium,Critical,curl libcurl4,no,,no,0.0060,9.8,libcurl: libcurl: Use-after-free vulnerability leading to Denial of Service
+39,CVE-2026-12064,13.6,0.302,0.45,no,High,High,curl libcurl4,no,,no,0.0040,7.5,curl: curl: SSH host verification bypass when using schemeless URLs with SFTP/SCP
+40,CVE-2026-6276,13.6,0.302,0.45,no,High,High,curl libcurl4,no,,no,0.0035,7.5,curl: libcurl: Information disclosure due to cookie leak when reusing connections with custom Host headers
+41,CVE-2026-8286,13.6,0.302,0.45,no,High,High,curl libcurl4,no,,no,0.0031,8.1,curl: curl: Insecure connection establishment due to TLS configuration mismatch
+42,CVE-2026-88806,13.6,0.301,0.45,no,High,High,libx11-6 libx11-data,no,,no,0.0020,7.5,libX11: libX11: Heap-based buffer overflow via malicious X server
+43,CVE-2026-95619,12.6,0.252,0.50,no,Medium,High,gcc-12-base libgcc-s1 libstdc++6,no,,no,0.0036,7.7,gcc: libstdc++ integer overflow in `new` operator
+44,CVE-2026-102010,12.6,0.252,0.50,no,Medium,High,gcc-12-base libgcc-s1 libstdc++6,no,,no,0.0025,7,gcc-toolset-15-gcc: gcc: gcc-toolset-16: gcc: Denial of Service via use-after-free in binary heap erase_if
+45,CVE-2023-2953,12.5,0.312,0.40,no,High,High,libldap-2.5-0,no,,no,0.0193,7.5,openldap: null pointer dereference in  ber_memalloc_x  function
+46,CVE-2023-52355,12.4,0.311,0.40,no,High,High,libtiff6,no,,no,0.0183,7.5,libtiff: TIFFRasterScanlineSize64 produce too-big size and could cause OOM
+47,CVE-2026-32740,12.2,0.305,0.40,no,High,High,libheif1,no,,no,0.0076,8.8,libheif: libheif: Arbitrary code execution or denial of service via crafted HEIF/AVIF file
+48,CVE-2023-39616,12.2,0.304,0.40,no,High,High,libaom3,no,,no,0.0074,7.5,AOMedia v3.0.0 to v3.5.0 was discovered to contain an invalid read mem ...
+49,CVE-2026-32882,12.2,0.304,0.40,no,High,High,libheif1,no,,no,0.0071,7.1,libheif: libheif: Denial of Service and Information Disclosure vulnerability
+50,CVE-2026-41992,12.1,0.303,0.40,no,High,High,gzip,no,,no,0.0056,7.5,gzip: gzip: Information disclosure via global buffer overflow in LZH decompression
+51,CVE-2026-32741,12.1,0.303,0.40,no,High,High,libheif1,no,,no,0.0045,7.1,libheif: libheif: Heap buffer overflow vulnerability in image decoding
+52,CVE-2026-9538,12.1,0.303,0.40,no,High,High,perl-base,no,,no,0.0045,7.5,perl-Archive-Tar: perl-Archive-Tar: Denial of Service via crafted tar header with large entry size
+53,CVE-2026-41071,12.1,0.303,0.40,no,High,High,libheif1,no,,no,0.0044,8.1,libheif is a HEIF and AVIF file format decoder and encoder. In version ...
+54,CVE-2026-74860,12.1,0.303,0.40,no,High,High,libxml2,no,,no,0.0044,8.5,libxml2: double-free/UAF in libxml2 Python bindings
+55,CVE-2026-12912,12.1,0.303,0.40,no,High,High,libtiff6,no,,no,0.0043,7.3,libtiff: libtiff: Heap-based buffer overflow via crafted PixarLog-compressed TIFF image
+56,CVE-2025-68431,12.1,0.303,0.40,no,High,High,libheif1,no,,no,0.0043,7.1,libheif is an HEIF and AVIF file format decoder and encoder. Prior to  ...
+57,CVE-2026-86143,12.0,0.301,0.40,no,High,High,libxml2,no,,no,0.0019,7.3,libxml2: libxml2: Data integrity issues due to integer overflow in write callbacks
+58,CVE-2026-86144,12.0,0.301,0.40,no,High,High,libxml2,no,,no,0.0019,7.8,"libxml2: libxml2: Information disclosure, SSRF, or denial of service due to improper parseFlags propagation."
+59,CVE-2026-47178,12.0,0.301,0.40,no,High,High,libheif1,no,,no,0.0018,7.8,libheif is a HEIF and AVIF file format decoder and encoder. In version ...
+60,CVE-2026-86142,12.0,0.301,0.40,no,High,High,libxml2,no,,no,0.0016,7.8,libxml2: libxml2: Heap-based buffer overflow in xmlXPtrEval due to xpointer length saturation
+61,CVE-2026-86140,12.0,0.301,0.40,no,High,High,libxml2,no,,no,0.0016,7.8,libxml2: libxml2: Arbitrary code execution via stack-based buffer overflow in xmlSnprintfElements
+62,CVE-2026-54369,12.0,0.301,0.40,no,High,High,libacl1,no,,no,0.0015,7.1,acl: Symlink traversal privilege escalation via libacl functions
+63,CVE-2026-86138,12.0,0.301,0.40,no,High,High,libxml2,no,,no,0.0013,7.8,libxml2: libxml2: Arbitrary code execution via heap-based buffer overflow
+64,CVE-2026-18924,11.4,0.254,0.45,no,Low,Critical,curl libcurl4,no,,no,0.0058,9.1,curl: libcurl: Use-after-free in HTTP/2 Server Push with shared connections
+65,CVE-2026-8932,11.4,0.252,0.45,no,Medium,High,curl libcurl4,no,,no,0.0040,7.5,libcurl: libcurl: Security feature bypass due to improper mTLS connection reuse
+66,CVE-2026-8458,11.4,0.252,0.45,no,High,Medium,curl libcurl4,no,,no,0.0037,8.1,curl: libcurl: Unauthorized connection reuse due to a logical error
+67,CVE-2026-16742,11.3,0.250,0.45,no,High,Medium,libsystemd0 libudev1,no,,no,0.0006,8.8,systemd: systemd-homed: Local privilege escalation via missing home-record signature verification
+68,CVE-2026-3184,11.2,0.204,0.55,no,Medium,Medium,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0062,5.3,util-linux: util-linux: Access control bypass due to improper hostname canonicalization
+69,CVE-2026-54411,11.2,0.203,0.55,no,Medium,Medium,libpam-modules libpam-modules-bin libpam-runtime libpam0g,no,,no,0.0050,6.9,linux-pam: Plaintext password recovery via timing discrepancy in pam_userdb module
+70,CVE-2024-10041,11.1,0.202,0.55,no,Medium,Medium,libpam-modules libpam-modules-bin libpam-runtime libpam0g,no,,no,0.0027,4.7,pam: libpam: Libpam vulnerable to read hashed password
+71,CVE-2026-13595,11.1,0.201,0.55,no,Medium,Medium,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0017,6.8,util-linux: util-linux: heap use-after-free in libblkid nested partition probing
+72,CVE-2026-27456,11.0,0.201,0.55,no,Medium,Medium,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0012,4.7,util-linux: TOCTOU in the mount program when setting up loop devices
+73,CVE-2023-50495,10.3,0.206,0.50,no,Medium,Medium,libtinfo6 ncurses-base ncurses-bin,no,,no,0.0096,6.5,ncurses: segmentation fault via _nc_wrap_entry()
+74,CVE-2026-97399,10.2,0.102,1.00,yes,Low,Low,libc-bin libc6,no,,no,0.0029,3.7,glibc: glibc: Denial of Service via out-of-bounds read in strncasecmp
+75,CVE-2026-50142,10.2,0.254,0.40,no,Medium,High,libheif1,no,,no,0.0066,7.5,libheif is a HEIF and AVIF file format decoder and encoder. From 1.19. ...
+76,CVE-2026-62292,10.1,0.253,0.40,no,Medium,High,libheif1,no,,no,0.0054,8.7,libheif is a HEIF and AVIF file format decoder and encoder. From 1.19. ...
+77,CVE-2026-84447,10.1,0.253,0.40,no,Medium,High,libheif1,no,,no,0.0052,7.5,libheif is a HEIF and AVIF file format decoder and encoder. In 1.23.1  ...
+78,CVE-2026-84384,10.1,0.253,0.40,no,Medium,High,libheif1,no,,no,0.0052,7.5,libheif is a HEIF and AVIF file format decoder and encoder. From 1.19. ...
+79,CVE-2026-47247,10.1,0.253,0.40,no,Medium,High,libheif1,no,,no,0.0048,7.5,libheif is a HEIF and AVIF file format decoder and encoder. Prior to v ...
+80,CVE-2026-84446,10.1,0.253,0.40,no,Medium,High,libheif1,no,,no,0.0046,7.5,libheif is a HEIF and AVIF file format decoder and encoder. Prior to 1 ...
+81,CVE-2026-48029,10.1,0.252,0.40,no,Medium,High,libheif1,no,,no,0.0036,7.1,libheif is a HEIF and AVIF file format decoder and encoder. Versions 1 ...
+82,CVE-2026-84451,10.1,0.252,0.40,no,High,Medium,libheif1,no,,no,0.0031,6.5,libheif is a HEIF and AVIF file format decoder and encoder. From 1.19. ...
+83,CVE-2026-84450,10.1,0.252,0.40,no,High,Medium,libheif1,no,,no,0.0028,4.3,libheif is a HEIF and AVIF file format decoder and encoder. From 1.19. ...
+84,CVE-2026-54370,10.0,0.251,0.40,no,Medium,High,libacl1,no,,no,0.0011,7.2,acl: TOCTOU Symlink Traversal via getfacl/setfacl
+85,CVE-2026-6253,9.2,0.205,0.45,no,Medium,Medium,curl libcurl4,no,,no,0.0075,5.9,curl: curl: Proxy credential disclosure via redirects to unauthenticated proxies
+86,CVE-2026-6429,9.1,0.203,0.45,no,Medium,Medium,curl libcurl4,no,,no,0.0051,6.5,curl: libcurl: Credential leak via reused proxy connection during HTTP redirects
+87,CVE-2026-5545,9.1,0.203,0.45,no,Medium,Medium,curl libcurl4,no,,no,0.0051,6.5,curl: libcurl: Authentication bypass due to incorrect HTTP Negotiate connection reuse
+88,CVE-2026-13608,9.1,0.203,0.45,no,Low,High,curl libcurl4,no,,no,0.0048,7.4,curl: curl: Authentication bypass in OpenLDAP SASL negotiation via Man-in-the-Middle (MITM) attack
+89,CVE-2026-82209,9.1,0.202,0.45,no,Low,High,curl libcurl4,no,,no,0.0037,8.2,curl: libcurl: Information disclosure via improper Public Suffix List boundary check
+90,CVE-2026-80230,9.1,0.202,0.45,no,Low,High,curl libcurl4,no,,no,0.0037,7.5,curl: curl: Public key pinning bypass allows unauthenticated connections
+91,CVE-2026-4873,9.1,0.202,0.45,no,Medium,Medium,curl libcurl4,no,,no,0.0036,5.9,curl: curl: Information disclosure due to incorrect TLS connection reuse
+92,CVE-2026-1965,9.1,0.202,0.45,no,Medium,Medium,curl libcurl4,no,,no,0.0026,6.8,curl: curl: Authentication bypass due to incorrect connection reuse with Negotiate authentication
+93,CVE-2026-94283,9.1,0.201,0.45,no,Medium,Medium,libx11-6 libx11-data,no,,no,0.0020,6.5,libX11: libX11: Denial of Service via out-of-bounds read in XIM attribute parser
+94,CVE-2026-15059,9.0,0.201,0.45,no,Medium,Medium,libsystemd0 libudev1,no,,no,0.0016,5.5,systemd: systemd-oomd: Unprivileged users can terminate arbitrary processes via IPC API
+95,CVE-2026-94285,9.0,0.201,0.45,no,Medium,Medium,libx11-6 libx11-data,no,,no,0.0011,5.1,libX11: libX11: Denial of Service via out-of-bounds read in byte-oriented codeset parser
+96,CVE-2026-94284,9.0,0.201,0.45,no,Medium,Medium,libx11-6 libx11-data,no,,no,0.0010,5.5,libX11: libX11: Denial of Service via out-of-bounds read in XIM trigger-key registration parser
+97,CVE-2018-20796,8.5,0.085,1.00,yes,Low,Negligible/Unknown,libc-bin libc6,no,,no,0.0576,7.5,glibc: uncontrolled recursion in function check_dst_limits_calc_pos_1 in posix/regexec.c
+98,CVE-2023-6277,8.4,0.211,0.40,no,Medium,Medium,libtiff6,no,,no,0.0181,6.5,libtiff: Out-of-memory in TIFFOpen via a craft file
+99,CVE-2025-13151,8.3,0.207,0.40,no,Low,High,libtasn1-6,no,,no,0.0118,7.5,libtasn1: libtasn1: Denial of Service via stack-based buffer overflow in asn1_expend_octet_string
+100,CVE-2026-53613,8.3,0.150,0.55,no,High,Negligible/Unknown,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0000,7,util-linux: util-linux: TOCTOU in the mount program via ancestor directory swap on target path
+101,CVE-2023-32570,8.2,0.204,0.40,no,Medium,Medium,libdav1d6,no,,no,0.0074,5.9,VideoLAN dav1d before 1.2.0 has a thread_task.c race condition that ca ...
+102,CVE-2026-8376,8.1,0.203,0.40,no,-,Critical,perl-base,no,,no,0.0048,9.8,
+103,CVE-2026-13221,8.1,0.203,0.40,no,-,Critical,perl-base,no,,no,0.0043,9.1,
+104,CVE-2026-42496,8.1,0.203,0.40,no,-,Critical,perl-base,no,,no,0.0043,9.1,
+105,CVE-2026-5704,8.1,0.202,0.40,no,Medium,Medium,tar,no,,no,0.0040,5.5,tar: tar: Hidden file injection via crafted archives
+106,CVE-2026-62289,8.1,0.202,0.40,no,Medium,Medium,libheif1,no,,no,0.0040,4.3,libheif is a HEIF and AVIF file format decoder and encoder. In 1.23.0  ...
+107,CVE-2026-41080,8.1,0.202,0.40,no,Low,High,libexpat1,no,,no,0.0040,7.5,libexpat: expat: libexpat: Denial of Service via hash flooding with crafted XML
+108,CVE-2026-32814,8.1,0.202,0.40,no,Medium,Medium,libheif1,no,,no,0.0039,6.5,libheif: libheif: Information Disclosure via Crafted HEIF/AVIF Files
+109,CVE-2026-41069,8.1,0.202,0.40,no,Medium,Medium,libheif1,no,,no,0.0039,6.5,libheif is a HEIF and AVIF file format decoder and encoder. In version ...
+110,CVE-2026-32739,8.1,0.202,0.40,no,Medium,Medium,libheif1,no,,no,0.0039,6.5,libheif: libheif: Denial of Service via crafted HEIF sequence file
+111,CVE-2026-32738,8.1,0.202,0.40,no,Medium,Medium,libheif1,no,,no,0.0037,6.5,libheif: libheif: Unsigned integer underflow leads to Denial of Service
+112,CVE-2026-12087,8.1,0.202,0.40,no,-,Critical,perl-base,no,,no,0.0037,9.1,
+113,CVE-2026-57433,8.1,0.202,0.40,no,-,Critical,perl-base,no,,no,0.0036,9.8,
+114,CVE-2026-49271,8.1,0.202,0.40,no,Medium,Medium,libheif1,no,,no,0.0036,6.5,libheif: libheif: Denial of Service via crafted HEIF file due to integer wrap-around
+115,CVE-2026-102633,8.1,0.202,0.40,no,Medium,Medium,libexpat1,no,,no,0.0035,5.9,expat: expat: Denial of Service via integer overflow in expat_realloc
+116,CVE-2026-58055,8.1,0.202,0.40,no,Medium,Medium,libnghttp2-14,no,,no,0.0032,6.3,nghttp2: nghttp2: HTTP Request/Response Smuggling and Response-Queue Poisoning via ambiguous HTTP/1.1 Upgrade requests
+117,CVE-2026-15534,8.1,0.202,0.40,no,Medium,Medium,perl-base,no,,no,0.0026,5.7,perl: Perl: Arbitrary code execution via out-of-bounds memory access in regular expression engine.
+118,CVE-2025-66382,8.0,0.201,0.40,no,Medium,Medium,libexpat1,no,,no,0.0020,5.5,libexpat: libexpat: Denial of service via crafted file processing
+119,CVE-2026-13757,8.0,0.201,0.40,no,Medium,Medium,libp11-kit0,no,,no,0.0020,6.2,p11-kit: Stack exhaustion via unbounded recursion in RPC attribute parsing
+120,CVE-2025-30258,8.0,0.201,0.40,no,Medium,Medium,gpgv,no,,no,0.0019,4.7,gnupg: verification DoS due to a malicious subkey in the keyring
+121,CVE-2026-84448,8.0,0.201,0.40,no,Medium,Medium,libheif1,no,,no,0.0019,4,libheif is a HEIF and AVIF file format decoder and encoder. Prior to 1 ...
+122,CVE-2026-47709,8.0,0.201,0.40,no,Medium,Medium,libheif1,no,,no,0.0018,5.5,libheif is a HEIF and AVIF file format decoder and encoder. Versions p ...
+123,CVE-2026-42250,8.0,0.201,0.40,no,Medium,Medium,libbz2-1.0,no,,no,0.0018,5,bzip2: bzip2: Denial of Service in bzip2recover via a specially crafted file
+124,CVE-2026-54371,8.0,0.201,0.40,no,Medium,Medium,libattr1,no,,no,0.0018,6.3,attr: attr: Symlink Traversal Privilege Escalation via getfattr and setfattr
+125,CVE-2026-95512,8.0,0.201,0.40,no,Medium,Medium,libfreetype6,no,,no,0.0017,5.5,freetype: FreeType: Denial of Service via repeated subroutine allocations in CID font loader
+126,CVE-2025-10911,8.0,0.201,0.40,no,Medium,Medium,libxslt1.1,no,,no,0.0017,5.5,libxslt: use-after-free with key data stored cross-RVT
+127,CVE-2026-76781,8.0,0.201,0.40,no,Medium,Medium,libxml2,no,,no,0.0017,5.5,libxml2: libxml2: NULL pointer dereference parsing nextCatalog without catalog attribute
+128,CVE-2026-47254,8.0,0.201,0.40,no,Medium,Medium,libheif1,no,,no,0.0016,6.1,libheif is a HEIF and AVIF file format decoder and encoder. Prior to v ...
+129,CVE-2026-4367,8.0,0.201,0.40,no,Medium,Medium,libxpm4,no,,no,0.0015,5.5,libXpm: libXpm: Denial of Service via out-of-bounds read in XPM file parsing
+130,CVE-2026-47714,8.0,0.201,0.40,no,Medium,Medium,libheif1,no,,no,0.0015,6.1,libheif is a HEIF and AVIF file format decoder and encoder. In version ...
+131,CVE-2026-18938,8.0,0.201,0.40,no,Medium,Medium,libp11-kit0,no,,no,0.0015,6.2,p11-kit: Integer overflow in RPC attribute-array length calculation can under-allocate nested attribute storage on 32 bit systems
+132,CVE-2026-41991,8.0,0.201,0.40,no,Medium,Medium,gzip,no,,no,0.0014,6,gzip: gzip: Arbitrary file overwrite via insecure temporary file handling in gzexe utility
+133,CVE-2026-18508,8.0,0.201,0.40,no,Medium,Medium,tar,no,,no,0.0014,4.4,tar: tar: --one-top-level hardlink targets not confined to top-level directory enabling arbitrary file overwrite
+134,CVE-2026-18495,8.0,0.201,0.40,no,Medium,Medium,libtiff6,no,,no,0.0012,6.1,libtiff: libtiff: heap-buffer overflow via numeric truncation in the JPEG raw passthrough
+135,CVE-2025-68972,8.0,0.201,0.40,no,Medium,Medium,gpgv,no,,no,0.0011,5.9,gnupg: GnuPG: Signature bypass via form feed character in signed messages
+136,CVE-2026-56132,8.0,0.201,0.40,no,Medium,Medium,libexpat1,no,,no,0.0010,6.9,expat: libexpat: Arbitrary Code Execution via Heap-based Buffer Overflow
+137,CVE-2026-94287,8.0,0.201,0.40,no,Medium,Medium,libxpm4,no,,no,0.0010,5.5,libXpm: libXpm: Denial of Service via unsigned integer underflow
+138,CVE-2026-18477,8.0,0.200,0.40,no,Medium,Medium,tar,no,,no,0.0008,4.4,tar: tar: TOCTOU in incremental dumpdir 'X' rename handling allows restore path escape
+139,CVE-2025-6141,7.6,0.151,0.50,no,Low,Medium,libtinfo6 ncurses-base ncurses-bin,no,,no,0.0020,4.8,gnu-ncurses: ncurses Stack Buffer Overflow
+140,CVE-2019-1010022,6.9,0.069,1.00,yes,Low,Negligible/Unknown,libc-bin libc6,no,,no,0.0322,9.8,glibc: stack guard protection bypass
+141,CVE-2019-1010024,6.9,0.069,1.00,yes,Low,Negligible/Unknown,libc-bin libc6,no,,no,0.0319,5.3,glibc: ASLR bypass using cache of thread stack and heap
+142,CVE-2019-1010023,6.8,0.068,1.00,yes,Low,Negligible/Unknown,libc-bin libc6,no,,no,0.0304,8.8,glibc: running ldd on malicious ELF leads to code execution because of wrong size computation
+143,CVE-2010-4756,6.6,0.066,1.00,yes,Low,Negligible/Unknown,libc-bin libc6,no,,no,0.0261,0.0,glibc: glob implementation can cause excessive CPU and memory consumption due to crafted glob expressions
+144,CVE-2019-9192,6.5,0.065,1.00,yes,Low,Negligible/Unknown,libc-bin libc6,no,,no,0.0245,7.5,glibc: uncontrolled recursion in function check_dst_limits_calc_pos_1 in posix/regexec.c
+145,CVE-2019-1010025,6.4,0.064,1.00,yes,Low,Negligible/Unknown,libc-bin libc6,no,,no,0.0227,5.3,glibc: information disclosure of heap addresses of pthread_created thread
+146,CVE-2026-82560,6.2,0.154,0.40,no,Negligible/Unknown,High,perl-base,no,,no,0.0063,7.5,Pod::Text versions before 6.1.1 for Perl allow CPU and memory exhausti ...
+147,CVE-2026-48959,6.1,0.154,0.40,no,-,High,perl-base,no,,no,0.0061,7.5,
+148,CVE-2026-48962,6.1,0.153,0.40,no,-,High,perl-base,no,,no,0.0050,7.8,
+149,CVE-2026-84444,6.1,0.153,0.40,no,Negligible/Unknown,High,libheif1,no,,no,0.0048,7.4,libheif is a HEIF and AVIF file format decoder and encoder. Prior to 1 ...
+150,CVE-2026-42497,6.1,0.153,0.40,no,-,High,perl-base,no,,no,0.0047,7.5,
+151,CVE-2026-84449,6.1,0.153,0.40,no,Medium,Low,libheif1,no,,no,0.0043,3.7,libheif is a HEIF and AVIF file format decoder and encoder. Prior to 1 ...
+152,CVE-2026-88373,6.1,0.152,0.40,no,Negligible/Unknown,High,libde265-0,no,,no,0.0034,7.5,libde265 commit 4d45a6b contains a NULL pointer dereference vulnerabil ...
+153,CVE-2026-7017,6.1,0.151,0.40,no,-,High,perl-base,no,,no,0.0025,7.1,
+154,CVE-2026-57432,6.1,0.151,0.40,no,-,High,perl-base,no,,no,0.0021,8.4,
+155,CVE-2026-36849,6.0,0.150,0.40,no,High,Negligible/Unknown,libtiff6,no,,no,0.0000,0.0,[Denial of Service via large SamplesPerPixel tag]
+156,CVE-2026-53615,5.5,0.100,0.55,no,Medium,Negligible/Unknown,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0000,0.0,[Integer Overflow or Wraparound in libblkid/src/partitions/dos.c]
+157,CVE-2025-27587,5.3,0.053,1.00,yes,Low,Negligible/Unknown,libssl3 openssl,no,,no,0.0043,0.0,OpenSSL 3.0.0 through 3.3.2 on the PowerPC architecture is vulnerable  ...
+158,CVE-2024-56433,4.6,0.103,0.45,no,Low,Low,login passwd,no,,no,0.0043,3.6,shadow-utils: Default subordinate ID configuration in /etc/login.defs could lead to compromise
+159,CVE-2026-40228,4.5,0.101,0.45,no,Low,Low,libsystemd0 libudev1,no,,no,0.0014,3.3,systemd: systemd-journald: Unintended output to user terminals via logger command
+160,CVE-2016-2781,4.1,0.103,0.40,no,Low,Low,coreutils,no,,no,0.0043,8.6,coreutils: Non-privileged session can escape to the parent session in chroot
+161,CVE-2026-19487,4.1,0.103,0.40,no,-,Medium,perl-base,no,,no,0.0042,5.3,
+162,CVE-2026-7010,4.1,0.102,0.40,no,-,Medium,perl-base,no,,no,0.0036,6.5,
+163,CVE-2025-11731,4.1,0.102,0.40,no,Low,Low,libxslt1.1,no,,no,0.0028,3.1,libxslt: Type Confusion in exsltFuncResultCompfunction of libxslt
+164,CVE-2024-13978,4.0,0.101,0.40,no,Low,Low,libtiff6,no,,no,0.0020,2.5,libtiff: LibTIFF Null Pointer Dereference
+165,CVE-2026-57062,4.0,0.101,0.40,no,Low,Low,gpgv,no,,no,0.0015,2.9,GnuPG: Incorrect cryptographic message parsing
+166,CVE-2025-15649,4.0,0.101,0.40,no,-,Medium,perl-base,no,,no,0.0013,5.5,
+167,CVE-2017-17740,3.7,0.092,0.40,no,Low,Negligible/Unknown,libldap-2.5-0,no,,no,0.0702,7.5,openldap: contrib/slapd-modules/nops/nops.c attempts to free stack buffer allowing remote attackers to cause a denial of service
+168,CVE-2018-5709,3.4,0.062,0.55,no,Low,Negligible/Unknown,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no,0.0205,7.5,krb5: integer overflow in dbentry->n_key_data in kadmin/dbutil/dump.c
+169,CVE-2017-16232,3.3,0.084,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0558,7.5,"libtiff: Memory leaks in tif_open.c, tif_lzw.c, and tif_aux.c"
+170,CVE-2015-3276,3.3,0.082,0.40,no,Low,Negligible/Unknown,libldap-2.5-0,no,,no,0.0527,7.5,openldap: incorrect multi-keyword mode cipherstring parsing
+171,CVE-2024-26461,3.1,0.057,0.55,no,Low,Negligible/Unknown,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no,0.0113,5.9,krb5: Memory leak at /krb5/src/lib/gssapi/krb5/k5sealv3.c
+172,CVE-2024-26458,3.0,0.055,0.55,no,Low,Negligible/Unknown,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no,0.0081,5.9,krb5: Memory leak at /krb5/src/lib/rpc/pmap_rmt.c
+173,CVE-2005-2541,3.0,0.074,0.40,no,Low,Negligible/Unknown,tar,no,,no,0.0399,7,tar: does not properly warn the user when extracting setuid or setgid files
+174,CVE-2022-0563,2.9,0.053,0.55,no,Low,Negligible/Unknown,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0043,5.5,util-linux: partial disclosure of arbitrary files in chfn and chsh when compiled with libreadline
+175,CVE-2026-11850,2.8,0.052,0.55,no,Low,Negligible/Unknown,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no,0.0027,5,krb5: krb5: integer underflow in berval2tl_data() leads to heap out-of-bounds read
+176,CVE-2025-14104,2.8,0.051,0.55,no,Low,Negligible/Unknown,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,,no,0.0019,6.1,util-linux: util-linux: Heap buffer overread in setpwnam() when processing 256-byte usernames
+177,CVE-2022-27943,2.8,0.055,0.50,no,Low,Negligible/Unknown,gcc-12-base libgcc-s1 libstdc++6,no,,no,0.0091,5.5,binutils: libiberty/rust-demangle.c in GNU GCC 11.2 allows stack exhaustion in demangle_const
+178,CVE-2024-2379,2.7,0.060,0.45,no,Low,Negligible/Unknown,curl libcurl4,no,,no,0.0171,6.3,curl: QUIC certificate check bypass with wolfSSL
+179,CVE-2017-9937,2.7,0.068,0.40,no,Low,Negligible/Unknown,libjbig0,no,,no,0.0296,6.5,libtiff: memory malloc failure in tif_jbig.c could cause DOS.
+180,CVE-2020-15719,2.6,0.065,0.40,no,Low,Negligible/Unknown,libldap-2.5-0,no,,no,0.0251,4.2,openldap: Certificate validation incorrectly matches name against CN-ID
+181,CVE-2025-0725,2.6,0.058,0.45,no,Low,Negligible/Unknown,curl libcurl4,no,,no,0.0126,7.3,libcurl: Buffer Overflow in libcurl via zlib Integer Overflow
+182,CVE-2015-9019,2.6,0.064,0.40,no,Low,Negligible/Unknown,libxslt1.1,no,,no,0.0239,5.3,libxslt: math.random() in xslt uses unseeded randomness
+183,CVE-2011-3374,2.6,0.057,0.45,no,Low,Negligible/Unknown,apt libapt-pkg6.0,no,,no,0.0119,3.7,"It was found that apt-key in apt, all versions, do not correctly valid ..."
+184,CVE-2007-5686,2.5,0.056,0.45,no,Low,Negligible/Unknown,login passwd,no,,no,0.0094,0.0,initscripts in rPath Linux 1 sets insecure permissions for the /var/lo ...
+185,CVE-2022-1210,2.4,0.061,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0185,6.5,tiff: Malicious file leads to a denial of service in TIFF File Handler
+186,CVE-2018-10126,2.4,0.061,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0183,6.5,libtiff: NULL pointer dereference in the jpeg_fdct_16x16 function in jfdctint.c
+187,CVE-2018-6829,2.4,0.061,0.40,no,Low,Negligible/Unknown,libgcrypt20,no,,no,0.0178,7.5,libgcrypt: ElGamal implementation doesn't have semantic security due to incorrectly encoded plaintexts possibly allowing to obtain sensitive information
+188,CVE-2023-31486,2.4,0.060,0.40,no,Low,Negligible/Unknown,perl-base,no,,no,0.0174,8.1,http-tiny: perl: insecure TLS cert default
+189,CVE-2025-15079,2.4,0.053,0.45,no,Low,Negligible/Unknown,curl libcurl4,no,,no,0.0055,8.1,curl: Host verification bypass during SSH transfers
+190,CVE-2026-9547,2.4,0.053,0.45,no,Low,Negligible/Unknown,curl libcurl4,no,,no,0.0051,7.4,curl: curl: Man-in-the-middle attack via SSH host key bypass
+191,CVE-2025-15224,2.4,0.053,0.45,no,Low,Negligible/Unknown,curl libcurl4,no,,no,0.0048,4.7,curl: libssh key passphrase bypass without agent set
+192,CVE-2013-4392,2.4,0.053,0.45,no,Low,Negligible/Unknown,libsystemd0 libudev1,no,,no,0.0047,0.0,systemd: TOCTOU race condition when updating file permissions and SELinux security contexts
+193,CVE-2025-10966,2.4,0.052,0.45,no,Low,Negligible/Unknown,curl libcurl4,no,,no,0.0040,5.9,curl: Curl missing SFTP host verification with wolfSSH backend
+194,CVE-2023-31439,2.3,0.052,0.45,no,Low,Negligible/Unknown,libsystemd0 libudev1,no,,no,0.0035,5.3,An issue was discovered in systemd 253. An attacker can modify the con ...
+195,CVE-2023-31437,2.3,0.052,0.45,no,Low,Negligible/Unknown,libsystemd0 libudev1,no,,no,0.0034,5.3,An issue was discovered in systemd 253. An attacker can modify a seale ...
+196,CVE-2023-31438,2.3,0.052,0.45,no,Low,Negligible/Unknown,libsystemd0 libudev1,no,,no,0.0032,5.3,An issue was discovered in systemd 253. An attacker can truncate a sea ...
+197,CVE-2025-14017,2.3,0.051,0.45,no,Low,Negligible/Unknown,curl libcurl4,no,,no,0.0011,6.3,curl: curl: Security bypass due to global TLS option changes in multi-threaded LDAPS transfers
+198,CVE-2024-2236,2.3,0.057,0.40,no,Low,Negligible/Unknown,libgcrypt20,no,,no,0.0111,5.9,libgcrypt: vulnerable to Marvin Attack
+199,TEMP-0628843-DBAD28,2.2,0.050,0.45,no,Low,-,login passwd,no,,no,0.0000,0.0,[more related to CVE-2005-4890]
+200,CVE-2023-49463,2.2,0.055,0.40,no,Low,Negligible/Unknown,libheif1,no,,no,0.0077,8.8,libheif v1.17.5 was discovered to contain a segmentation violation via ...
+201,CVE-2024-25269,2.2,0.054,0.40,no,Low,Negligible/Unknown,libheif1,no,,no,0.0069,0.0,libheif <= 1.17.6 contains a memory leak in the function JpegEncoder:: ...
+202,CVE-2011-4116,2.1,0.053,0.40,no,Low,Negligible/Unknown,perl-base,no,,no,0.0052,3.3,perl: File:: Temp insecure temporary file handling
+203,CVE-2021-4214,2.1,0.053,0.40,no,Low,Negligible/Unknown,libpng16-16,no,,no,0.0052,5.5,libpng: hardcoded value leads to heap-overflow
+204,CVE-2023-6228,2.1,0.052,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0040,5.5,libtiff: heap-based buffer overflow in cpStripToTile() in tools/tiffcp.c
+205,CVE-2023-52426,2.1,0.052,0.40,no,Low,Negligible/Unknown,libexpat1,no,,no,0.0037,5.5,expat: recursive XML entity expansion vulnerability
+206,CVE-2023-1916,2.1,0.052,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0036,6.1,libtiff: out-of-bounds read in extractImageSection() in tools/tiffcrop.c
+207,CVE-2017-14159,2.1,0.052,0.40,no,Low,Negligible/Unknown,libldap-2.5-0,no,,no,0.0035,4.7,openldap: Privilege escalation via PID file manipulation
+208,CVE-2017-18018,2.1,0.052,0.40,no,Low,Negligible/Unknown,coreutils,no,,no,0.0034,4.7,coreutils: race condition vulnerability in chown and chgrp
+209,CVE-2026-53910,2.1,0.052,0.40,no,Low,Negligible/Unknown,diffutils,no,,no,0.0033,5.3,diffutils: heap‑based buffer overflow due to multiple signed integer overflows in line‑mapping calculations
+210,CVE-2023-3164,2.1,0.052,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0032,5.5,libtiff: heap-buffer-overflow in extractImageSection()
+211,CVE-2022-3219,2.1,0.052,0.40,no,Low,Negligible/Unknown,gpgv,no,,no,0.0029,6.2,gnupg: denial of service issue (resource consumption) using compressed packets
+212,CVE-2025-5278,2.1,0.052,0.40,no,Low,Negligible/Unknown,coreutils,no,,no,0.0029,4.4,coreutils: Heap Buffer Under-Read in GNU Coreutils sort via Key Specification
+213,CVE-2025-8177,2.1,0.052,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0029,7.8,libtiff: LibTIFF Buffer Overflow
+214,CVE-2025-61144,2.1,0.052,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0026,7.3,libtiff: libtiff: Denial of Service via buffer overflow
+215,CVE-2025-8176,2.1,0.052,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0025,7.8,libtiff: LibTIFF Use-After-Free Vulnerability
+216,CVE-2025-9165,2.1,0.051,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0022,3.3,libtiff: LibTIFF memory leak
+217,CVE-2025-8961,2.0,0.051,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0021,3.3,libtiff: LibTIFF memory corruption
+218,CVE-2025-8534,2.0,0.051,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0019,2.5,libtiff: Libtiff Null Pointer Dereference Vulnerability
+219,CVE-2026-52491,2.0,0.051,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0019,7.3,libtiff: libtiff: Arbitrary code execution via thumbnail.c: main() component
+220,CVE-2026-52492,2.0,0.051,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0019,7.3,libtiff: libtiff: Arbitrary code execution via crafted TIFF image
+221,CVE-2026-56392,2.0,0.051,0.40,no,Low,Negligible/Unknown,coreutils,no,,no,0.0019,6.1,coreutils: GNU coreutils unexpand: Denial of Service via crafted tab stop values
+222,CVE-2025-8851,2.0,0.051,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0018,5.3,libtiff: LibTIFF Stack-based buffer overflow
+223,CVE-2026-3713,2.0,0.051,0.40,no,Low,Negligible/Unknown,libpng16-16,no,,no,0.0017,5.3,libpng: libpng: Heap-based buffer overflow in pnm2png allows information disclosure and denial of service
+224,CVE-2026-56391,2.0,0.051,0.40,no,Low,Negligible/Unknown,coreutils,no,,no,0.0017,6.1,coreutils: GNU coreutils uniq: Denial of Service and information disclosure via out-of-bounds read with multibyte input
+225,CVE-2025-61147,2.0,0.051,0.40,no,Low,Negligible/Unknown,libde265-0,no,,no,0.0016,6.2,strukturag libde265 commit d9fea9d wa discovered to contain a segmenta ...
+226,CVE-2025-28162,2.0,0.051,0.40,no,Low,Negligible/Unknown,libpng16-16,no,,no,0.0016,6.2,libpng: libpng: Denial of Service via buffer overflow in pngimage utility
+227,CVE-2025-28164,2.0,0.051,0.40,no,Low,Negligible/Unknown,libpng16-16,no,,no,0.0016,5.5,libpng: libpng: Denial of Service via buffer overflow in png_create_read_struct() function
+228,CVE-2026-3949,2.0,0.051,0.40,no,Low,Negligible/Unknown,libheif1,no,,no,0.0016,3.3,libheif: libheif: Out-of-bounds read via local argument manipulation
+229,CVE-2026-22185,2.0,0.051,0.40,no,Low,Negligible/Unknown,libldap-2.5-0,no,,no,0.0015,6.8,OpenLDAP: OpenLDAP LMDB: Denial of Service and Information Disclosure via Heap Buffer Underflow
+230,CVE-2026-11979,2.0,0.051,0.40,no,Low,Negligible/Unknown,libxml2,no,,no,0.0015,7.8,libxml2: libxml2: Arbitrary code execution in xmlcatalog utility via buffer overflow
+231,CVE-2026-102474,2.0,0.051,0.40,no,Low,Negligible/Unknown,dash,no,,no,0.0014,4,dash: dash: Heap out-of-bounds write in conv_escape via undersized Unicode escape reservation
+232,CVE-2025-61145,2.0,0.051,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0014,5,libtiff: libtiff: Denial of service via double free in tiffcrop.c
+233,CVE-2026-102473,2.0,0.051,0.40,no,Low,Negligible/Unknown,dash,no,,no,0.0013,5.5,dash: dash: Super-polynomial backtracking in pmatch when libc fnmatch is disabled
+234,CVE-2025-61143,2.0,0.051,0.40,no,Low,Negligible/Unknown,libtiff6,no,,no,0.0012,5.5,libtiff: libtiff: Denial of Service via NULL pointer dereference in tif_open.c
+235,TEMP-0841856-B18BAF,2.0,0.050,0.40,no,Low,-,bash,no,,no,0.0000,0.0,[Privilege escalation possible to other user than root]
+236,TEMP-0517018-A83CE6,2.0,0.050,0.40,no,Low,-,sysvinit-utils,no,,no,0.0000,0.0,[sysvinit: no-root option in expert installer exposes locally exploitable security flaw]
+237,TEMP-0290435-0B57B5,2.0,0.050,0.40,no,Low,-,tar,no,,no,0.0000,0.0,[tar's rmt command may have undesired side effects]
+238,TEMP-1148137-126A7B,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-vg7w-rp49-4fc2: The max_items security limit is not enforced for iinf child boxes]
+239,TEMP-1148137-089975,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-xrp2-63fq-jm8q: Unbounded iref entry list and unbounded recursion in the reference-cycle check crash the parser]
+240,TEMP-0000000-F2B97A,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-v8qw-hwjv-44hw: AV1/libaom path allows allocation before libheif rejects mismatched coded dimensions]
+241,TEMP-0000000-DB3DE2,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-qwpf-5wf7-r996: Heap-use-after-free and double free in ImageItem::encode_to_bitstream_and_boxes (shallow copy of ImageDescription::m_tai_timestamp)]
+242,TEMP-0000000-D1A721,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-x8r2-mggj-j6wr: Heap buffer overflow in unci mixed-interleave decoding with unequal chroma bit depths]
+243,TEMP-0000000-BBE297,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-w7mc-p8jc-p853: heap OOB read / info disclosure (Op_YCbCr420_to_RRGGBBaa]
+244,TEMP-0000000-956D99,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-9c75-9g8r-4728: JPEG 2000 pclr zero-column allocation amplification bypasses max_total_memory]
+245,TEMP-0000000-78AC20,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-4jqm-2x34-6f6r: Heap buffer overflow in SVT-AV1 encoder for high-bit-depth alpha channels]
+246,TEMP-0000000-4EF776,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-9rj8-5mp5-26c9: Out-of-bounds read in RGB-YCbCr identity-matrix colour conversion with mismatched per-channel bit depths]
+247,TEMP-0000000-21F713,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-7pwf-qh74-p35w: Caller-configured security limits not enforced for MINI-box parsing]
+248,TEMP-0000000-18A2CE,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-r7gr-2xm2-23wf: Heap out-of-bounds read in libheif alpha compositing via mismatched per-channel bit depths (uncompressed codec)]
+249,TEMP-0000000-0F03E5,0.0,0.000,0.40,no,Negligible/Unknown,-,libheif1,no,,no,0.0000,0.0,[GHSA-qfj5-c4pq-q998: Out-of-bounds heap read in unc_encoder_rgb_pixel_interleave when an alpha plane is attached to an image whose chroma format carries no alpha]
+250,CVE-2026-46675,0.0,0.000,0.40,no,Negligible/Unknown,Negligible/Unknown,libpng16-16,no,,no,0.0000,0.0,"[Use-after-free of zlib input in `png_read_end` after incomplete zTXt, iTXt or iCCP decompression]"
