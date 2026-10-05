@@ -92,8 +92,12 @@ truthfully. Do not overstate what a fix achieves.
   conffile**, with the original's exact content. See `entrypoint/README.md`.
 - **Use the original's configure flags** from `scans/baseline/nginx-V.txt`; they decide
   the filesystem layout.
-- **nginx links to** OpenSSL and PCRE2 at least (libc and zlib were missed by the
-  check that produced this list).
+- **nginx loads five libraries:** `libc6`, `libcrypt1`, `libpcre2-8-0`, `libssl3`,
+  `zlib1g` (`scans/baseline/linked-packages.txt`). Everything else in the image is a
+  tool or belongs to an optional module.
+- **Targets are chosen by danger and reach, not by severity label.** The owner's rule:
+  prefer what is most likely to be exploited and what every deployment actually runs.
+  `make triage` scores this; see `scripts/CLAUDE.md`.
 
 ## Rules for working in this repo
 

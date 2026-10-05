@@ -5,7 +5,7 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 | Script | Make target | Purpose |
 |---|---|---|
 | `scan-baseline.sh` | `make scan-baseline` | Pull the original image, save its metadata, scan it with Trivy and Grype into `scans/baseline/` |
-| `compare-scans.py` | `make triage` | Merge a Trivy and a Grype JSON report and rank vulnerabilities by urgency into `triage.md` and `triage.csv` |
+| `compare-scans.py` | `make triage` | Merge a Trivy and a Grype JSON report and rank vulnerabilities by danger and reach into `triage.md` and `triage.csv` |
 
 ## scan-baseline.sh
 
@@ -23,14 +23,21 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 ## compare-scans.py
 
 - Python 3 standard library only.
-- Ranking: highest severity from either scanner, then agreement (reported by both, and
-  the lower of the two severities), then known-exploited, fix available, EPSS, CVSS.
-  "Critical in both" is always first.
+- Ranking is by danger and reach, not by severity label: `score = 100 x danger x reach`.
+  - Danger = 0.6 x exploitation (1 if in CISA KEV, else the EPSS probability) + 0.4 x
+    severity (average of both scanners, a missing scanner counts as 0).
+  - Reach = 1.0 if the affected package is a library the nginx binary loads, 0.4 if it
+    only sits in the image, plus 0.05 per extra affected package (max +0.15).
+  - The owner chose this over "Critical in both first" on 2026-10-05, because the
+    top-severity findings were mostly in libraries nginx never runs.
+- Reach comes from `linked-packages.txt` next to the Trivy report (written by
+  `scan-baseline.sh` from `ldd /usr/sbin/nginx`), or from `--linked FILE`. Without it
+  the script warns and treats every package as "only sits in the image".
+- "Loaded" means the library is loaded, not that the vulnerable function is called.
+  Read the advisory before claiming nginx is affected.
 - Matches by vulnerability ID. A Grype match with a non-CVE ID is mapped to its related
   CVE when there is one.
-- It ranks only what the scanners report. It does not know whether nginx uses the
-  affected library. A planned improvement is a "used by the main program" column that
-  ranks linked libraries above the rest.
+- It ranks only what the scanners report. nginx's own CVEs are not in the list.
 - The same script is also saved as the owner's `compare-vuln-scans` skill. Keep the two
   in step when changing the ranking.
 
