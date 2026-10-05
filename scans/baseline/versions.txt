@@ -1,0 +1,4 @@
+date:   2026-10-04T10:22:33Z
+image:  nginx@sha256:a484819eb60211f5299034ac80f6a681b06f89e65866ce91f356ed7c72af059c linux/amd64
+trivy:  Version: 0.75.0
+grype:  Version:             0.120.0
