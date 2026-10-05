@@ -118,7 +118,7 @@ modules share a package; together they account for 208.
 | `libexpat1` | 35 | 13 | No |
 | `libxml2` | 33 | 19 | No |
 | `libtiff6` | 33 | 8 | No |
-| `libc6` | 32 | 10 | Yes |
 | `libc-bin` | 32 | 10 | No |
+| `libc6` | 32 | 10 | Yes |
 | `libgnutls30` | 22 | 11 | No |
 | `perl-base` | 21 | 14 | No |
