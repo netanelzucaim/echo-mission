@@ -58,7 +58,7 @@ build, with `pkg-oss`'s own SHA512 checksum verification.
 | `changelog/` | Static Debian changelog templates (one per package) |
 | `patches/CVE-2024-6119.patch` | The version bump: minimum `libssl3` version in the nginx package |
 | `patches/CVE-2026-42945.patch` | The backport, applied to the nginx source by `pkg-oss` |
-| `patches/README.md` | What the backport fixes and how it was verified |
+| `patches/README.md` | What each patch fixes, how it was verified, and how to add another fix |
 
 ## Building behind an HTTPS-only proxy
 

@@ -114,9 +114,8 @@ Stated plainly, so nobody reads a pass as more than it is.
   library cannot.
 - **What the modules do.** It checks that the four dynamic modules load. It does not
   resize an image, run an XSLT transform, look up a GeoIP database or run njs code.
-- **The mp4 module.** No MP4 file is served. This matters because the planned backport
-  (CVE-2024-7347) is in that module. A scenario that serves a small MP4 with `?start=`
-  should be added together with the patch.
+- **The mp4 module.** No MP4 file is served. If the mp4 backport (CVE-2024-7347) is
+  ever added, a scenario that serves a small MP4 with `?start=` should come with it.
 - **The mail and stream (TCP/UDP) proxies**, FastCGI, uwsgi, SCGI and gRPC upstreams,
   WebSocket upgrades, and caching (`proxy_cache`).
 - **Performance and resource use.** Nothing is measured: not latency, not memory, not
@@ -125,11 +124,12 @@ Stated plainly, so nobody reads a pass as more than it is.
   that happens, because the startup script then skips its IPv6 step on both sides.
 - **Other platforms.** It tests the image for the architecture Docker runs natively.
 - **Security.** A matching response does not show that a vulnerability is fixed. That
-  is the job of the patch, its own regression test, and the scan comparison.
+  is shown by the patch itself, the build log, and the rewrite scenario that runs the
+  patched code path with normal input.
 
 ## How it was checked
 
-Run against the real patched image on 2026-10-05: **92 checks, 91 match, 1 allowed
+Run against the real patched image, last on 2026-10-06 from a fresh clone of the repo: **92 checks, 91 match, 1 allowed
 difference (the `maintainer` label), 0 mismatch** — a verified drop-in.
 
 The test itself was also validated so a false "match" cannot slip through:
