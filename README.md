@@ -28,6 +28,33 @@ The 26 nginx and njs CVEs the scanners cannot see are counted separately: 1 is f
 Removing a component is allowed as an extra but was not needed; the four optional modules
 are kept for compatibility (see "Dynamic modules are kept" below).
 
+## Two kinds of CVEs in this image
+
+The image holds two kinds of code, and their CVEs are found and fixed in different ways.
+
+| | Code built from source here | Debian packages |
+|---|---|---|
+| What it is | nginx and the njs module | Libraries and tools: OpenSSL, libxml2, libtiff, curl… |
+| Who wrote that code | NGINX | Other projects |
+| Who builds it in this image | This project, from source | Debian (the image installs its packages) |
+| Where its CVEs are published | nginx.org and njs advisories | Debian's security data |
+| Seen by Trivy and Grype? | **No**: they compare it with Debian's data (see below) | Yes |
+| CVEs in the original image | **26** (24 in nginx, 2 in njs), found by reading the advisories | **497**, reported by the scanners |
+| How to fix one | Patch the source and rebuild: **backport** | Install Debian's newer package: **version bump** |
+| Fixed in this image | 1 (CVE-2026-42945) | 244 (including CVE-2024-6119) |
+
+The two required fixes are one of each: the backport is in nginx's own code, the
+version bump is in a Debian library.
+
+Two things are easy to mix up:
+
+- **nginx's built-in modules are part of nginx.** nginx's source is divided into parts
+  it calls modules (rewrite, mp4, DAV, HTTP/3…). Most of the 24 nginx CVEs are in parts
+  like these, which are compiled into the main nginx program.
+- **The four optional module packages bring Debian libraries with them.** The 208 CVEs
+  listed for the modules under "Dynamic modules" below are in those libraries (libtiff,
+  libxml2…), not in the module code. They are part of the 497.
+
 ## Build and run
 
 Everything is reproducible with one command each, through the `Makefile`:
