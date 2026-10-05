@@ -30,10 +30,10 @@ RUN=(docker run --rm ${PLATFORM:+--platform "$PLATFORM"} --entrypoint "")
 "${RUN[@]}" "$IMAGE" nginx -V   > "$OUT_ABS/nginx-V.txt" 2>&1
 "${RUN[@]}" "$IMAGE" dpkg-query -W -f='${Package}\t${Version}\t${Source}\n' > "$OUT_ABS/packages.tsv"
 "${RUN[@]}" "$IMAGE" sh -c 'ls -la / /docker-entrypoint.d /etc/nginx /etc/nginx/conf.d /usr/lib/nginx/modules; id nginx' > "$OUT_ABS/layout.txt" 2>&1
-# Packages whose shared libraries the nginx binary loads. Used by compare-scans.py
+# The nginx package itself plus the packages whose shared libraries its binary loads. Used by compare-scans.py
 # to tell "nginx runs this code" apart from "this merely sits in the image".
 "${RUN[@]}" "$IMAGE" sh -c '
-  ldd /usr/sbin/nginx | awk "{for(i=1;i<=NF;i++) if (\$i ~ /^\//) print \$i}" |
+  { echo /usr/sbin/nginx; ldd /usr/sbin/nginx | awk "{for(i=1;i<=NF;i++) if (\$i ~ /^\//) print \$i}"; } |
   while read -r p; do
     r=$(readlink -f "$p")
     dpkg -S "$r" 2>/dev/null || dpkg -S "${r#/usr}" 2>/dev/null || dpkg -S "$p" 2>/dev/null

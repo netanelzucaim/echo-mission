@@ -21,7 +21,7 @@ never edited by hand. To change one, change the script and rerun it.
 | `history.txt` | `docker history --no-trunc`: the commands that built the original |
 | `nginx-V.txt` | `nginx -V`: version and configure flags to reuse in the build |
 | `packages.tsv` | Every installed package with version and source package |
-| `linked-packages.txt` | Packages whose libraries the nginx binary loads (`ldd`); input for the reach score |
+| `linked-packages.txt` | The `nginx` package plus the packages whose libraries its binary loads (`ldd`); input for the reach score |
 | `layout.txt` | Listings of `/`, `/docker-entrypoint.d`, `/etc/nginx`, modules; `id nginx` |
 | `digest.txt`, `versions.txt` | Image digest and platform, scan date, scanner versions |
 
@@ -31,9 +31,10 @@ never edited by hand. To change one, change the script and rerun it.
   `nginx@sha256:a484819eb60211f5299034ac80f6a681b06f89e65866ce91f356ed7c72af059c`.
 - Trivy 0.75.0: 775 findings, 494 unique. Grype 0.120.0: 751 findings, 471 unique.
 - Merged: 497 unique, 468 reported by both, 15 Critical in both (10 with a fix).
-- 91 are in the five libraries nginx loads (`libc6`, `libcrypt1`, `libpcre2-8-0`,
+- 94 are in loaded packages (`nginx` plus `libc6`, `libcrypt1`, `libpcre2-8-0`,
   `libssl3`, `zlib1g`); 58 of those have a fix. Top of the danger-and-reach ranking:
-  CVE-2024-6119, then CVE-2025-15467, both OpenSSL.
+  CVE-2023-44487 (see the caution in the root `CLAUDE.md`), then CVE-2024-6119 and
+  CVE-2025-15467, both OpenSSL.
 
 ## Reading the reports correctly
 

@@ -92,12 +92,72 @@ truthfully. Do not overstate what a fix achieves.
   conffile**, with the original's exact content. See `entrypoint/README.md`.
 - **Use the original's configure flags** from `scans/baseline/nginx-V.txt`; they decide
   the filesystem layout.
-- **nginx loads five libraries:** `libc6`, `libcrypt1`, `libpcre2-8-0`, `libssl3`,
-  `zlib1g` (`scans/baseline/linked-packages.txt`). Everything else in the image is a
-  tool or belongs to an optional module.
+- **Loaded versus unloaded packages** are described in their own section below.
 - **Targets are chosen by danger and reach, not by severity label.** The owner's rule:
   prefer what is most likely to be exploited and what every deployment actually runs.
   `make triage` scores this; see `scripts/CLAUDE.md`.
+
+## Loaded and unloaded packages
+
+The original image has 144 packages. The triage score (`make triage`) weights a
+vulnerability by whether nginx runs the affected code.
+
+**Loaded (weight 1.0):** the `nginx` package itself and the five libraries its binary
+loads, taken from `ldd /usr/sbin/nginx` and saved in
+`scans/baseline/linked-packages.txt`. A bug here is inside every running container.
+
+| Package | What nginx uses it for |
+|---|---|
+| `nginx` | The server itself |
+| `libssl3` (OpenSSL) | HTTPS encryption |
+| `libpcre2-8-0` | Pattern matching in config rules |
+| `zlib1g` | Compressing responses (gzip) |
+| `libc6` | Basic system functions |
+| `libcrypt1` | Password checking for basic authentication |
+
+**Unloaded (weight 0.4):** everything else. Installed, but the nginx program never
+opens it. It still counts because a user can switch a module on, and an attacker
+already inside the container can run the tools.
+
+| Group | Examples | Why it is in the image |
+|---|---|---|
+| Separate tools | `curl`, `perl-base`, `apt`, `bash` | Can be run by hand; nginx does not use them |
+| Libraries those tools need | `libkrb5-3` (Kerberos), `libcurl4`, `libssh2-1` | `curl` needs them |
+| Libraries for the four optional modules | See the next table | Used only if a config loads the module |
+
+### Libraries brought in by each optional module
+
+These 37 packages are in the image only because of the four module packages
+(`apt-get -s remove --auto-remove` on the modules lists exactly these). No module is
+loaded by default. CVE counts are unique CVEs in the baseline scan that touch the
+module's libraries; a CVE in a shared library is counted for each module that needs it.
+
+| Module package | Plugin files | Libraries only it (or another module) needs | Baseline CVEs | Critical or High |
+|---|---|---|---|---|
+| `nginx-module-xslt` | `ngx_http_xslt_filter_module.so` | `libxslt1.1`, `libxml2`, `libicu72` | 42 | 23 |
+| `nginx-module-geoip` | `ngx_http_geoip_module.so`, `ngx_stream_geoip_module.so` | `libgeoip1` | 0 | 0 |
+| `nginx-module-image-filter` | `ngx_http_image_filter_module.so` | `libgd3` and the 31 packages it pulls in: `libtiff6`, `libpng16-16`, `libjpeg62-turbo`, `libwebp7`, `libavif15`, `libheif1`, `libaom3`, `libde265-0`, `libx265-199`, `libdav1d6`, `libgav1-1`, `librav1e0`, `libsvtav1enc1`, `libyuv0`, `libabsl20220623`, `libfreetype6`, `libfontconfig1`, `fontconfig-config`, `fonts-dejavu-core`, `libexpat1`, `libxpm4`, `libx11-6`, `libx11-data`, `libxcb1`, `libxau6`, `libxdmcp6`, `libbsd0`, `libjbig0`, `liblerc4`, `libdeflate0`, `libnuma1` | 166 | 65 |
+| `nginx-module-njs` | `ngx_http_js_module.so`, `ngx_stream_js_module.so` | `libedit2`, `libbsd0`, `libxml2`, `libicu72` | 34 | 20 |
+
+- Shared between modules: `libxml2` and `libicu72` (xslt and njs), `libbsd0`
+  (image-filter and njs). All four together account for 208 unique CVEs.
+- njs also needs `libssl3`, `libpcre2-8-0` and `zlib1g`, but nginx loads those anyway,
+  so they are not module-only.
+- Each `.so` also ships a `-debug` twin, 12 files in total in `/usr/lib/nginx/modules/`.
+- image-filter is by far the largest source. It also brings in `libfreetype6`, which
+  has the only known-exploited CVE among the libraries (CVE-2025-27363).
+- The loaded check covers the default nginx binary only. It does not follow the
+  modules, so their libraries count as unloaded even though a config could load them.
+
+### A ranking result to treat with care
+
+CVE-2023-44487 (HTTP/2 Rapid Reset) is first in the ranking: it is on the
+known-exploited list and Grype reports it against the `nginx` package. Trivy does not
+report it, and Debian's data has no fixed version for it. nginx 1.25.3 added
+"improved detection of misbehaving clients when using HTTP/2" (nginx.org CHANGES),
+which is upstream's response to this attack, and the image ships 1.25.5. Whether that
+fully covers the CVE has not been checked against the advisory. Do not present it as an
+open vulnerability or as fixed by this project without doing that.
 
 ## Rules for working in this repo
 

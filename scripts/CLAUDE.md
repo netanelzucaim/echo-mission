@@ -26,7 +26,7 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 - Ranking is by danger and reach, not by severity label: `score = 100 x danger x reach`.
   - Danger = 0.6 x exploitation (1 if in CISA KEV, else the EPSS probability) + 0.4 x
     severity (average of both scanners, a missing scanner counts as 0).
-  - Reach = 1.0 if the affected package is a library the nginx binary loads, 0.4 if it
+  - Reach = 1.0 if the affected package is `nginx` itself or a library its binary loads, 0.4 if it
     only sits in the image, plus 0.05 per extra affected package (max +0.15).
   - The owner chose this over "Critical in both first" on 2026-10-05, because the
     top-severity findings were mostly in libraries nginx never runs.
