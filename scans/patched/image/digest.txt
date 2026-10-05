@@ -1,1 +1,1 @@
-echo-nginx@sha256:e9d3d2b8a513330480dc9df5af83461a3b50c21e6d8269b43ef2dda6d78129cf linux/amd64
+echo-nginx@sha256:96d8645bd3e23edd507016d06ec4d5fd4f74c3ee3ca889fd961dc2546e5fe63f linux/amd64

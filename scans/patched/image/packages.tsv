@@ -134,7 +134,7 @@ ncurses-bin	6.4-4	ncurses
 nginx	1.25.5-1~bookworm	
 nginx-module-geoip	1.25.5-1~bookworm	
 nginx-module-image-filter	1.25.5-1~bookworm	
-nginx-module-njs	1.25.5+0.8.4-1~bookworm	
+nginx-module-njs	1.25.5+0.8.4-3~bookworm	
 nginx-module-xslt	1.25.5-1~bookworm	
 openssl	3.0.22-1~deb12u1	
 passwd	1:4.13+dfsg1-1+deb12u2	shadow

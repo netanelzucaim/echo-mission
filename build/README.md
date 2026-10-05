@@ -26,12 +26,15 @@ our backport into it, rather than re-inventing the packaging.
 2. **Injects the backport.** `pkg-oss` adds every `contrib/src/nginx/*.patch` to its
    quilt `series` and applies it during the build, so dropping
    `patches/CVE-2026-42945.patch` there is the whole backport step.
-3. **Applies `echo-pkg-oss.patch`**, two small packaging adjustments:
+3. **Applies `echo-pkg-oss.patch`**, three small packaging adjustments:
    - use a **static Debian changelog** instead of generating it with `xslscript`
      (which `pkg-oss` fetches over the network from a host that is not always reachable);
    - build the njs **module and CLI without QuickJS**, matching the original image's
      njs 0.8.4 (its `ngx_http_js_module.so` links no QuickJS and its `/usr/bin/njs` links
-     only libedit — both verified with `ldd`). The njs package still ships `/usr/bin/njs`.
+     only libedit — both verified with `ldd`). The njs package still ships `/usr/bin/njs`;
+   - set the njs package's **release number to 3**, so its version is
+     `1.25.5+0.8.4-3~bookworm`, exactly as in the original image (pkg-oss at this commit
+     says 1). All five nginx package versions then match the original.
    The static changelogs are in `changelog/`.
 4. **Vendors the njs 0.8.4 source** from the njs git tag (its `hg.nginx.org` archive URL
    is not reliably reachable), into `pkg-oss/contrib/tarballs/`.
@@ -45,7 +48,7 @@ build, with `pkg-oss`'s own SHA512 checksum verification.
 |---|---|
 | `Dockerfile` | Clean build (no environment-specific settings); runs `prepare.sh` then `make` |
 | `prepare.sh` | Fetches and assembles the source tree (our orchestration script) |
-| `echo-pkg-oss.patch` | The two packaging adjustments above, applied to `pkg-oss` |
+| `echo-pkg-oss.patch` | The three packaging adjustments above, applied to `pkg-oss` |
 | `changelog/` | Static Debian changelog templates (one per package) |
 | `patches/CVE-2026-42945.patch` | The backport, applied to the nginx source by `pkg-oss` |
 | `patches/README.md` | What the backport fixes and how it was verified |

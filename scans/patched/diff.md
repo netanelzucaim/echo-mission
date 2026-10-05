@@ -31,7 +31,7 @@ pie showData title What happened to the 523 baseline CVEs
 
 ## Package versions that changed
 
-67 packages changed version, 0 were removed, 0 were added.
+66 packages changed version, 0 were removed, 0 were added.
 
 | Package | Before | After | Loaded by nginx | Baseline CVEs no longer reported |
 |---|---|---|---|---|

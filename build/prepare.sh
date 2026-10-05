@@ -3,7 +3,7 @@
 #
 # This fetches nginx's official packaging (pkg-oss) at the exact commit that
 # targets nginx 1.25.5 + njs 0.8.4, injects our CVE backport into its quilt
-# series, and applies two local adjustments so it builds offline-friendly and
+# series, and applies three local adjustments so it builds offline-friendly and
 # matches the original image. It does NOT compile anything; build/Dockerfile
 # runs `make` afterwards.
 set -eu
@@ -28,7 +28,8 @@ cp patches/CVE-2026-42945.patch pkg-oss/contrib/src/nginx/
 echo "==> Applying packaging adjustments"
 # echo-pkg-oss.patch: (1) use a static Debian changelog instead of generating it
 # with xslscript (which pkg-oss fetches over the network); (2) build the njs
-# module without QuickJS, matching the original image's njs 0.8.4 module.
+# module and CLI without QuickJS, matching the original image's njs 0.8.4;
+# (3) set the njs package release to 3, matching the original's version string.
 patch -p1 -d pkg-oss < echo-pkg-oss.patch
 cp changelog/nginx.deb-changelog            pkg-oss/debian/
 cp changelog/nginx-module-xslt.deb-changelog        pkg-oss/debian/

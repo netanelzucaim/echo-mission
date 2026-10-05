@@ -200,15 +200,12 @@ All values were taken from `scans/baseline/image/inspect.json` and
   May-2024 base: the `debian-archive-*` keyrings (buster-era → trixie-era) and a `tzdata`
   entry or two. These come from Debian moving forward, not from anything this project
   changed, and are the expected, desirable result of patching via a fresh base.
-- **`NJS_RELEASE` environment variable.** Kept at the original's `3~bookworm` so the
-  image's environment matches exactly, although the njs package built here has packaging
-  release `1~bookworm`. The njs source version (0.8.4) is the same; only the packaging
-  rebuild counter differs.
 
 A full filesystem diff against the original shows no other differences: every file under
 the nginx paths, the `nginx -V` flags, the Docker config (entrypoint, cmd, ports, env,
 stop signal, user), the conffiles, the four modules with their debug twins, and the njs
-CLI (`/usr/bin/njs`) all match. That includes nginx.org's apt signing key
+CLI (`/usr/bin/njs`) all match, and so do the version strings of all five nginx packages
+(`dpkg-query`). That includes nginx.org's apt signing key
 (`/etc/apt/keyrings/nginx-archive-keyring.gpg`), a leftover in the original from
 installing nginx from nginx.org's repository. Nothing in this image uses it, since nginx
 is built from source, but it is copied byte-for-byte from the original so the layout
