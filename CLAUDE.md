@@ -94,7 +94,7 @@ first, then KEV, then EPSS weighed against both scanners' severity), not by the 
   upstream commit `2046b45a` (landed in nginx 1.31.0, the release the advisory names),
   a single hunk resetting `e->is_args`. Staged as `build/patches/CVE-2026-42945.patch`,
   confirmed to apply cleanly to a pristine 1.25.5 (`patch -p1 --dry-run`); the diff was
-  read, the binary not yet built or exercised. VEX written as `status: fixed`
+  read, and the built binary passes `make test` including a scenario that runs the patched code path. VEX written as `status: fixed`
   (`vex/CVE-2026-42945.openvex.json`) — the scanners never reported it, so it has
   nothing to suppress; it is the formal record of the fix.
   - Not taken (available as a second backport if wanted, in `priorities.md` and

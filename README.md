@@ -9,8 +9,8 @@ test proves the image still behaves like the original.
 
 | CVE | Where it lives | Severity | Fix method | Evidence |
 |---|---|---|---|---|
-| **CVE-2024-6119** | OpenSSL (`libssl3`), which nginx loads | High / High (Trivy / Grype), EPSS 66.6% | **Version bump** — `apt-get upgrade` on the fresh base takes OpenSSL 3.0.11 → 3.0.22 | Gone from both scanners in the rescan (`scans/patched/diff.md`); `nginx -V` reports OpenSSL 3.0.22. [advisory](https://nginx.org/en/security_advisories.html) · [OpenSSL CVE-2024-6119](https://openssl-library.org/news/vulnerabilities/) |
-| **CVE-2026-42945** | nginx `ngx_http_rewrite_module` (built from source here) | medium, potential code execution | **Backport** — upstream commit `2046b45a` (nginx 1.31.0) onto 1.25.5 | `build/patches/CVE-2026-42945.patch`, applied in the from-source build; VEX `status: fixed` in `vex/`. Not scanner-visible — see "the scanners miss nginx's own CVEs" below. |
+| **CVE-2024-6119** | OpenSSL (`libssl3`), which nginx loads | High / High (Trivy / Grype), EPSS 66.6% | **Version bump** — `apt-get upgrade` on the fresh base takes OpenSSL 3.0.11 → 3.0.22 | Gone from both scanners in the rescan (`scans/patched/diff.md`); `nginx -V` reports OpenSSL 3.0.22. [Debian tracker: fixed in 3.0.14-1~deb12u2](https://security-tracker.debian.org/tracker/CVE-2024-6119) |
+| **CVE-2026-42945** | nginx `ngx_http_rewrite_module` (built from source here) | medium, potential code execution | **Backport** — upstream commit `2046b45a` (nginx 1.31.0) onto 1.25.5 | [nginx advisory](https://nginx.org/en/security_advisories.html) (vulnerable 0.6.27–1.30.0) · [upstream fix 2046b45a](https://github.com/nginx/nginx/commit/2046b45aa0c6e712c216b9075886f3f26e9b4ca9) · `build/patches/CVE-2026-42945.patch`, applied in the from-source build and exercised by `make test`; VEX `status: fixed` in `vex/`. Not scanner-visible — see "the scanners miss nginx's own CVEs" below. |
 
 Why these two: full reasoning in `scans/baseline/priorities.md`. Targets are chosen by
 how likely a CVE is to be exploited here and how much of the deployment runs the code
@@ -108,9 +108,10 @@ assumed, not verified, for the other nginx CVEs.
 - nginx's own CVEs have to be triaged from the
   [nginx security advisories](https://nginx.org/en/security_advisories.html),
   not from the scan reports.
-- A backported nginx fix may show no before/after difference in the scan diff, which
-  would leave the VEX document nothing to suppress. This can only be confirmed once
-  the patched image is built and rescanned.
+- A backported nginx fix shows no before/after difference in the scan diff, which
+  leaves the VEX document nothing to suppress. Confirmed on the built image:
+  CVE-2026-42945 appears in neither scanner's report, before or after (see
+  "Rescan and VEX" below).
 
 **Why not just use Debian's nginx package.** It is 1.22, a downgrade from 1.25 that
 lacks features the original has (HTTP/3, for one), so it would not be a drop-in
@@ -161,11 +162,12 @@ end-to-end proof that the mechanic works.
 the same requests and compares status line, headers and body, plus image settings,
 file layout, logs and shutdown behaviour. It exits non-zero on any mismatch.
 [`test/README.md`](test/README.md) defines what "working correctly" means, lists the
-91 checks, and says what is not covered.
+checks, and says what is not covered.
 
-The test has been validated against the original image (everything matches) and
-against two deliberately altered images (it fails, as it should). It has not been run
-against the patched image yet, because that image is not built.
+On the built image: 92 checks, 91 match, 1 allowed difference (the maintainer label),
+0 mismatch. The test was also validated against the original image (everything
+matches) and against a deliberately altered image (it fails, as it should), so a false
+"match" cannot slip through.
 
 ## Image configuration: what matches the original and what does not
 
@@ -204,6 +206,11 @@ All values were taken from `scans/baseline/image/inspect.json` and
   May-2024 base: the `debian-archive-*` keyrings (buster-era → trixie-era) and a `tzdata`
   entry or two. These come from Debian moving forward, not from anything this project
   changed, and are the expected, desirable result of patching via a fresh base.
+
+- **`NJS_RELEASE` environment variable.** Kept at the original's `3~bookworm` so the
+  image's environment matches exactly, although the njs package built here has packaging
+  release `1~bookworm`. The njs source version (0.8.4) is the same; only the packaging
+  rebuild counter differs.
 
 A full filesystem diff against the original shows no other differences: every file under
 the nginx paths, the `nginx -V` flags, the Docker config (entrypoint, cmd, ports, env,
@@ -310,6 +317,35 @@ What remains after the two fixes, honestly:
   89 unfixable CVEs live there); exercise the njs and mp4 modules in the compatibility
   test, not just load them; and backport the sibling rewrite CVE-2026-9256 and the
   reachable DAV CVE-2026-27654 as a second round.
+
+## Dead ends and what I tried
+
+- **Building the packaging by hand.** The compatibility test requires the exact
+  `nginx -V` flags, the `nginx-debug` binary, conffiles, logrotate and systemd files,
+  and twelve module `.so` files. A hand-rolled `.deb` would not match all of that, so
+  the build drives nginx's own packaging (`pkg-oss`) instead and injects the backport.
+  The trade-off: `build/prepare.sh` is a thin orchestration script around upstream's
+  packaging rather than a packaging script written from scratch.
+- **`pkg-oss` at its latest commit.** It targets nginx 1.31 and builds njs with QuickJS,
+  which njs 0.8.4 does not need. Pinned instead to commit `aaeb9a9`, the one that
+  shipped nginx 1.25.5 with njs 0.8.4.
+- **Network fetches inside the build.** `pkg-oss` downloads `xslscript` to generate its
+  changelog, and the njs source, from `hg.nginx.org`, which returned only a small stub
+  page through this workspace's proxy. Replaced with a static changelog and with the
+  njs source taken from its git tag.
+- **QuickJS.** First removed from the njs build along with the njs command-line tool;
+  a full filesystem diff then showed `/usr/bin/njs` missing. The original's tool links
+  only libedit, so it is now built again without QuickJS.
+- **Proxy settings leaking into the image.** The first validated image contained this
+  workspace's proxy CA and apt settings. The committed files were clean, but the built
+  artifact was not. Found by the same filesystem diff; the cloud build now removes them.
+- **VEX pinned to the wrong version.** The first VEX for CVE-2023-52355 named the
+  baseline's libtiff6 version; `apt-get upgrade` had moved it, so the rescan reported
+  the CVE as still present. Regenerated against the patched image's package list.
+- **Proving the backport by triggering the bug.** Not done on purpose: building a
+  trigger is exploit work. The evidence is that the upstream fix applies cleanly, the
+  patched code path is exercised by `make test` with matching output, and the build log
+  shows the patch applied.
 
 ## How AI tools were used
 
