@@ -233,14 +233,7 @@ the image only because of them, and they carry 208 of the 497 unique baseline CV
 Counts overlap where modules share a library. Source: `scans/baseline/triage.csv` and
 `apt-get -s remove --auto-remove` on the module packages in the original image.
 
-**The option that was considered: remove image-filter.** It is the obvious candidate.
-It accounts for about a third of all baseline CVEs, its libraries parse complex image
-files, which is a classic source of memory bugs, and they include `libfreetype6` with
-CVE-2025-27363, the only library CVE in the image on CISA's known-exploited list.
-Nothing loads the module by default, so the compatibility test would still pass
-without it. The assignment also allows removing a vulnerable component.
-
-**Why it was rejected.** Anyone whose configuration contains
+**Why image-filter is kept.** Anyone whose configuration contains
 `load_module modules/ngx_http_image_filter_module.so;` would find nginx refusing to
 start after switching images. The brief asks for "a drop-in replacement, not a
 re-imagining", and an image that breaks existing users has failed at that, however
