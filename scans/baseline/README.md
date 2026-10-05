@@ -56,16 +56,9 @@ Nothing here is written by hand except this page.
 | `make scan-baseline` | everything in `reports/` and `image/` |
 | `make triage` | `stats.md`, `triage.md`, `triage.csv` |
 
-The image was scanned on 2026-10-04 with Trivy 0.75.0 and Grype 0.120.0:
-nginx 1.25.5 on Debian 12.5, linux/amd64,
-`nginx@sha256:a484819eb60211f5299034ac80f6a681b06f89e65866ce91f356ed7c72af059c`.
-`linked-packages.txt` and `modules.tsv` were added a day later from the same image.
-
 ## Things to know when reading the results
 
 - The scanners only compare package names and versions with a database. They do not
   look at the code.
 - nginx's own CVEs are mostly missing, because the nginx package comes from nginx.org
   and is compared with Debian's version numbers. See the main `README.md`.
-- The path `/home/claude/scaleops-mission/...` inside the reports is where the image
-  file was on the machine that ran the scan. It has no other meaning.
