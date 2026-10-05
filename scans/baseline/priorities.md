@@ -36,7 +36,7 @@ authoritative (libssl3 is Debian's).
 | Known-exploited | No |
 | Chance (EPSS) | **66.6%** — the highest of any reachable, non-mitigated CVE in the image |
 | Severity | Trivy High, Grype High |
-| Fix | Debian ships the fix (3.0.14-1~deb12u2 and later); the fresh `debian:bookworm-slim` + `apt-get upgrade` base installs it. **Version bump.** |
+| Fix | Debian fixed it in 3.0.14-1~deb12u2; bookworm-security now offers 3.0.22-1~deb12u1, so the fresh `debian:bookworm-slim` + `apt-get upgrade` base installs an OpenSSL well past the fix (3.0.11 → 3.0.22, verified 2026-10-05 on a bookworm system). **Version bump.** |
 
 Why this one for the bump: it is in a library nginx actually loads, it has by far the
 strongest real exploitation signal (two-thirds EPSS, High from both scanners), and the

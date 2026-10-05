@@ -80,10 +80,13 @@ truthfully. Do not overstate what a fix achieves.
 The full reasoning is in `scans/baseline/priorities.md`, decided by judgment (reach
 first, then KEV, then EPSS weighed against both scanners' severity), not by the score.
 
-- **Version bump: CVE-2024-6119** (OpenSSL). `3.0.11` to the fresh base's `3.0.x`
+- **Version bump: CVE-2024-6119** (OpenSSL). `3.0.11-1~deb12u2` to `3.0.22-1~deb12u1`
   (denial of service in X.509 name checks; reachable when nginx is a reverse proxy that
   verifies upstream certificates). The strongest reachable exploitation signal in the
-  image: EPSS 66.6%, High/High. Fixed by `apt-get upgrade`. Rejected alternative:
+  image: EPSS 66.6%, High/High. Fixed by `apt-get upgrade`. Verified 2026-10-05 on a
+  bookworm system: Debian fixed it in 3.0.14-1~deb12u2, and bookworm-security now offers
+  3.0.22-1~deb12u1, so the fresh base's upgrade installs an OpenSSL well past the fix.
+  Final confirmation is the rescan of the built image. Rejected alternative:
   CVE-2025-15467 is in CMS parsing, which nginx does not use.
 - **Backport: CVE-2026-42945** (chosen by the owner over the mp4 fallback). Heap
   overflow in the rewrite module, potential code execution, reached through
