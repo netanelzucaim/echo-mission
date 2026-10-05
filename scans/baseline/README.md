@@ -13,7 +13,7 @@ scans/baseline/
 ├── README.md      this page
 ├── stats.md       START HERE: the numbers as diagrams and tables
 ├── triage.md      the top 40 vulnerabilities, ranked
-├── triage.csv     all 521 vulnerabilities, ranked (opens in a spreadsheet)
+├── triage.csv     all 523 vulnerabilities, ranked (opens in a spreadsheet)
 ├── triage-details.md  why every vulnerability sits where it does
 ├── review.tsv     the human check behind the ranking (written by hand)
 ├── fix-plan.md    the script's proposed fix method per CVE (a starting point)
@@ -68,8 +68,9 @@ Nothing here is written by hand except this page and `review.tsv`.
 | `make fix-plan` | `fix-plan.md` (and `image/nginx-security-advisories.html` the first time) |
 
 `review.tsv` records, per CVE or per package, whether nginx actually runs the vulnerable
-code, with a reason and where to check it. It also adds 24 nginx CVEs from nginx.org that
-the scanners miss, which is why the ranking has 521 rows and `stats.md` has 497. How to
+code, with a reason and where to check it. It also adds 24 nginx CVEs from nginx.org and 2
+njs CVEs from njs's own advisories that the scanners miss (26 in all), which is why the
+ranking has 523 rows and `stats.md` has 497. How to
 fill it is in `.claude/skills/triage-cves/SKILL.md`.
 
 ## Things to know when reading the results

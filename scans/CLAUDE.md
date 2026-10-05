@@ -7,10 +7,9 @@ never edited by hand. To change one, change the script and rerun it.
 
 - `baseline/`: the original `nginx:1.25-bookworm`, produced by `make scan-baseline`
   and `make triage`.
-- No probe folders or probe tooling. The what-if measurements for image-filter were
-  one-off experiments; their result is the table in `README.md`. The owner wants only
-  the fix in the repo.
-- `patched/` will be written by `make rescan IMAGE=<image>` in step 6: the same
+- The what-if measurements for image-filter were one-off experiments; their result is
+  the table in `README.md`.
+- `patched/`: the patched image, written by `make rescan IMAGE=<image>` in step 6: the same
   layout as `baseline/`, plus `diff.md` and `diff.csv` (comparison with the baseline
   and the VEX check) and `reports/*-vex.*` (the scans with VEX applied).
 

@@ -25,11 +25,10 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
   original image it lists exactly `nginx` and its four module packages.
 - If `docker pull` fails but the image exists locally, it warns and scans the local
   copy. Docker Hub rate limits (HTTP 429) made this necessary.
-- The containerized-scanner path has not been run successfully yet. It failed in the
-  Claude cloud workspace because of the proxy certificate, and has not been tried on
-  the owner's Mac.
-- When step 6 arrives, reuse this script for the patched image through `IMAGE` and
-  `OUT` rather than writing a second one.
+- The containerized-scanner path (used when Trivy or Grype is not installed) was not
+  used for the committed results: behind the build proxy the scanner containers could
+  not verify its certificate, so host binaries were used.
+- `make rescan` reuses this script for the patched image through `IMAGE` and `OUT`.
 
 ## compare-scans.py
 
@@ -100,9 +99,8 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 - `make-vex.py` reads package versions from `<scan-dir>/image/packages.tsv` and uses
   the bare package purl as the product. That form was tested to work in both Trivy
   0.75.0 and Grype 0.120.0; the image-plus-subcomponent form did not work in Trivy.
-- Tested on 2026-10-05 against a stand-in image (the original with one module
-  removed) and throwaway VEX files, covering `suppressed` and `never reported`. Not
-  yet run on the real patched image, which does not exist.
+- Run on the real patched image on 2026-10-05: results in `scans/patched/`, with
+  CVE-2023-52355 `suppressed` and CVE-2026-42945 `never reported` in both scanners.
 - The skill `.claude/skills/rescan-compare-vex/` describes the procedure.
 
 ## Conventions

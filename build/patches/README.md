@@ -14,10 +14,9 @@ worst case is code execution. The patch is one hunk: it resets `e->is_args` in
 `ngx_http_script_regex_end_code`, so a capture used after a rewrite replacement that
 contained arguments is no longer escaped into an undersized buffer.
 
-Verified by `patch -p1 --dry-run` against a pristine 1.25.5 tree (applies cleanly). The
-diff was read; the patched binary has not been built or exercised yet — the
-compatibility test (a rewrite scenario, to be added when the build lands) and the
-post-build rescan are what close that gap.
+Verified: `patch -p1 --dry-run` applies cleanly to a pristine 1.25.5 tree, the build
+log shows the patch applied, and the built image passes `make test`, including a
+scenario that runs the patched rewrite path with output identical to the original.
 
 To re-verify:
 

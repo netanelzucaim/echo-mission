@@ -123,8 +123,9 @@ first, then KEV, then EPSS weighed against both scanners' severity), not by the 
   Trivy and Grype compare its version against Debian's fixed versions (Debian ships
   1.22.1 with backports). `1.25.5 > 1.22.1-9+deb12u2`, so the CVE looks fixed. Triage
   nginx CVEs from https://nginx.org/en/security_advisories.html, not from the reports.
-  A backported fix may therefore show no before/after scan difference, leaving the VEX
-  document nothing to suppress. Confirm after the real build.
+  A backported fix therefore shows no before/after scan difference, leaving the VEX
+  document nothing to suppress. Confirmed on the built image: CVE-2026-42945 is in
+  neither scanner's report, before or after.
   - **So the VEX "disappear" demo runs on a different CVE than the backport.** The
     brief's bonus says to VEX "one of your backport-patched CVEs" and show it vanish
     from the rescan. That cannot work here: the backport fixes an nginx CVE the
@@ -214,9 +215,11 @@ CVE-2023-44487 (HTTP/2 Rapid Reset) is first in the ranking: it is on the
 known-exploited list and Grype reports it against the `nginx` package. Trivy does not
 report it, and Debian's data has no fixed version for it. nginx 1.25.3 added
 "improved detection of misbehaving clients when using HTTP/2" (nginx.org CHANGES),
-which is upstream's response to this attack, and the image ships 1.25.5. Whether that
-fully covers the CVE has not been checked against the advisory. Do not present it as an
-open vulnerability or as fixed by this project without doing that.
+which is upstream's response to this attack, and the image ships 1.25.5. The source
+check is in `review.tsv`: upstream commit 6ceef19 ("HTTP/2: per-iteration stream
+handling limit", released the day the attack was disclosed) is in 1.25.5. The commit
+does not name the CVE, so it is presented as mitigated by upstream, never as open and
+never as fixed by this project.
 
 ## Rules for working in this repo
 
@@ -238,9 +241,7 @@ open vulnerability or as fixed by this project without doing that.
   reach + KEV + EPSS + both severities — not a formula; writes `priorities.md`)
   and `rescan-compare-vex` (step 6: rescan, compare with the baseline, write and test
   VEX). They describe the procedure and point to the scripts in `scripts/`; keep the
-  code in one place. The `probe-image-change` skill, `scripts/probe-impact.sh` and
-  `make probe` were removed at the owner's request on 2026-10-05. They are in git
-  history (last present in commit 2287013) if they are wanted again.
+  code in one place.
 - The patched image is tagged `echo-nginx:1.25-bookworm` (the Makefile's `IMAGE`).
   `make test` and `make rescan` use it.
 - The compatibility test treats the original image as the specification. Never relax a
@@ -252,18 +253,12 @@ open vulnerability or as fixed by this project without doing that.
   the original for benign input, confirming the patch did not change normal behaviour.
 - VEX documents go in `vex/` as `<CVE>.openvex.json`, written by `scripts/make-vex.py`.
 
-## Running things from a Claude cloud session
+## Building behind an HTTPS-only proxy
 
-The owner's Mac sandbox shell has no Docker, so builds and scans run in the cloud
-workspace and results are copied to the Mac folder.
-
-- Start the daemon with `dockerd` in the background if `docker info` fails.
-- Processes inside containers cannot use the workspace proxy as-is. `docker build` needs
+- Processes inside containers cannot use such a proxy as-is. `docker build` needs
   `--network host --build-arg https_proxy=$HTTPS_PROXY`, the proxy CA
   (`/root/.ccr/ca-bundle.crt`) trusted inside the build, and `https://` apt sources,
   because the proxy only accepts HTTPS. Keep this plumbing out of the committed
   `Containerfile` and `build/` files.
 - Trivy and Grype run as host binaries in `/usr/local/bin` (extracted from their
   official images), because their containers cannot verify the proxy's certificate.
-- The Mac folder cannot reach GitHub with credentials. Push from the cloud clone, then
-  sync the Mac folder with a temporary `git bundle` and delete the bundle.

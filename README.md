@@ -32,8 +32,8 @@ make rescan  # step 6: rescan, diff against the baseline, apply the VEX files
 ```
 
 `make deb` builds in a clean `debian:bookworm-slim` with no pre-baked binaries; details
-in `build/README.md`. (In the Claude cloud workspace the build needs proxy build-args —
-see the root `CLAUDE.md`.)
+in `build/README.md`. (Behind an HTTPS-only proxy the build needs extra build-args; see
+`build/README.md`.)
 
 ### Image size
 
@@ -338,7 +338,7 @@ What remains after the two fixes, honestly:
   only libedit, so it is now built again without QuickJS.
 - **Proxy settings leaking into the image.** The first validated image contained this
   workspace's proxy CA and apt settings. The committed files were clean, but the built
-  artifact was not. Found by the same filesystem diff; the cloud build now removes them.
+  artifact was not. Found by the same filesystem diff; the proxy build now removes them.
 - **VEX pinned to the wrong version.** The first VEX for CVE-2023-52355 named the
   baseline's libtiff6 version; `apt-get upgrade` had moved it, so the rescan reported
   the CVE as still present. Regenerated against the patched image's package list.

@@ -48,7 +48,7 @@ Rejected alternative: **CVE-2025-15467** (OpenSSL, Grype Critical, EPSS 52%) sco
 high mechanically but is in CMS parsing, which nginx never calls — reach `unused`. A
 higher severity label on unreachable code is not a better fix.
 
-### Backport — recommended: CVE-2026-42945 (nginx rewrite module), with CVE-2024-7347 as the clean fallback
+### Backport — chosen: CVE-2026-42945 (nginx rewrite module); CVE-2024-7347 was the fallback
 
 Two honest candidates, and the choice is a real judgment call, so both are laid out.
 
@@ -60,7 +60,7 @@ Two honest candidates, and the choice is a real judgment call, so both are laid 
 | Severity | nginx advisory **medium**, but impact is *potential arbitrary code execution*, not a crash. (Scanners: silent — nginx is foreign.) |
 | Chance (EPSS) | 3.4% (85th percentile) — low in absolute terms, but these are new 2026 bugs with little exploitation history yet. |
 | Upstream fix | Commit `2046b45a` ("Rewrite: fixed escaping and possible buffer overrun"), one-line reset of `e->is_args`. Vulnerable range 0.6.27–1.30.0 includes 1.25.5; fixed in 1.30.1/1.31.0. |
-| Applies to 1.25.5? | **Yes — `patch -p1 --dry-run` applies cleanly.** Verified, not assumed. The hardening follow-ups `475732a3` and `ca4f92a2` (CVE-2026-9256, overlapping captures) also apply cleanly and are the complete fix for the rewrite-overflow family. |
+| Applies to 1.25.5? | **Yes — `patch -p1 --dry-run` applies cleanly.** Verified, not assumed. The follow-ups `475732a3` and `ca4f92a2` (CVE-2026-9256, overlapping captures) also apply cleanly but are **not** shipped; only `2046b45a` is. |
 | Method | **Backport.** A newer nginx is not allowed (image must stay 1.25). |
 
 **CVE-2024-7347 — buffer over-read in `ngx_http_mp4_module`** (the safe fallback)
@@ -76,18 +76,17 @@ Two honest candidates, and the choice is a real judgment call, so both are laid 
 
 **The call.** CVE-2026-42945 is the stronger *risk reduction* — it is in code almost
 every deployment runs and its worst case is code execution, versus a crash in an
-opt-in media module — and backporting it (plus the two sibling rewrite commits)
+opt-in media module — and backporting it
 demonstrates real backporting over a vendor-handed patch. CVE-2024-7347 is the
 *safest* backport: a single, nginx-published patch file, lowest chance of a
-subtle mistake. Recommendation: **lead with CVE-2026-42945**, and if the owner wants
-the lowest-risk second fix for the required backport, CVE-2024-7347 is ready to drop
-in. Both patches are staged and confirmed to apply; the owner picks.
+subtle mistake. **Decision: CVE-2026-42945**, chosen by the owner. The shipped patch is
+upstream commit `2046b45a` alone, the fix the advisory names; CVE-2024-7347 was not
+taken.
 
-What was **not** verified for either: the backports were confirmed to apply to the
-1.25.5 source and the diffs were read; the patched binary has **not** been built and
-the fix has **not** been exercised against a trigger (deliberately — that is exploit
-work and out of scope). The compatibility test (`make test`) and a post-build rescan
-are what close that gap, once the image is built.
+What was verified: the fix applies cleanly to the 1.25.5 source, the build applied it,
+and the built image passes `make test`, including a scenario that runs the patched
+rewrite path with output identical to the original. What was not done, deliberately:
+exercising the bug with a trigger, which is exploit work.
 
 ## Reachable runners-up (not chosen, but real)
 
@@ -95,7 +94,7 @@ are what close that gap, once the image is built.
 |---|---|---|---|---|---|
 | CVE-2023-44487 | nginx HTTP/2 | `common` | ~100%, **KEV** | High (Grype) | **Already mitigated** in 1.25.5. Upstream's stream-handling limit (commit 6ceef19, 1.25.3) is in the shipped binary. Do **not** claim as a fix and do **not** present as open. Needs a VEX / residual-risk note, not a patch. |
 | CVE-2026-27654 | nginx DAV | `config` | **25.1%** | medium | Highest EPSS of the reachable nginx bugs. Needs DAV `COPY`/`MOVE` with `alias` — uncommon. Fix `9739e755` applies cleanly. Good third target if more are wanted. |
-| CVE-2026-9256 | nginx rewrite | `config`→broad | 2.7% | medium (code exec) | Part of the rewrite-overflow family; folded into the CVE-2026-42945 backport above (`ca4f92a2`+`475732a3`). |
+| CVE-2026-9256 | nginx rewrite | `config`→broad | 2.7% | medium (code exec) | Sibling of CVE-2026-42945, **not fixed here**: its commits (`ca4f92a2` + `475732a3`) apply cleanly but were not shipped. The natural next backport. |
 | CVE-2026-42533 | nginx map+regex | `config` | 0.9% | **major** | Highest nginx severity label here. Needs `map` with a regex capture reused in a later string expression. Fix `0cca8e05` applies cleanly. |
 | CVE-2024-31079 / 32760 / 34161 / 35200 | nginx HTTP/3 | `config` | ~0.9% | medium | HTTP/3 is compiled; reachable only with `listen ... quic`. Four separate fixes, all in 1.26.1/1.27.0. The natural second *group* if HTTP/3 is in scope. |
 | CVE-2026-78689 | njs (`nginx-module-njs` 0.8.4) | `config` | — | **critical** (CVSS 9.2) | Heap overflow in njs's XML `exclusiveC14n()` namespace-prefix parser; the scanners miss it entirely (njs is a separate upstream). The 0.8.4 source contains the vulnerable code. Reach is gated hard: njs's threat model treats JS as trusted, so it needs the njs module loaded **and** a `js_import` calling XML c14n on attacker data (the nginx-saml SAML flow is the known case). The module is not loaded by default here. **No in-version fix** (first fixed in njs 1.0.1), so it is a residual-risk / module-kept item, not a bump or backport target. See the njs worked example in the `triage-cves` skill. |

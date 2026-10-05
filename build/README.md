@@ -50,9 +50,9 @@ build, with `pkg-oss`'s own SHA512 checksum verification.
 | `patches/CVE-2026-42945.patch` | The backport, applied to the nginx source by `pkg-oss` |
 | `patches/README.md` | What the backport fixes and how it was verified |
 
-## Running in the Claude cloud workspace
+## Building behind an HTTPS-only proxy
 
-The committed files carry no proxy or CA settings (see the root `CLAUDE.md`). To build
-behind the workspace proxy, pass them at build time:
+The committed files carry no proxy or CA settings. To build behind such a proxy, pass
+them at build time:
 `docker build --network host --build-arg https_proxy=$HTTPS_PROXY ...` with the proxy CA
 trusted inside the build and the apt sources switched to `https://`.

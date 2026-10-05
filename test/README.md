@@ -56,7 +56,7 @@ run fails, because the test is then not exercising what it claims to.
 
 ## What the test covers
 
-91 checks in three groups. Each group starts both images as separate containers with
+92 checks in three groups. Each group starts both images as separate containers with
 identical configuration.
 
 ### `image`: settings and files, nothing running
