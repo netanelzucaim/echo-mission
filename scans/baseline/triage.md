@@ -19,6 +19,20 @@ Reach verdicts: common 1, config 83, manual 4, unused 228, n/a 18, not reviewed 
 
 Libraries the main program loads: `libc6`, `libcrypt1`, `libpcre2-8-0`, `libssl3`, `nginx`, `zlib1g`.
 
+## Packages that are not from the distribution
+
+The scanners compare every package with the distribution's security data. These packages were installed from somewhere else, so that comparison is wrong for them: a CVE the distribution fixed in its own older version looks fixed here too. Their CVEs must be taken from the upstream project's advisories for the exact installed version, and added through `review.tsv`.
+
+| Package | Installed | Newest in the distribution | Why it is listed | CVEs from the scanners | CVEs added from upstream advisories |
+|---|---|---|---|---|---|
+| `nginx` | 1.25.5-1~bookworm | 1.22.1-9+deb12u10 | newer than anything the distribution offers | 3 | 24 |
+| `nginx-module-geoip` | 1.25.5-1~bookworm | - | the distribution has no such package | 0 | 0 |
+| `nginx-module-image-filter` | 1.25.5-1~bookworm | - | the distribution has no such package | 0 | 0 |
+| `nginx-module-njs` | 1.25.5+0.8.4-3~bookworm | - | the distribution has no such package | 0 | 0 |
+| `nginx-module-xslt` | 1.25.5-1~bookworm | - | the distribution has no such package | 0 | 0 |
+
+24 CVEs from upstream advisories are in the ranking. Module packages built from the main package's source are covered by its advisories; a module with its own source (for example njs) has its own advisory list and needs its own check.
+
 ## Top 40
 
 | # | ID | Score | Danger | Reach | Verdict | Packages | Fix | KEV | EPSS |

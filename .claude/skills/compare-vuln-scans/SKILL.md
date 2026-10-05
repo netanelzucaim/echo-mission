@@ -95,6 +95,10 @@ A breakdown flowchart (scanners, agreement, where the CVEs sit, how many have a 
 
 Ties are broken by fix available, then CVSS.
 
+## Packages not from the distribution
+
+`triage.md` has a section listing installed packages that the distribution did not build (from `image/foreign-packages.tsv`). For those, the scanner results in this ranking cannot be trusted, because the scanners compare them with the distribution's version numbers. Their CVEs have to be added from the upstream project's advisories through `review.tsv`. The script prints a WARNING while that has not been done. The rule and the steps are in the `triage-cves` skill.
+
 ## Caveats to tell the user
 
 - "Loaded" means the library is loaded by the main program, not that the vulnerable function is called. Confirm from the advisory before saying the program is affected.

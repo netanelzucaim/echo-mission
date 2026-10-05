@@ -18,6 +18,11 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 - Scans a `docker save` tarball so both tools see the same image bytes, then deletes it.
 - Options through the environment: `IMAGE`, `OUT`, `PLATFORM` (for example
   `linux/amd64`), `MODULES` (optional module packages; default every `nginx-module-*`).
+- Writes `image/foreign-packages.tsv`: packages the distribution does not have, or only
+  has in older versions than the one installed. It runs `apt-get update` inside a
+  throwaway container, so it needs network there; `DOCKER_RUN_FLAGS` and `APT_PREP` are
+  for networks behind a proxy. Without network the file says "not checked". For the
+  original image it lists exactly `nginx` and its four module packages.
 - If `docker pull` fails but the image exists locally, it warns and scans the local
   copy. Docker Hub rate limits (HTTP 429) made this necessary.
 - The containerized-scanner path has not been run successfully yet. It failed in the
@@ -56,7 +61,11 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
   top of the folder, not inside `reports/`.
 - Matches by vulnerability ID. A Grype match with a non-CVE ID is mapped to its related
   CVE when there is one.
-- It ranks only what the scanners report. nginx's own CVEs are not in the list.
+- It ranks what the scanners report plus the CVEs added through `review.tsv`.
+- It reads `foreign-packages.tsv` and writes a "Packages that are not from the
+  distribution" section into `triage.md`. If such a package has no CVE added from its
+  upstream advisories, it prints a WARNING: the scanners' answer for that package is
+  not valid, because they compare it with the distribution's version numbers.
 - The skill `.claude/skills/compare-vuln-scans/` describes how to use this script. It
   points here and carries no copy of the code.
 

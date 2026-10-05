@@ -37,6 +37,33 @@ Without a review line, reach falls back to where the package sits: 0.6 for a lib
 
 The weights are judgment calls, not measurements. Say so whenever you present the ranking.
 
+## Software that is not from the distribution
+
+This rule comes first, before any scoring.
+
+A scanner decides "vulnerable or not" by comparing the installed version with the version in which **the distribution** fixed the bug. That is only valid for packages the distribution built. When the main program was installed from somewhere else, the comparison is wrong and the scanner's answer for it is worthless in both directions.
+
+The example in this project: the image is Debian, but nginx was installed from nginx.org.
+
+| | Debian's own nginx | The nginx in the image |
+|---|---|---|
+| Built by | Debian | NGINX (nginx.org) |
+| Version | 1.22.1, with Debian's own backported fixes | 1.25.5 |
+| A CVE counts as fixed from | Debian's patched 1.22.1 revision | upstream 1.26.2 / 1.27.1 |
+
+The scanner sees "nginx 1.25.5", looks at Debian's list, finds "fixed in 1.22.1-9+deb12u2", and concludes 1.25.5 is fine because 1.25 is a bigger number than 1.22. But the 1.25.5 from nginx.org never received Debian's patch. The CVE is there and is not reported.
+
+**So: for a package that is not from the distribution, do not look at the distribution's CVE data. Look at the CVEs published by the project that built it, for the exact version installed.**
+
+How to apply it:
+
+1. **Find those packages.** The scan writes `image/foreign-packages.tsv`: every installed package the distribution does not have at all, or only has in older versions. If the file says "not checked" (the scan had no network), rerun the scan with network access; do not guess. For a quick manual check, `dpkg-query -W -f='${Maintainer}' PACKAGE` shows who built a package, and `apt-cache policy PACKAGE` after `apt-get update` shows what the distribution offers.
+2. **For each one, go to the upstream project's own advisory list**, not the distribution's tracker and not the scanner report. For nginx: `https://nginx.org/en/security_advisories.html`. Each advisory states "Vulnerable: X-Y" and "Not vulnerable: Z+". Compare those ranges with the installed version. `scripts/fix-method.py` does this for nginx and saves the page in `image/nginx-security-advisories.html`.
+3. **Add every advisory that applies** to `review.tsv`, with the `package` and `severity` columns filled in, so it enters the ranking.
+4. **Distrust what the scanner did report for that package.** It can also be wrong the other way: a CVE the distribution marks "no fix" is reported forever, even when the installed upstream version already contains the fix (CVE-2023-44487 here). Check each against the upstream changelog and say what you found in the reason.
+5. **Check each source separately.** A module built from the main program's source tree shares its advisories (nginx's xslt, geoip and image-filter modules). A module with its own source has its own advisory list (njs) and needs its own lookup.
+6. **Libraries are different.** The libraries the program loads (OpenSSL, zlib and so on) usually do come from the distribution, even when the program does not. For those the scanner's distribution-based answer is the right one. Apply this rule per package, never to the whole image.
+
 ## The review file
 
 Tab-separated. Lines starting with `#` are comments. Columns:
@@ -58,7 +85,7 @@ A CVE-level line always wins over a `pkg:` line. A `pkg:` verdict applies only w
 
 2. **Get the upstream source of the exact shipped version**, as a source tarball from the project's own site, into the scratchpad. Never commit it. For nginx: `https://nginx.org/download/nginx-<version>.tar.gz`, with the version from `image/nginx-V.txt`. Also note the build flags in `nginx-V.txt`: a module that is not compiled in cannot be reached.
 
-3. **Add the CVEs the scanners miss.** For software not installed from the distribution (nginx from nginx.org on Debian), the scanners compare against the wrong version list and drop its own CVEs. Fetch the project's advisory page (for nginx, `https://nginx.org/en/security_advisories.html`). Parse the version ranges with a script rather than by eye, and add one line per advisory whose vulnerable range includes the shipped version, with `package` and `severity` filled in.
+3. **Add the CVEs the scanners miss.** Open the "Packages that are not from the distribution" section of `triage.md` (the list is `image/foreign-packages.tsv`, written by the scan). For every package in it, follow the rule in "Software that is not from the distribution" below: take its CVEs from the upstream project's advisories for the exact installed version, and add one line per applicable advisory with `package` and `severity` filled in. Parse the version ranges with a script rather than by eye. The triage prints a WARNING, and says so in `triage.md`, as long as such a package has no upstream CVE in the review.
 
 4. **Choose the review scope**, in this order:
    - every CVE in a package the main program loads (`image/linked-packages.txt`);

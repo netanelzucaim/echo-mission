@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Step 1: pull the original image and scan it with Trivy and Grype.
 # Usage: ./scripts/scan-baseline.sh        (or: make scan-baseline)
-# Optional env: IMAGE, OUT, PLATFORM (e.g. linux/amd64), MODULES, TRIVY_FLAGS
+# Optional env: IMAGE, OUT, PLATFORM (e.g. linux/amd64), MODULES, TRIVY_FLAGS,
+#               DOCKER_RUN_FLAGS and APT_PREP (network access for the package-origin check)
 #
 # Only Docker is required. Trivy/Grype are used from the host if installed,
 # otherwise they run as containers. Both scan the same `docker save` tarball,
@@ -59,6 +60,29 @@ if [ -n "${MODULES// /}" ]; then
       done
     done' sh $MODULES > "$IMG/modules.tsv"
 fi
+
+# Packages that do not come from the distribution's repositories (for example nginx
+# installed from nginx.org). The scanners compare every package with the distribution's
+# security data, so for these packages their results are unreliable and the CVEs must be
+# taken from the upstream project's own advisories. A package is listed when the
+# distribution does not have it at all, or only has older versions than the one installed.
+# Needs network inside the container; DOCKER_RUN_FLAGS and APT_PREP exist for networks
+# that need a proxy. Without network the file says so and the triage warns.
+echo "==> Checking which packages are not from the distribution"
+"${RUN[@]}" ${DOCKER_RUN_FLAGS:-} "$IMAGE" sh -c '
+  '"${APT_PREP:-:}"'
+  if ! apt-get update -qq >/dev/null 2>&1; then echo "# not checked: apt-get update failed (no network?)"; exit 0; fi
+  echo "# package	installed	newest in the distribution	why	maintainer"
+  dpkg-query -W -f="\${Package} \${Version}\n" | while read -r p v; do
+    cand=$(apt-cache policy "$p" 2>/dev/null | sed -n "s/^  Candidate: //p")
+    [ "$cand" = "$v" ] || continue                           # the distribution has something newer
+    apt-cache madison "$p" 2>/dev/null | grep -qF " $v " && continue   # this exact version is in a repository
+    newest=$(apt-cache madison "$p" 2>/dev/null | awk -F"|" "NR==1 {gsub(/ /, \"\", \$2); print \$2}")
+    m=$(dpkg-query -W -f="\${Maintainer}" "$p")
+    if [ -z "$newest" ]; then printf "%s\t%s\t-\tthe distribution has no such package\t%s\n" "$p" "$v" "$m"
+    else printf "%s\t%s\t%s\tnewer than anything the distribution offers\t%s\n" "$p" "$v" "$newest" "$m"; fi
+  done' > "$IMG/foreign-packages.tsv"
+grep -v "^#" "$IMG/foreign-packages.tsv" | cut -f1,2,4 | sed "s/^/    /" || true
 
 echo "==> Saving image tarball"
 docker save "$IMAGE" -o "$REP/image.tar"

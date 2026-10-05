@@ -147,6 +147,22 @@ def load_review(path):
     return review
 
 
+def load_foreign(path):
+    """Packages that do not come from the distribution's repositories.
+    Returns (list of dicts, checked). checked is False when the scan could not tell."""
+    if not os.path.exists(path):
+        return [], False
+    out, checked = [], True
+    for line in open(path):
+        if line.startswith("# not checked"):
+            checked = False
+        if not line.strip() or line.startswith("#"):
+            continue
+        c = (line.rstrip("\n").split("\t") + [""] * 5)[:5]
+        out.append({"package": c[0], "installed": c[1], "distro": c[2], "why": c[3], "maintainer": c[4]})
+    return out, checked
+
+
 def add_unreported(vulns, review):
     """CVEs a person added to the review (e.g. from the upstream advisories) that no
     scanner reports. They have no EPSS, so only severity counts toward danger."""
@@ -430,6 +446,24 @@ def main():
     both = [e for e in rows if e["trivy"] is not None and e["grype"] is not None]
     in_linked = [e for e in rows if e["linked"]]
 
+    # Packages not from the distribution: the scanners judge them by the distribution's
+    # version numbers, which is wrong for them. Their CVEs must come from upstream.
+    foreign, foreign_checked = load_foreign(find("foreign-packages.tsv"))
+    for fp in foreign:
+        fp["scanner"] = sum(1 for e in rows if fp["package"] in e["pkgs"] and e["advisory"] is None)
+        fp["upstream"] = sum(1 for e in rows if fp["package"] in e["pkgs"] and e["advisory"] is not None)
+    # a module package shares its source with the main one: one advisory list covers the family
+    family_upstream = sum(fp["upstream"] for fp in foreign)
+    if foreign and not family_upstream:
+        print("WARNING: " + ", ".join(fp["package"] for fp in foreign) + " do not come from the "
+              "distribution, and no CVE from their upstream advisories is in the review. The scanner "
+              "results for them cannot be trusted. Add the upstream advisories to review.tsv "
+              "(see the triage-cves skill).", file=sys.stderr)
+    if not foreign_checked:
+        print("warning: the scan could not check which packages are not from the distribution "
+              "(image/foreign-packages.tsv missing or not checked); rerun the scan with network access",
+              file=sys.stderr)
+
     with open(os.path.join(out, "triage.csv"), "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["rank", "id", "score", "danger", "reach", "verdict", "loaded_by_main_program",
@@ -471,6 +505,33 @@ def main():
         else:
             f.write("No linked-packages file was given, so reach does not separate libraries the "
                     "main program loads from packages that only sit in the image.\n\n")
+        f.write("## Packages that are not from the distribution\n\n")
+        if not foreign_checked:
+            f.write("**Not checked.** The scan could not compare the installed packages with the "
+                    "distribution's repositories (no network). Until it can, assume the main program "
+                    "may be one of them and take its CVEs from the upstream project's advisories.\n\n")
+        elif not foreign:
+            f.write("None. Every installed package comes from the distribution, so the scanners' "
+                    "version comparison applies to all of them.\n\n")
+        else:
+            f.write("The scanners compare every package with the distribution's security data. These "
+                    "packages were installed from somewhere else, so that comparison is wrong for them: "
+                    "a CVE the distribution fixed in its own older version looks fixed here too. Their "
+                    "CVEs must be taken from the upstream project's advisories for the exact installed "
+                    "version, and added through `review.tsv`.\n\n")
+            f.write("| Package | Installed | Newest in the distribution | Why it is listed | CVEs from the scanners | CVEs added from upstream advisories |\n")
+            f.write("|---|---|---|---|---|---|\n")
+            for fp in foreign:
+                f.write(f"| `{fp['package']}` | {fp['installed']} | {fp['distro']} | {fp['why']} | "
+                        f"{fp['scanner']} | {fp['upstream']} |\n")
+            f.write("\n")
+            if family_upstream:
+                f.write(f"{family_upstream} CVEs from upstream advisories are in the ranking. Module packages "
+                        "built from the main package's source are covered by its advisories; a module with "
+                        "its own source (for example njs) has its own advisory list and needs its own check.\n\n")
+            else:
+                f.write("**No upstream advisory has been added for these packages. The ranking is missing "
+                        "their CVEs.** Follow the `triage-cves` skill, step 3.\n\n")
         top = rows[: a.top]
         f.write(f"## Top {len(top)}\n\n")
         f.write("| # | ID | Score | Danger | Reach | Verdict | Packages | Fix | KEV | EPSS |\n"

@@ -110,15 +110,15 @@ modules share a package; together they account for 208.
 
 | Package | Unique CVEs | Critical or High | Loaded by the main program |
 |---|---|---|---|
-| `libssl3` | 49 | 25 | Yes |
 | `openssl` | 49 | 25 | No |
+| `libssl3` | 49 | 25 | Yes |
 | `libheif1` | 45 | 18 | No |
 | `libcurl4` | 40 | 16 | No |
 | `curl` | 40 | 16 | No |
 | `libexpat1` | 35 | 13 | No |
 | `libxml2` | 33 | 19 | No |
 | `libtiff6` | 33 | 8 | No |
-| `libc-bin` | 32 | 10 | No |
 | `libc6` | 32 | 10 | Yes |
+| `libc-bin` | 32 | 10 | No |
 | `libgnutls30` | 22 | 11 | No |
 | `perl-base` | 21 | 14 | No |

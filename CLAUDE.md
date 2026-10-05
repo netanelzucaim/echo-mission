@@ -95,6 +95,11 @@ truthfully. Do not overstate what a fix achieves.
   nginx CVEs from https://nginx.org/en/security_advisories.html, not from the reports.
   A backported fix may therefore show no before/after scan difference, leaving the VEX
   document nothing to suppress. Confirm after the real build.
+- **Rule: for a package the distribution did not build, take CVEs from its upstream
+  project, never from the distribution's data.** `scans/baseline/image/foreign-packages.tsv`
+  lists them (nginx and its four modules); the triage warns if their upstream CVEs are
+  missing. Full rule in `.claude/skills/triage-cves/SKILL.md`. Not done yet: njs has its
+  own source and advisory list, and nobody has checked njs 0.8.4 against it.
 - **The `.deb` must be named `nginx` and register `/etc/nginx/conf.d/default.conf` as a
   conffile**, with the original's exact content. See `entrypoint/README.md`.
 - **Use the original's configure flags** from `scans/baseline/image/nginx-V.txt`; they decide

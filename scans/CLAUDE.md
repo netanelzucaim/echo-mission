@@ -36,6 +36,7 @@ that way, and use the same layout for the patched image's folder.
 | `image/layout.txt` | Listings of `/`, `/docker-entrypoint.d`, `/etc/nginx`, modules; `id nginx` | `make scan-baseline` |
 | `image/linked-packages.txt` | `nginx` plus the packages whose libraries its binary loads; input for the reach score | `make scan-baseline` |
 | `image/modules.tsv` | Each optional module package and the packages installed only for it; input for `stats.md` | `make scan-baseline` |
+| `image/foreign-packages.tsv` | Packages not built by the distribution; their CVEs must come from upstream advisories, not from the scanners | `make scan-baseline` |
 | `image/digest.txt` | Image digest and platform | `make scan-baseline` |
 | `image/nginx-security-advisories.html` | Saved copy of nginx's advisories page, input for `fix-plan.md` | `make fix-plan` (first run, or `--refresh`) |
 

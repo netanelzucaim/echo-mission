@@ -50,6 +50,7 @@ scans/baseline/
 | `packages.tsv` | All 149 installed packages with versions | Comparing versions with the new image |
 | `layout.txt` | Directory listings and the `nginx` user's IDs | Checking the new image has the same files and user |
 | `linked-packages.txt` | The 6 packages nginx itself runs: `nginx` and 5 libraries | The "reach" part of the ranking |
+| `foreign-packages.tsv` | The 5 packages that Debian did not build: nginx and its modules, from nginx.org | Knowing where the scanners cannot be trusted |
 | `modules.tsv` | Each of the 4 optional modules and the packages installed only for it | The per-module table in `stats.md` |
 | `digest.txt` | The image's unique fingerprint | Proving which exact image was scanned |
 | `nginx-security-advisories.html` | A saved copy of nginx's own list of security advisories | Finding nginx's CVEs, which the scanners miss |
