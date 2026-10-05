@@ -87,8 +87,22 @@ def main():
     ap.add_argument("--top", type=int, default=25, help="rows per CVE table")
     a = ap.parse_args()
 
-    base, base_pkgs = load_dir(a.baseline_dir)
-    new, new_pkgs = load_dir(a.new_dir)
+    base_all, base_pkgs = load_dir(a.baseline_dir)
+    new_all, new_pkgs = load_dir(a.new_dir)
+    # Compare only what the scanners report. Rows added by hand from upstream advisories
+    # (review.tsv; no Trivy or Grype rating) are not in either scan, so a missing row in
+    # the patched ranking says nothing about whether they were fixed. They are listed
+    # separately below, marked fixed only when a VEX file says status "fixed".
+    scanned = lambda rows: {k: v for k, v in rows.items() if v["trivy"] != "-" or v["grype"] != "-"}
+    base, new = scanned(base_all), scanned(new_all)
+    advisory = sorted((r for k, r in base_all.items() if k not in base), key=lambda r: r["id"])
+    vex_fixed = set()
+    for path in a.vex:
+        for st in json.load(open(path)).get("statements", []):
+            if st.get("status") == "fixed":
+                vex_fixed.add((st.get("vulnerability") or {}).get("name"))
+    adv_fixed = [r for r in advisory if r["id"] in vex_fixed]
+    adv_open = [r for r in advisory if r["id"] not in vex_fixed]
     by_score = lambda rows: sorted(rows, key=lambda r: float(r["score"]), reverse=True)
     fixed = by_score([base[i] for i in base if i not in new])
     remaining = by_score([new[i] for i in new if i in base])
@@ -105,6 +119,10 @@ def main():
                              n["trivy"] if n else "", n["grype"] if n else "", r["packages"],
                              r["loaded_by_main_program"], n["fix_available"] if n else "",
                              r["known_exploited"]])
+        for status, rows in (("advisory-fixed", adv_fixed), ("advisory-open", adv_open)):
+            for r in rows:
+                wr.writerow([r["id"], status, "", "", "", "", r["packages"],
+                             r["loaded_by_main_program"], "", r["known_exploited"]])
 
     with open(os.path.join(a.new_dir, "diff.md"), "w") as f:
         w = lambda text="": f.write(text + "\n")
@@ -189,6 +207,25 @@ def main():
             w()
             cve_table(w, added, a.top)
 
+        w(f"## CVEs from upstream advisories, not in either scan ({len(advisory)})")
+        w()
+        if advisory:
+            w("Added to the baseline ranking by hand from the upstream project's advisories,")
+            w("because the scanners compare these packages with the wrong (distribution) data and")
+            w("never report them. They are not counted in the numbers above. A CVE here is fixed")
+            w("only if a VEX file records `status: fixed` for it; all others are still present.")
+            w()
+            w(f"- **{len(adv_fixed)}** fixed in this image: "
+              + (", ".join(r["id"] for r in adv_fixed) or "none") + ".")
+            w(f"- **{len(adv_open)}** still present.")
+            w()
+            w("| ID | Package | Advisory severity | Reach | Status |")
+            w("|---|---|---|---|---|")
+            for r in adv_fixed + adv_open:
+                w(f"| {r['id']} | {r['packages']} | {r.get('advisory_severity', '')} | {r['verdict']} | "
+                  f"{'fixed (VEX status: fixed)' if r in adv_fixed else 'still present'} |")
+            w()
+
         w("## VEX check")
         w()
         if not a.vex:
@@ -239,6 +276,8 @@ def main():
 
     print(f"baseline {len(base)} CVEs -> patched {len(new)}: "
           f"{len(fixed)} no longer reported, {len(remaining)} still reported, {len(added)} new")
+    print(f"upstream-advisory CVEs (not in either scan): {len(advisory)}: "
+          f"{len(adv_fixed)} fixed, {len(adv_open)} still present")
     print(f"wrote diff.md and diff.csv in {a.new_dir}")
 
 

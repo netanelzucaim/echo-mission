@@ -8,16 +8,16 @@ by hand; rerun the script. Counts are unique CVE IDs across Trivy and Grype. Ful
 
 | Image | Packages | Unique CVEs | Critical or High | Critical in both | Known exploited | In loaded packages |
 |---|---|---|---|---|---|---|
-| Baseline | 149 | 523 | 203 | 15 | 2 | 118 |
+| Baseline | 149 | 497 | 203 | 15 | 2 | 94 |
 | Patched | 149 | 253 | 80 | 2 | 1 | 36 |
 
 ```mermaid
-pie showData title What happened to the 523 baseline CVEs
-    "No longer reported" : 270
+pie showData title What happened to the 497 baseline CVEs
+    "No longer reported" : 244
     "Still reported" : 253
 ```
 
-- **270** baseline CVEs are no longer reported.
+- **244** baseline CVEs are no longer reported.
 - **253** are still reported (0 of them have a fixed version available).
 - **0** are reported now but were not in the baseline.
 
@@ -51,7 +51,7 @@ pie showData title What happened to the 523 baseline CVEs
 | `libgssapi-krb5-2` | 1.20.1-2+deb12u1 | 1.20.1-2+deb12u5 | no | 7 |
 | `libk5crypto3` | 1.20.1-2+deb12u1 | 1.20.1-2+deb12u5 | no | 7 |
 
-## No longer reported (270)
+## No longer reported (244)
 
 Ranked by their baseline danger-and-reach score.
 
@@ -59,7 +59,6 @@ Ranked by their baseline danger-and-reach score.
 |---|---|---|---|---|---|---|
 | CVE-2024-6119 | High | High | libssl3, openssl | yes | yes |  |
 | CVE-2024-2511 | Low | Medium | libssl3, openssl | yes | yes |  |
-| CVE-2026-78689 | - | - | nginx-module-njs | no | no |  |
 | CVE-2025-7424 | High | High | libxslt1.1 | no | yes |  |
 | CVE-2025-27113 | High | High | libxml2 | no | yes |  |
 | CVE-2026-25646 | High | High | libpng16-16 | no | yes |  |
@@ -73,7 +72,6 @@ Ranked by their baseline danger-and-reach score.
 | CVE-2026-22695 | High | High | libpng16-16 | no | yes |  |
 | CVE-2026-86139 | High | High | libxml2 | no | no |  |
 | CVE-2026-22801 | High | High | libpng16-16 | no | yes |  |
-| CVE-2026-42533 | - | - | nginx | yes | no |  |
 | CVE-2024-28182 | Medium | Medium | libnghttp2-14 | no | yes |  |
 | CVE-2025-6021 | Medium | High | libxml2 | no | yes |  |
 | CVE-2026-33416 | Medium | High | libpng16-16 | no | yes |  |
@@ -82,8 +80,10 @@ Ranked by their baseline danger-and-reach score.
 | CVE-2024-34459 | Low | High | libxml2 | no | yes |  |
 | CVE-2023-40403 | Medium | Medium | libxslt1.1 | no | yes |  |
 | CVE-2026-0990 | Medium | Medium | libxml2 | no | yes |  |
+| CVE-2023-45322 | Medium | Medium | libxml2 | no | yes |  |
+| CVE-2023-39615 | Medium | Medium | libxml2 | no | yes |  |
 
-245 more in `diff.csv`.
+219 more in `diff.csv`.
 
 ## Still reported (253)
 
@@ -120,6 +120,45 @@ This is the residual risk. Ranked by current score.
 228 more in `diff.csv`.
 
 ## New (0)
+
+## CVEs from upstream advisories, not in either scan (26)
+
+Added to the baseline ranking by hand from the upstream project's advisories,
+because the scanners compare these packages with the wrong (distribution) data and
+never report them. They are not counted in the numbers above. A CVE here is fixed
+only if a VEX file records `status: fixed` for it; all others are still present.
+
+- **1** fixed in this image: CVE-2026-42945.
+- **25** still present.
+
+| ID | Package | Advisory severity | Reach | Status |
+|---|---|---|---|---|
+| CVE-2026-42945 | nginx | Medium | config | fixed (VEX status: fixed) |
+| CVE-2024-31079 | nginx | Medium | config | still present |
+| CVE-2024-32760 | nginx | Medium | config | still present |
+| CVE-2024-34161 | nginx | Medium | config | still present |
+| CVE-2024-35200 | nginx | Medium | config | still present |
+| CVE-2024-7347 | nginx | Low | config | still present |
+| CVE-2025-23419 | nginx | Medium | config | still present |
+| CVE-2025-53859 | nginx | Low | config | still present |
+| CVE-2026-1642 | nginx | Medium | config | still present |
+| CVE-2026-18329 | nginx-module-njs | High | n/a | still present |
+| CVE-2026-27651 | nginx | Low | config | still present |
+| CVE-2026-27654 | nginx | Medium | config | still present |
+| CVE-2026-27784 | nginx | Medium | config | still present |
+| CVE-2026-28753 | nginx | Medium | config | still present |
+| CVE-2026-32647 | nginx | Medium | config | still present |
+| CVE-2026-40460 | nginx | Medium | config | still present |
+| CVE-2026-40701 | nginx | Medium | config | still present |
+| CVE-2026-42055 | nginx | Medium | config | still present |
+| CVE-2026-42533 | nginx | High | config | still present |
+| CVE-2026-42934 | nginx | Low | config | still present |
+| CVE-2026-42946 | nginx | Medium | config | still present |
+| CVE-2026-48142 | nginx | Low | config | still present |
+| CVE-2026-56434 | nginx | Medium | config | still present |
+| CVE-2026-60005 | nginx | Medium | config | still present |
+| CVE-2026-78689 | nginx-module-njs | Critical | config | still present |
+| CVE-2026-9256 | nginx | Medium | config | still present |
 
 ## VEX check
 

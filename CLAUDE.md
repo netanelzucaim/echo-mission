@@ -27,7 +27,7 @@ original for a representative set of HTTP scenarios.
 | 3 | Build a `.deb` from source in a clean `debian:bookworm-slim`, one command, patches applied | Done (`make deb`, `build/`). Drives nginx's pkg-oss packaging with the CVE-2026-42945 backport injected into the quilt series; njs 0.8.4 built without QuickJS. Produces nginx + 4 module `.debs` |
 | 4 | Final image: install the `.deb` into a minimal Debian base, match the original | Done (`make image`, `Containerfile`). Built `echo-nginx:1.25-bookworm`; OpenSSL bump from `apt-get upgrade` (3.0.11 → 3.0.22), 291 MB vs 276 MB |
 | 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Done. 92 checks on the built image: 91 match, 1 allowed difference (maintainer label), 0 mismatch — a verified drop-in |
-| 6 | Bonus: rescan, diff against baseline, VEX | Done (`make rescan`, `scans/patched/`). 523 → 253 CVEs; CVE-2024-6119 gone; CVE-2023-52355 VEX suppressed in both scanners; CVE-2026-42945 VEX is status:fixed (never scanner-reported) |
+| 6 | Bonus: rescan, diff against baseline, VEX | Done (`make rescan`, `scans/patched/`). Scanner-reported CVEs 497 → 253 (base upgrade); of 26 nginx/njs advisory CVEs, 1 fixed (backport), 25 still present; CVE-2024-6119 gone; CVE-2023-52355 VEX suppressed in both scanners; CVE-2026-42945 VEX is status:fixed (never scanner-reported) |
 
 ### Required deliverables
 

@@ -94,8 +94,12 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
   `scan-baseline.sh` is historical; it scans any image.
 - The VEX scan writes `reports/trivy-vex.*` and `reports/grype-vex.*` next to the plain
   reports. `VEX=""` skips it; by default every `vex/*.json` is applied.
-- `diff-scans.py` matches by CVE ID: "no longer reported", "still reported", "new". Its
-  VEX table says per scanner `suppressed`, `never reported` or `STILL REPORTED`.
+- `diff-scans.py` matches by CVE ID: "no longer reported", "still reported", "new". It
+  compares only scanner-reported CVEs. CVEs added by hand from upstream advisories
+  (no Trivy or Grype rating) are listed in their own section and counted fixed only if
+  a VEX file says `status: fixed`; otherwise they would wrongly look "no longer
+  reported", since the patched ranking has no `review.tsv`. Its VEX table says per
+  scanner `suppressed`, `never reported` or `STILL REPORTED`.
 - `make-vex.py` reads package versions from `<scan-dir>/image/packages.tsv` and uses
   the bare package purl as the product. That form was tested to work in both Trivy
   0.75.0 and Grype 0.120.0; the image-plus-subcomponent form did not work in Trivy.

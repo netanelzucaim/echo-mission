@@ -3,8 +3,8 @@
   "Trivy": {
     "Version": "0.75.0"
   },
-  "ReportID": "01a10dcb-3d63-7a65-9ffa-5411096929b8",
-  "CreatedAt": "2026-10-05T23:39:45.763684487+03:00",
+  "ReportID": "01a10dcf-3276-7797-8b41-0be3fef48174",
+  "CreatedAt": "2026-10-05T23:44:05.110500412+03:00",
   "ArtifactID": "sha256:b08bac7f0a74609f77cb66eb221410fc6d73138f595a7c24889588a0f2ce19a1",
   "ArtifactName": "/home/claude/echo-mission/scans/patched/reports/image.tar",
   "ArtifactType": "container_image",

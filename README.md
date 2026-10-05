@@ -14,8 +14,16 @@ test proves the image still behaves like the original.
 
 Why these two: full reasoning in `scans/baseline/priorities.md`. Targets are chosen by
 how likely a CVE is to be exploited here and how much of the deployment runs the code
-(reach), not by severity label alone. The rescan reduced the image from **523 to 253**
-reported CVEs (270 no longer reported), mostly from the base upgrade.
+(reach), not by severity label alone.
+
+**Two fixes are claimed, but many more CVEs went away.** The version bump works by
+rebuilding on a fresh Debian base and running `apt-get upgrade`, which updates *every*
+Debian package to its patched version, not only OpenSSL. So the scanner-reported CVEs
+fell from **497 to 253** (244 no longer reported: OpenSSL, libexpat, libxml2, gnutls,
+curl and others). Only CVE-2024-6119 is claimed, because it is the one that was
+deliberately chosen and verified; the others are a side effect of the same upgrade.
+The 26 nginx and njs CVEs the scanners cannot see are counted separately: 1 is fixed
+(the backport), 25 are still present (see `scans/patched/diff.md`).
 
 Removing a component is allowed as an extra but was not needed; the four optional modules
 are kept for compatibility (see "Dynamic modules are kept" below).
@@ -261,7 +269,8 @@ smaller attack surface is available by choice.
 
 What remains after the two fixes, honestly:
 
-- **253 reported CVEs remain** (down from 523). Most are low-severity or in code the
+- **253 scanner-reported CVEs remain** (down from 497), plus **25 nginx and njs CVEs**
+  from upstream advisories that the scanners do not report. Most are low-severity or in code the
   running server never executes; `scans/patched/triage.*` ranks them by reach. The
   largest cluster is the **89 CVEs in the image-filter libraries** (`libheif1`,
   `libtiff6` and friends) that Debian has no fix for — the measured, accepted price of
@@ -322,6 +331,11 @@ What remains after the two fixes, honestly:
 - **VEX pinned to the wrong version.** The first VEX for CVE-2023-52355 named the
   baseline's libtiff6 version; `apt-get upgrade` had moved it, so the rescan reported
   the CVE as still present. Regenerated against the patched image's package list.
+- **Counting CVEs that were never fixed as fixed.** The first comparison said
+  "523 → 253, 270 no longer reported". 26 of the 523 were nginx and njs CVEs added by
+  hand from upstream advisories; the patched scan never lists them, so they looked
+  gone. Only one was fixed. The comparison now counts scanner-reported CVEs only
+  (497 → 253) and lists the 26 advisory CVEs with their real status.
 - **Proving the backport by triggering the bug.** Not done on purpose: building a
   trigger is exploit work. The evidence is that the upstream fix applies cleanly, the
   patched code path is exercised by `make test` with matching output, and the build log
