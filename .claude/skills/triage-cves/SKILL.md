@@ -64,6 +64,47 @@ How to apply it:
 5. **Check each source separately.** A module built from the main program's source tree shares its advisories (nginx's xslt, geoip and image-filter modules). A module with its own source has its own advisory list (njs) and needs its own lookup.
 6. **Libraries are different.** The libraries the program loads (OpenSSL, zlib and so on) usually do come from the distribution, even when the program does not. For those the scanner's distribution-based answer is the right one. Apply this rule per package, never to the whole image.
 
+### Worked example: njs 0.8.4 (a separate source, done right)
+
+njs is nginx's JavaScript engine. It ships in `nginx-module-njs` and is built from
+its **own** project (github.com/nginx/njs), not from nginx's source tree — so nginx's
+advisories page does not cover it, and neither do the scanners. This is exactly the
+case point 5 warns about: its CVEs have to be found separately. How it was done here,
+on 2026-10-05, is the pattern to copy for any such package:
+
+1. **Find the project's own security record.** njs has *no* advisories HTML page like
+   nginx.org. Its security fixes live in the njs `CHANGES` file and in GitHub's
+   advisory database (`github.com/advisories?query=njs`), and — a trap — most CHANGES
+   entries carry *no CVE id*. So both sources are needed: CHANGES tells you what was
+   fixed and when, GitHub gives the CVE id and severity.
+2. **Diff against the version shipped, not the latest.** List the security entries for
+   every release *after* the shipped 0.8.4. That gave two 2026 CVEs: CVE-2026-78689
+   (XML `exclusiveC14n`, Critical) and CVE-2026-18329 (js_access bypass, High), both
+   fixed in njs 1.0.1, plus a `js_fetch_proxy` overflow fixed in 0.9.9.
+3. **Check the vulnerable code is actually in the shipped tag — do not assume "older =
+   affected".** `git grep` *at the 0.8.4 tag*:
+   - the `js_fetch_proxy` overflow says in CHANGES it was "introduced in 0.9.4", so it
+     is **not** in 0.8.4 → not applicable;
+   - CVE-2026-18329's `js_access` async-body bypass needs the directive in the **http**
+     module, but 0.8.4 has `js_access` only in the **stream** module (no request body
+     there) → **n/a**, recorded with that evidence;
+   - CVE-2026-78689's `exclusiveC14n` and its namespace-prefix parser *are* present in
+     0.8.4 (`external/njs_xml_module.c`) → **affected**, added to the ranking.
+   The scope trap to avoid: the XML module lives in `external/`, not `src/` — a grep
+   scoped to `src/` alone wrongly reports it absent. Search the whole tree.
+4. **Apply the project's threat model to reach.** njs's `SECURITY.md` says JavaScript
+   is *trusted* like `nginx.conf`: "If no `js_import` directives are present, nginx is
+   safe from JavaScript-related vulnerabilities." So every njs bug is `config` at best —
+   it needs the module loaded *and* a `js_import` whose code reaches the vulnerable API.
+   Here the njs module is not even loaded by default, so a Critical (CVSS 9.2) that the
+   scanners entirely miss still ranks mid-table, not top — danger is real, reach is
+   gated. It goes in residual risk because the module is kept.
+
+The two results were added to `review.tsv` with `package = nginx-module-njs` and the
+advisory severity: CVE-2026-78689 as `config`, CVE-2026-18329 as `n/a`. The second one
+is kept, not dropped — recording a considered-and-ruled-out CVE is part of honest
+triage.
+
 ## The review file
 
 Tab-separated. Lines starting with `#` are comments. Columns:

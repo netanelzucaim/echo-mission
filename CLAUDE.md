@@ -110,8 +110,12 @@ first, then KEV, then EPSS weighed against both scanners' severity), not by the 
 - **Rule: for a package the distribution did not build, take CVEs from its upstream
   project, never from the distribution's data.** `scans/baseline/image/foreign-packages.tsv`
   lists them (nginx and its four modules); the triage warns if their upstream CVEs are
-  missing. Full rule in `.claude/skills/triage-cves/SKILL.md`. Not done yet: njs has its
-  own source and advisory list, and nobody has checked njs 0.8.4 against it.
+  missing. Full rule in `.claude/skills/triage-cves/SKILL.md`. njs 0.8.4 was checked
+  against its own source and GitHub advisories on 2026-10-05 (worked example in that
+  skill): CVE-2026-78689 (XML `exclusiveC14n`, Critical) applies and is added as
+  `config` reach (needs the njs module loaded and a `js_import` using XML c14n, e.g.
+  SAML); CVE-2026-18329 (js_access bypass) is `n/a` for 0.8.4 (http `js_access` does
+  not exist in 0.8.4). Both are in `review.tsv` under `nginx-module-njs`.
 - **The `.deb` must be named `nginx` and register `/etc/nginx/conf.d/default.conf` as a
   conffile**, with the original's exact content. See `entrypoint/README.md`.
 - **Use the original's configure flags** from `scans/baseline/image/nginx-V.txt`; they decide

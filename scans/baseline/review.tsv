@@ -138,6 +138,15 @@ CVE-2024-31079	config	Stack overflow and use-after-free in HTTP/3. Needs listen 
 CVE-2024-35200	config	NULL pointer dereference in HTTP/3. Needs listen ... quic.	https://nginx.org/en/security_advisories.html	nginx	medium
 CVE-2024-34161	config	Memory disclosure in HTTP/3. Needs listen ... quic.	https://nginx.org/en/security_advisories.html	nginx	medium
 #
+# njs has its own source (0.8.4) and its own security history, separate from nginx's
+# advisories. It has no advisories HTML page; its fixes are in the njs CHANGES file and
+# in GitHub advisories, mostly without a CVE id. Checked on 2026-10-05: the two 2026 njs
+# CVEs, against the 0.8.4 source actually shipped. njs's threat model treats JavaScript
+# as trusted (SECURITY.md), so any njs bug is reachable only with a js_import in the
+# config; the njs module is not loaded by default here.
+CVE-2026-78689	config	Critical XML heap overflow in njs's xml.exclusiveC14n() namespace-prefix parser (e.g. SAML signature verification with nginx-saml). The 0.8.4 source contains the vulnerable code. Scanners miss it. Needs the njs module loaded and a js_import that calls exclusiveC14n() on attacker-controlled data. Fixed in njs 1.0.1.	external/njs_xml_module.c:155,1785 at tag 0.8.4; https://github.com/advisories/GHSA-3gxx-pmrm-ghvv	nginx-module-njs	critical
+CVE-2026-18329	n/a	js_access asynchronous-request-body access-control bypass. njs 0.8.4 has js_access only in the stream module, not http; the vulnerable path (HTTP request-body access control) does not exist in 0.8.4. Considered and ruled out.	nginx/ngx_http_js_module.c has no js_access at tag 0.8.4; https://github.com/advisories/GHSA-jm9r-m8jm-j2hr	nginx-module-njs	high
+#
 # CVE-level refinements for module libraries (reviewed on 2026-10-05, top of the ranking only).
 CVE-2024-56171	unused	Use-after-free during XML Schema validation. The xslt module never validates against a schema.	src/http/modules/ngx_http_xslt_filter_module.c (no xmlSchema calls)		
 CVE-2025-32415	unused	Under-read during XML Schema validation. The xslt module never validates against a schema.	src/http/modules/ngx_http_xslt_filter_module.c (no xmlSchema calls)		

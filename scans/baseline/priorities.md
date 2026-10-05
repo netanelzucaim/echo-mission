@@ -98,6 +98,7 @@ are what close that gap, once the image is built.
 | CVE-2026-9256 | nginx rewrite | `config`→broad | 2.7% | medium (code exec) | Part of the rewrite-overflow family; folded into the CVE-2026-42945 backport above (`ca4f92a2`+`475732a3`). |
 | CVE-2026-42533 | nginx map+regex | `config` | 0.9% | **major** | Highest nginx severity label here. Needs `map` with a regex capture reused in a later string expression. Fix `0cca8e05` applies cleanly. |
 | CVE-2024-31079 / 32760 / 34161 / 35200 | nginx HTTP/3 | `config` | ~0.9% | medium | HTTP/3 is compiled; reachable only with `listen ... quic`. Four separate fixes, all in 1.26.1/1.27.0. The natural second *group* if HTTP/3 is in scope. |
+| CVE-2026-78689 | njs (`nginx-module-njs` 0.8.4) | `config` | — | **critical** (CVSS 9.2) | Heap overflow in njs's XML `exclusiveC14n()` namespace-prefix parser; the scanners miss it entirely (njs is a separate upstream). The 0.8.4 source contains the vulnerable code. Reach is gated hard: njs's threat model treats JS as trusted, so it needs the njs module loaded **and** a `js_import` calling XML c14n on attacker data (the nginx-saml SAML flow is the known case). The module is not loaded by default here. **No in-version fix** (first fixed in njs 1.0.1), so it is a residual-risk / module-kept item, not a bump or backport target. See the njs worked example in the `triage-cves` skill. |
 
 ## Not reachable (scored high, ruled out — recorded so the ranking is honest)
 
