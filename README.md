@@ -233,7 +233,15 @@ the image only because of them, and they carry 208 of the 497 unique baseline CV
 | `nginx-module-njs` | nginx logic written in JavaScript | 4 (`libedit2`, `libbsd0`, `libxml2`, `libicu72`) | 34 | 20 |
 
 Counts overlap where modules share a library. "Critical or High" means rated so by at
-least one of the two scanners (by both: 20, 0, 44 and 17). Source: `scans/baseline/triage.csv` and
+least one of the two scanners (by both: 20, 0, 44 and 17).
+
+The table counts what the scanners report in the modules' *libraries*. It does not
+include CVEs in the module code itself, which the scanners cannot see (the same blind
+spot as nginx). From njs's own advisories, njs 0.8.4 has one more:
+**CVE-2026-78689** (Critical), reachable only when the njs module is loaded and a script
+uses XML canonicalization (`exclusiveC14n`), so 35 for njs in all. A second njs
+advisory, CVE-2026-18329, does not apply to 0.8.4. None of nginx's own 24 advisories
+concern xslt, geoip or image-filter. Source: `scans/baseline/triage.csv` and
 `apt-get -s remove --auto-remove` on the module packages in the original image.
 
 **What this costs, measured.** All four modules are built from source and shipped, and
