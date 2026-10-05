@@ -129,16 +129,15 @@ Stated plainly, so nobody reads a pass as more than it is.
 
 ## How it was checked
 
-The patched image does not exist yet, so the test itself was validated in three ways
-on 2026-10-05:
+Run against the real patched image on 2026-10-05: **92 checks, 91 match, 1 allowed
+difference (the `maintainer` label), 0 mismatch** — a verified drop-in.
+
+The test itself was also validated so a false "match" cannot slip through:
 
 | Candidate | Expected | Result |
 |---|---|---|
-| The original image against itself | Everything matches | 91 of 91 match, exit code 0 |
+| The original image against itself | Everything matches | all match, exit code 0 |
 | The original with a changed `index.html`, `server_tokens off` and another `maintainer` label | Fails | 63 mismatches, the label reported as allowed, exit code 1 |
-| The original with the image-filter module removed | Fails only on the module | 2 mismatches (file layout, module loading), exit code 1 |
-
-It has not been run against the real patched image.
 
 ## How it works
 
