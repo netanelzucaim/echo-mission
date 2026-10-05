@@ -178,8 +178,9 @@ open vulnerability or as fixed by this project without doing that.
   Claude project: `compare-vuln-scans` (rank scan results and generate the diagrams)
   and `rescan-compare-vex` (step 6: rescan, compare with the baseline, write and test
   VEX). They describe the procedure and point to the scripts in `scripts/`; keep the
-  code in one place. The `probe-image-change` skill was removed at the owner's request
-  on 2026-10-05 and may come back; `scripts/probe-impact.sh` and `make probe` remain.
+  code in one place. The `probe-image-change` skill, `scripts/probe-impact.sh` and
+  `make probe` were removed at the owner's request on 2026-10-05. They are in git
+  history (last present in commit 2287013) if they are wanted again.
 - VEX documents go in `vex/` as `<CVE>.openvex.json`, written by `scripts/make-vex.py`.
 
 ## Running things from a Claude cloud session

@@ -125,9 +125,9 @@ clean its scan looks. Compatibility was given priority over the scan result, and
 same reasoning applies to the other three modules.
 
 **What this costs, measured.** All four modules are built from source and shipped, and
-their libraries stay in the image. `make probe REMOVE=nginx-module-image-filter` builds
-throwaway variants of the original image, scans each with both tools, prints this
-table and deletes the variants again (run on 2026-10-05):
+their libraries stay in the image. On 2026-10-05 three throwaway variants of
+the original image were built (image-filter removed, Debian packages updated, and
+both), and each was scanned with both tools. The variants were deleted afterwards:
 
 | Variant of the original image | Packages | Unique CVEs | Critical or High | CVEs in image-filter's packages |
 |---|---|---|---|---|
