@@ -29,8 +29,9 @@ our backport into it, rather than re-inventing the packaging.
 3. **Applies `echo-pkg-oss.patch`**, two small packaging adjustments:
    - use a **static Debian changelog** instead of generating it with `xslscript`
      (which `pkg-oss` fetches over the network from a host that is not always reachable);
-   - build the **njs module without QuickJS**, matching the original image's njs 0.8.4
-     module (its `ngx_http_js_module.so` links no QuickJS — verified with `ldd`).
+   - build the njs **module and CLI without QuickJS**, matching the original image's
+     njs 0.8.4 (its `ngx_http_js_module.so` links no QuickJS and its `/usr/bin/njs` links
+     only libedit — both verified with `ldd`). The njs package still ships `/usr/bin/njs`.
    The static changelogs are in `changelog/`.
 4. **Vendors the njs 0.8.4 source** from the njs git tag (its `hg.nginx.org` archive URL
    is not reliably reachable), into `pkg-oss/contrib/tarballs/`.

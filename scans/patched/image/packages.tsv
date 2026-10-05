@@ -48,6 +48,7 @@ libdb5.3	5.3.28+dfsg2-1	db5.3
 libde265-0	1.0.11-1+deb12u3	libde265
 libdebconfclient0	0.270	cdebconf
 libdeflate0	1.14-1	libdeflate
+libedit2	3.1-20221030-2	libedit
 libexpat1	2.5.0-1+deb12u4	expat
 libext2fs2	1.47.0-2+b2	e2fsprogs (1.47.0-2)
 libffi8	3.4.4-1	libffi

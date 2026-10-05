@@ -31,6 +31,8 @@ nginx-module-image-filter	libxcb1
 nginx-module-image-filter	libxdmcp6
 nginx-module-image-filter	libxpm4
 nginx-module-image-filter	libyuv0
+nginx-module-njs	libbsd0
+nginx-module-njs	libedit2
 nginx-module-njs	libicu72
 nginx-module-njs	libxml2
 nginx-module-xslt	libicu72

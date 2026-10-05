@@ -9,7 +9,7 @@ by hand; rerun the script. Counts are unique CVE IDs across Trivy and Grype. Ful
 | Image | Packages | Unique CVEs | Critical or High | Critical in both | Known exploited | In loaded packages |
 |---|---|---|---|---|---|---|
 | Baseline | 149 | 523 | 203 | 15 | 2 | 118 |
-| Patched | 148 | 253 | 80 | 2 | 1 | 36 |
+| Patched | 149 | 253 | 80 | 2 | 1 | 36 |
 
 ```mermaid
 pie showData title What happened to the 523 baseline CVEs
@@ -31,7 +31,7 @@ pie showData title What happened to the 523 baseline CVEs
 
 ## Package versions that changed
 
-67 packages changed version, 1 were removed, 0 were added.
+67 packages changed version, 0 were removed, 0 were added.
 
 | Package | Before | After | Loaded by nginx | Baseline CVEs no longer reported |
 |---|---|---|---|---|
@@ -50,8 +50,6 @@ pie showData title What happened to the 523 baseline CVEs
 | `libc-bin` | 2.36-9+deb12u7 | 2.36-9+deb12u14 | no | 9 |
 | `libgssapi-krb5-2` | 1.20.1-2+deb12u1 | 1.20.1-2+deb12u5 | no | 7 |
 | `libk5crypto3` | 1.20.1-2+deb12u1 | 1.20.1-2+deb12u5 | no | 7 |
-
-Removed: `libedit2`.
 
 ## No longer reported (270)
 

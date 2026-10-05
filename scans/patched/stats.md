@@ -101,7 +101,7 @@ modules share a package; together they account for 101.
 |---|---|---|---|---|
 | `nginx-module-image-filter` | 32 | 89 | 25 | 0 |
 | `nginx-module-xslt` | 3 | 12 | 7 | 0 |
-| `nginx-module-njs` | 2 | 9 | 7 | 0 |
+| `nginx-module-njs` | 4 | 9 | 7 | 0 |
 | `nginx-module-geoip` | 1 | 0 | 0 | 0 |
 
 ## Packages with the most CVEs
@@ -112,11 +112,11 @@ modules share a package; together they account for 101.
 | `curl` | 26 | 14 | No |
 | `libcurl4` | 26 | 14 | No |
 | `libtiff6` | 24 | 4 | No |
-| `libc-bin` | 23 | 4 | No |
 | `libc6` | 23 | 4 | Yes |
+| `libc-bin` | 23 | 4 | No |
 | `perl-base` | 18 | 12 | No |
 | `util-linux-extra` | 11 | 5 | No |
 | `libmount1` | 11 | 5 | No |
-| `libuuid1` | 11 | 5 | No |
-| `bsdutils` | 11 | 5 | No |
+| `libblkid1` | 11 | 5 | No |
+| `mount` | 11 | 5 | No |
 | `util-linux` | 11 | 5 | No |
