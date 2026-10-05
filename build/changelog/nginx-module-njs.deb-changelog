@@ -1,0 +1,6 @@
+nginx-module-%%MODULE%% (%%VERSION_PREFIX%%%%MODULE_VERSION%%-%%MODULE_RELEASE%%~%%CODENAME%%) %%CODENAME%%; urgency=low
+
+  * njs 0.8.4 dynamic module rebuilt from source for the Echo mission
+    (built without QuickJS, matching the original image).
+
+ -- Netanel Zucaim <netanelzucaim100@gmail.com>  Tue, 16 Apr 2024 12:00:00 +0000

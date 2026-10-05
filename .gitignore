@@ -1,6 +1,7 @@
 # build artifacts (the .deb is produced by build/, not committed)
 /out/
 # cloud-only proxy plumbing (see CLAUDE.md "Running things from a Claude cloud session")
-/proxy-ca.crt
-/Containerfile.cloud
+proxy-ca.crt
+Dockerfile.cloud
+Containerfile.cloud
 /scans/patched/reports/*.tar

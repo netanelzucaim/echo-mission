@@ -1,0 +1,71 @@
+--- a/debian/Makefile
++++ b/debian/Makefile
+@@ -150,8 +150,7 @@
+ 	ln -s $(CONTRIB)/tarballs/$(BASE_SRC) $(BASE_SRC)
+ 
+ nginx.deb-changelog:
+-	@echo "===> Generating $@"
+-	@cd $(DOCS) && DEST=$(CURDIR) VERSIONMASK=1 make $(CURDIR)/nginx$(BASE_SUFFIX).deb-changelog
++	@echo "===> Using static $@ (xslscript docs generation skipped)"
+ 
+ rules-base: $(BASE_SRC) nginx.deb-changelog
+ 	@echo "===> Creating $@"
+@@ -243,9 +242,7 @@
+ 	esac
+ 
+ nginx-module-%.deb-changelog:
+-	@echo "===> Generating $@"
+-	@cd $(DOCS) && DEST=$(CURDIR) VERSIONMASK=1 make $(CURDIR)/nginx-module-$*.deb-changelog
+-	@sed -i -e 's,nginx-module-,nginx$(MODULE_SUFFIX)-module-,g' $(CURDIR)/$@
++	@echo "===> Using static $@ (xslscript docs generation skipped)"
+ 
+ rules-module-%: $(BASE_SRC) nginx-module-%.deb-changelog .deps-module-%
+ 	@echo "===> Creating $@"
+--- a/debian/Makefile.module-njs
++++ b/debian/Makefile.module-njs
+@@ -3,44 +3,25 @@
+ MODULE_SUMMARY_njs=	njs dynamic modules
+ 
+ include $(CONTRIB)/src/njs/version
+-include $(CONTRIB)/src/quickjs/version
+ 
+ MODULE_VERSION_njs=	$(NJS_VERSION)
+ MODULE_RELEASE_njs=	1
+ 
+-MODULE_SOURCES_njs=	\
+-					njs-$(NJS_VERSION).tar.gz \
+-					quickjs-$(QUICKJS_VERSION).tar.xz
++MODULE_SOURCES_njs=	njs-$(NJS_VERSION).tar.gz
+ 
+ MODULE_CONFARGS_njs=	--add-dynamic-module=$(MODSRC_PREFIX)njs-$(NJS_VERSION)/nginx
+ 
+ .deps-module-njs:
+-	cd $(CONTRIB) && make \
+-						.sum-njs \
+-						.sum-quickjs
+ 	touch $@
+ 
+ MODULE_VERSION_PREFIX_njs=$(MODULE_TARGET_PREFIX)
+ 
+ MODULE_BUILD_DEPENDS_njs=,libedit-dev,libxml2-dev,libxslt-dev
+ 
+-define MODULE_PREBUILD_njs
+-	cd $$(CURDIR)/debian/extra/quickjs-$(QUICKJS_VERSION) \&\& \
+-	$(MAKE) -j$$(NUMJOBS) install PREFIX=$$(BUILDDIR_nginx)/extra/prebuilt/ \&\& \
+-	cd $$(CURDIR)/debian/extra/njs-$(NJS_VERSION) \&\& \
+-	./configure \
+-		--cc-opt="$$(CFLAGS) -I$$(BUILDDIR_nginx)/extra/prebuilt/include/quickjs/" \
+-		--ld-opt="$$(LDFLAGS) -L$$(BUILDDIR_nginx)/extra/prebuilt/lib/quickjs/" \&\& \
+-	make -j$$(NUMJOBS) njs \&\& \
+-	mv build build-cli
+-endef
+-export MODULE_PREBUILD_njs
+ 
+ define MODULE_PREINSTALL_njs
+ 	mkdir -p $$(INSTALLDIR)/usr/share/doc/nginx$(MODULE_SUFFIX)-module-njs
+ 	install -m644 $$(BUILDDIR_nginx)/extra/njs-$(NJS_VERSION)/CHANGES $$(INSTALLDIR)/usr/share/doc/nginx$(MODULE_SUFFIX)-module-njs/
+-	mkdir -p $$(INSTALLDIR)/usr/bin
+-	install -m755 $$(CURDIR)/debian/extra/njs-$(NJS_VERSION)/build-cli/njs $$(INSTALLDIR)/usr/bin/
+ endef
+ export MODULE_PREINSTALL_njs
+ 

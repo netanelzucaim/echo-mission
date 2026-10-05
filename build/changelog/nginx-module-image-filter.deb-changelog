@@ -1,0 +1,5 @@
+nginx-module-%%MODULE%% (%%BASE_VERSION%%-%%BASE_RELEASE%%~%%CODENAME%%) %%CODENAME%%; urgency=low
+
+  * nginx 1.25.5 dynamic module rebuilt from source for the Echo mission.
+
+ -- Netanel Zucaim <netanelzucaim100@gmail.com>  Tue, 16 Apr 2024 12:00:00 +0000

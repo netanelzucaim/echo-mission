@@ -1,6 +1,57 @@
 # Patched drop-in replacement for `nginx:1.25-bookworm`
 
-Work in progress. Sections are added as each step of the assignment is completed.
+A drop-in replacement for `nginx:1.25-bookworm`, rebuilt from source so CVEs are fixed
+on our own timeline. Two CVEs are eliminated — one by a dependency **version bump**, one
+by **backporting** an upstream patch onto the shipped nginx 1.25.5 — and an automated
+test proves the image still behaves like the original.
+
+## The two fixes
+
+| CVE | Where it lives | Severity | Fix method | Evidence |
+|---|---|---|---|---|
+| **CVE-2024-6119** | OpenSSL (`libssl3`), which nginx loads | High / High (Trivy / Grype), EPSS 66.6% | **Version bump** — `apt-get upgrade` on the fresh base takes OpenSSL 3.0.11 → 3.0.22 | Gone from both scanners in the rescan (`scans/patched/diff.md`); `nginx -V` reports OpenSSL 3.0.22. [advisory](https://nginx.org/en/security_advisories.html) · [OpenSSL CVE-2024-6119](https://openssl-library.org/news/vulnerabilities/) |
+| **CVE-2026-42945** | nginx `ngx_http_rewrite_module` (built from source here) | medium, potential code execution | **Backport** — upstream commit `2046b45a` (nginx 1.31.0) onto 1.25.5 | `build/patches/CVE-2026-42945.patch`, applied in the from-source build; VEX `status: fixed` in `vex/`. Not scanner-visible — see "the scanners miss nginx's own CVEs" below. |
+
+Why these two: full reasoning in `scans/baseline/priorities.md`. Targets are chosen by
+how likely a CVE is to be exploited here and how much of the deployment runs the code
+(reach), not by severity label alone. The rescan reduced the image from **523 to 253**
+reported CVEs (270 no longer reported), mostly from the base upgrade.
+
+Removing a component is allowed as an extra but was not needed; the four optional modules
+are kept for compatibility (see "Dynamic modules are kept" below).
+
+## Build and run
+
+Everything is reproducible with one command each, through the `Makefile`:
+
+```sh
+make deb     # step 3: build nginx + the four module .debs from source, into out/
+make image   # step 4: build the final image echo-nginx:1.25-bookworm from those .debs
+make test    # step 5: prove it behaves like the original (non-zero exit on any mismatch)
+make rescan  # step 6: rescan, diff against the baseline, apply the VEX files
+```
+
+`make deb` builds in a clean `debian:bookworm-slim` with no pre-baked binaries; details
+in `build/README.md`. (In the Claude cloud workspace the build needs proxy build-args —
+see the root `CLAUDE.md`.)
+
+### Image size
+
+| Image | Size |
+|---|---|
+| Original `nginx:1.25-bookworm` | 276 MB |
+| Patched `echo-nginx:1.25-bookworm` | 291 MB |
+
+The ~15 MB increase comes from `apt-get upgrade` (newer package versions) plus
+`curl` and `ca-certificates`, which the original image also carries.
+
+### Result of the compatibility test
+
+`make test` runs 91 checks across image settings, the default site and a user-supplied
+config. On the built image: **90 match, 1 allowed difference, 0 mismatch**. The one
+allowed difference is the `maintainer` label (this image is rebuilt by its owner, not by
+NGINX); it is listed in `ALLOWED` in `test/compat_test.py`. What the test covers is
+described under "Compatibility test" below.
 
 ## Baseline
 
@@ -202,3 +253,56 @@ unpatched nginx 1.25.5. They estimate the final image; the final scan replaces t
 **What I would do with more time.** Publish a second, slimmer variant without
 image-filter for users who do not need it, so the default stays compatible and the
 smaller attack surface is available by choice.
+
+## Residual risk
+
+What remains after the two fixes, honestly:
+
+- **253 reported CVEs remain** (down from 523). Most are low-severity or in code the
+  running server never executes; `scans/patched/triage.*` ranks them by reach. The
+  largest cluster is the **89 CVEs in the image-filter libraries** (`libheif1`,
+  `libtiff6` and friends) that Debian has no fix for — the measured, accepted price of
+  keeping that module for compatibility. They are reachable only if a config loads
+  `image-filter`, which is off by default.
+- **nginx's own CVEs are not shown by the scanners** (the nginx.org-vs-Debian blind
+  spot, explained above), so the reported count understates nginx's surface. They are
+  triaged from nginx's advisories in `scans/baseline/priorities.md`. Of those, the
+  backported CVE-2026-42945 is fixed; the rest are mostly `config`-reach (need a
+  specific feature or module) and are recorded there, not fixed in this pass.
+- **njs CVE-2026-78689** (Critical, CVSS 9.2) is in the kept njs module — unreachable
+  by default (needs the module loaded and a `js_import` using XML c14n), no in-version
+  fix, so it is accepted, not fixed. See the njs example in the `triage-cves` skill.
+- **CVE-2023-44487** (HTTP/2 Rapid Reset, known-exploited) is already mitigated in
+  1.25.5; it is not claimed as a fix and is recorded as such.
+- **The backported fix leaves no scan difference**, so there is nothing for a rescan to
+  show for it. The patch and the compatibility test are its evidence; the VEX file is
+  the formal record.
+
+## Surprises, and what I would do differently
+
+- **The scanners never report nginx's own CVEs.** The biggest surprise: because the
+  nginx package is from nginx.org and the scanners compare it against Debian's 1.22
+  data, every nginx 1.25.5 CVE reads as "fixed". This drove the whole triage approach
+  (read nginx's advisories, not the scan) and means the backport is invisible to a
+  rescan. The brief hinted at it ("scanners won't shrink your CVE list for backported
+  fixes"); in this image it is stronger still — they never listed it.
+- **A version bump beats removal for numbers, but reach beats both.** Early what-if
+  measurements (in the modules section) showed updating fixes more than removing, but
+  what actually mattered for choosing the two targets was whether the running server
+  reaches the code.
+- **With more time:** publish a second, slimmer variant without `image-filter` (the
+  89 unfixable CVEs live there); exercise the njs and mp4 modules in the compatibility
+  test, not just load them; and backport the sibling rewrite CVE-2026-9256 and the
+  reachable DAV CVE-2026-27654 as a second round.
+
+## How AI tools were used
+
+This project was built with Claude (Claude Code). AI was used to: scaffold and iterate
+the triage, fix-method and VEX scripts and the compatibility test; research nginx and
+njs advisories and read the upstream commits to confirm the backport applies; drive the
+pkg-oss build and work through its packaging; and write this documentation. Every claim
+that could be checked by a command was checked (patch applicability, the OpenSSL version
+the base installs, the compatibility test, the rescan and the VEX suppression); where
+something was assumed rather than verified, the text says so. Engineering judgment — which
+CVEs to target, keeping the modules, how to read the scanners — was made by the owner
+with the reasoning recorded in `scans/baseline/priorities.md` and `CLAUDE.md`.

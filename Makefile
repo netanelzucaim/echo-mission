@@ -1,10 +1,20 @@
 # The patched image. Override on the command line: make test IMAGE=my-image:tag
 IMAGE ?= echo-nginx:1.25-bookworm
+BUILD_IMAGE ?= echo-nginx-build
 
-.PHONY: scan-baseline triage fix-plan test rescan
+.PHONY: scan-baseline triage fix-plan deb image test rescan
 
 scan-baseline: ## Step 1: scan the original image with Trivy and Grype
 	./scripts/scan-baseline.sh
+
+deb: ## Step 3: build the patched nginx + module .debs from source into out/
+	docker build -f build/Dockerfile -t "$(BUILD_IMAGE)" build/
+	rm -rf out && mkdir -p out
+	cid=$$(docker create "$(BUILD_IMAGE)"); docker cp "$$cid":/out/. out/; docker rm "$$cid"
+	ls -la out/
+
+image: ## Step 4: build the final image from the .debs in out/
+	docker build -f Containerfile -t "$(IMAGE)" .
 
 triage: ## Step 2: merge the Trivy and Grype reports and rank by urgency
 	python3 scripts/compare-scans.py scans/baseline/reports/trivy.json scans/baseline/reports/grype.json --out-dir scans/baseline

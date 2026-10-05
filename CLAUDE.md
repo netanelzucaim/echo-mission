@@ -24,10 +24,10 @@ original for a representative set of HTTP scenarios.
 |---|---|---|
 | 1 | Scan the original with Trivy and Grype, save reports | Done (`scans/baseline/`) |
 | 2 | Triage: per CVE, where it lives, is there a fix, how to fix; pick targets and justify | Done by judgment, written in `scans/baseline/priorities.md` (the `choose-cve-fix` skill). Targets decided: bump CVE-2024-6119 (OpenSSL), backport CVE-2026-42945 (rewrite). `make fix-plan` is the script's starting proposal |
-| 3 | Build a `.deb` from source in a clean `debian:bookworm-slim`, one command, patches applied | Not started |
-| 4 | Final image: install the `.deb` into a minimal Debian base, match the original | `Containerfile` drafted, never built |
-| 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Written (`test/compat_test.py`, 91 checks) and validated against the original and two altered images; not yet run on the real patched image |
-| 6 | Bonus: rescan, diff against baseline, VEX | VEX mechanic proven on the baseline: `vex/CVE-2023-52355.openvex.json` makes that CVE disappear from both Trivy and Grype (verified 2026-10-05). Rescan/diff of the patched image: after the build |
+| 3 | Build a `.deb` from source in a clean `debian:bookworm-slim`, one command, patches applied | Done (`make deb`, `build/`). Drives nginx's pkg-oss packaging with the CVE-2026-42945 backport injected into the quilt series; njs 0.8.4 built without QuickJS. Produces nginx + 4 module `.debs` |
+| 4 | Final image: install the `.deb` into a minimal Debian base, match the original | Done (`make image`, `Containerfile`). Built `echo-nginx:1.25-bookworm`; OpenSSL bump from `apt-get upgrade` (3.0.11 → 3.0.22), 291 MB vs 276 MB |
+| 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Done. 91 checks on the built image: 90 match, 1 allowed difference (maintainer label), 0 mismatch — a verified drop-in |
+| 6 | Bonus: rescan, diff against baseline, VEX | Done (`make rescan`, `scans/patched/`). 523 → 253 CVEs; CVE-2024-6119 gone; CVE-2023-52355 VEX suppressed in both scanners; CVE-2026-42945 VEX is status:fixed (never scanner-reported) |
 
 ### Required deliverables
 
