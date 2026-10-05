@@ -232,7 +232,8 @@ the image only because of them, and they carry 208 of the 497 unique baseline CV
 | `nginx-module-image-filter` | Resizes, crops and rotates images on the fly | 32 (`libgd3` and its image-format, font and X11 dependencies) | 166 | 65 |
 | `nginx-module-njs` | nginx logic written in JavaScript | 4 (`libedit2`, `libbsd0`, `libxml2`, `libicu72`) | 34 | 20 |
 
-Counts overlap where modules share a library. Source: `scans/baseline/triage.csv` and
+Counts overlap where modules share a library. "Critical or High" means rated so by at
+least one of the two scanners (by both: 20, 0, 44 and 17). Source: `scans/baseline/triage.csv` and
 `apt-get -s remove --auto-remove` on the module packages in the original image.
 
 **What this costs, measured.** All four modules are built from source and shipped, and
