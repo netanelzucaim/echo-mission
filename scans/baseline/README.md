@@ -13,7 +13,9 @@ scans/baseline/
 ├── README.md      this page
 ├── stats.md       START HERE: the numbers as diagrams and tables
 ├── triage.md      the top 40 vulnerabilities, ranked
-├── triage.csv     all 497 vulnerabilities, ranked (opens in a spreadsheet)
+├── triage.csv     all 521 vulnerabilities, ranked (opens in a spreadsheet)
+├── triage-details.md  why every vulnerability sits where it does
+├── review.tsv     the human check behind the ranking (written by hand)
 ├── reports/       raw scanner output
 └── image/         facts about the original image
 ```
@@ -23,6 +25,8 @@ scans/baseline/
 | See the overall picture | `stats.md` |
 | See which vulnerabilities matter most | `triage.md` |
 | Look up one CVE or one package | `triage.csv`, or `reports/trivy.txt` |
+| Know why a CVE has its rank | `triage-details.md` |
+| See or change whether nginx really runs a CVE's code | `review.tsv` |
 | Check a setting of the original image (port, entrypoint...) | `image/inspect.json` |
 | See how the original was built | `image/history.txt` |
 
@@ -49,12 +53,17 @@ scans/baseline/
 
 ## How the files are made
 
-Nothing here is written by hand except this page.
+Nothing here is written by hand except this page and `review.tsv`.
 
 | Command | Writes |
 |---|---|
 | `make scan-baseline` | everything in `reports/` and `image/` |
-| `make triage` | `stats.md`, `triage.md`, `triage.csv` |
+| `make triage` | `stats.md`, `triage.md`, `triage.csv`, `triage-details.md` (reads `review.tsv`) |
+
+`review.tsv` records, per CVE or per package, whether nginx actually runs the vulnerable
+code, with a reason and where to check it. It also adds 24 nginx CVEs from nginx.org that
+the scanners miss, which is why the ranking has 521 rows and `stats.md` has 497. How to
+fill it is in `.claude/skills/triage-cves/SKILL.md`.
 
 ## Things to know when reading the results
 
