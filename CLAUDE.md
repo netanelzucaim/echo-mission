@@ -105,13 +105,13 @@ first, then KEV, then EPSS weighed against both scanners' severity), not by the 
   VEX / residual-risk note, never a patch, and must not be presented as open or as
   fixed by this project.
 
-### Decided: filesystem differences outside the test's paths
+### Decided: files outside the test's paths
 
-- **Signing key not copied.** The original contains
+- **Signing key copied in.** The original contains
   `/etc/apt/keyrings/nginx-archive-keyring.gpg`, a leftover from installing nginx from
-  nginx.org's apt repository. This image builds nginx from source and never adds that
-  repository, so the key is deliberately absent. Recorded in `README.md` under
-  "Deliberate differences" (decided 2026-10-05).
+  nginx.org's apt repository. Nothing in this image uses it, but the owner chose an exact
+  layout match, so the `Containerfile` copies it byte-for-byte from
+  `rootfs/etc/apt/keyrings/` (taken from the original image, same SHA-256, mode 0644).
 - **Base-evolution differences** (debian-archive keyrings, tzdata) come from rebuilding
   on a current base, also recorded there. A full filesystem diff shows no other
   differences; re-run one after any build change, because the compatibility test only

@@ -36,6 +36,10 @@ RUN set -x \
 COPY --chmod=0755 entrypoint/docker-entrypoint.sh /
 COPY --chmod=0755 entrypoint/docker-entrypoint.d/ /docker-entrypoint.d/
 
+# nginx.org's apt signing key, copied byte-for-byte from the original image so the
+# filesystem layout matches exactly. Nothing here uses it: nginx is built from source.
+COPY --chmod=0644 rootfs/etc/apt/keyrings/nginx-archive-keyring.gpg /etc/apt/keyrings/
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 80

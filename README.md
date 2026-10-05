@@ -195,18 +195,11 @@ All values were taken from `scans/baseline/image/inspect.json` and
   This image is rebuilt and patched by me, not by the NGINX maintainers, so keeping
   their name on it would misstate who is responsible for it. The label is metadata
   only and nothing functional depends on it.
-- **`/etc/apt/keyrings/nginx-archive-keyring.gpg` is not present.** The original image
-  keeps nginx.org's signing key as a leftover from installing nginx from nginx.org's apt
-  repository. This image builds nginx from source instead, so it never adds that
-  repository and has no reason to carry its key. Removing it is the correct state, not a
-  regression. It is outside the paths the compatibility test inspects, so it is recorded
-  here rather than caught by the test.
 - **Base-evolution differences.** The image is rebuilt on a current `debian:bookworm-slim`
   (plus `apt-get upgrade`), so a few base-provided files differ from the original's
   May-2024 base: the `debian-archive-*` keyrings (buster-era → trixie-era) and a `tzdata`
   entry or two. These come from Debian moving forward, not from anything this project
   changed, and are the expected, desirable result of patching via a fresh base.
-
 - **`NJS_RELEASE` environment variable.** Kept at the original's `3~bookworm` so the
   image's environment matches exactly, although the njs package built here has packaging
   release `1~bookworm`. The njs source version (0.8.4) is the same; only the packaging
@@ -215,7 +208,11 @@ All values were taken from `scans/baseline/image/inspect.json` and
 A full filesystem diff against the original shows no other differences: every file under
 the nginx paths, the `nginx -V` flags, the Docker config (entrypoint, cmd, ports, env,
 stop signal, user), the conffiles, the four modules with their debug twins, and the njs
-CLI (`/usr/bin/njs`) all match.
+CLI (`/usr/bin/njs`) all match. That includes nginx.org's apt signing key
+(`/etc/apt/keyrings/nginx-archive-keyring.gpg`), a leftover in the original from
+installing nginx from nginx.org's repository. Nothing in this image uses it, since nginx
+is built from source, but it is copied byte-for-byte from the original so the layout
+matches exactly.
 
 ### Dynamic modules are kept, including image-filter
 

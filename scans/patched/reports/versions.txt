@@ -1,4 +1,4 @@
-date:   2026-10-05T19:36:24Z
-image:  echo-nginx@sha256:598f8e5218476c50f3f267dbf53f919fc330186f1c718d9606643517df4911a0 linux/amd64
+date:   2026-10-05T20:29:11Z
+image:  echo-nginx@sha256:e9d3d2b8a513330480dc9df5af83461a3b50c21e6d8269b43ef2dda6d78129cf linux/amd64
 trivy:  Version: 0.75.0
 grype:  Version:             0.120.0
