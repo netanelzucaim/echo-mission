@@ -147,7 +147,7 @@ removal clears all of them:
 
 | Image | Packages | Unique CVEs | Critical or High | In image-filter's libraries |
 |---|---|---|---|---|
-| Original | 144 | 497 | 203 | 166 |
+| Original | 149 | 497 | 203 | 166 |
 | Fresh base, all four modules' libraries (shipped choice) | 144 | 250 | 79 | 89 |
 | Fresh base, without image-filter | 113 | 161 | 54 | 0 |
 

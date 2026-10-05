@@ -24,6 +24,7 @@ never edited by hand. To change one, change the script and rerun it.
 | `inspect.json` | `docker inspect`: entrypoint, cmd, ports, env, labels, stop signal |
 | `history.txt` | `docker history --no-trunc`: the commands that built the original |
 | `nginx-V.txt` | `nginx -V`: version and configure flags to reuse in the build |
+| `README.md` | Plain-language explanation of every file in the folder |
 | `packages.tsv` | Every installed package with version and source package |
 | `linked-packages.txt` | The `nginx` package plus the packages whose libraries its binary loads (`ldd`); input for the reach score |
 | `layout.txt` | Listings of `/`, `/docker-entrypoint.d`, `/etc/nginx`, modules; `id nginx` |

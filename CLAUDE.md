@@ -101,7 +101,7 @@ truthfully. Do not overstate what a fix achieves.
 
 ## Loaded and unloaded packages
 
-The original image has 144 packages. The triage score (`make triage`) weights a
+The original image has 149 packages (Trivy counts 144 of them). The triage score (`make triage`) weights a
 vulnerability by whether nginx runs the affected code.
 
 **Loaded (weight 1.0):** the `nginx` package itself and the five libraries its binary

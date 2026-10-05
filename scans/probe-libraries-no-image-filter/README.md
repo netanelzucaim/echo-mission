@@ -11,7 +11,7 @@ libraries only `libbsd0` stays, because njs needs it, and it has no CVEs.
 
 | Image | Packages | Unique CVEs | Critical or High | CVEs in image-filter's libraries |
 |---|---|---|---|---|
-| Original (`scans/baseline/`) | 144 | 497 | 203 | 166 |
+| Original (`scans/baseline/`) | 149 | 497 | 203 | 166 |
 | Fresh base, all modules' libraries (`../probe-libraries/`) | 144 | 250 | 79 | 89 |
 | Fresh base, without image-filter's libraries (this folder) | 113 | 161 | 54 | 0 |
 
