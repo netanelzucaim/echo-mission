@@ -23,7 +23,7 @@ original for a representative set of HTTP scenarios.
 | # | Step | Status |
 |---|---|---|
 | 1 | Scan the original with Trivy and Grype, save reports | Done (`scans/baseline/`) |
-| 2 | Triage: per CVE, where it lives, is there a fix, how to fix; pick targets and justify | Done by judgment, written in `scans/baseline/priorities.md` (the `choose-cve-fix` skill); `make fix-plan` is the script's starting proposal. Two targets recommended, awaiting the owner's final pick between the two backport candidates |
+| 2 | Triage: per CVE, where it lives, is there a fix, how to fix; pick targets and justify | Done by judgment, written in `scans/baseline/priorities.md` (the `choose-cve-fix` skill). Targets decided: bump CVE-2024-6119 (OpenSSL), backport CVE-2026-42945 (rewrite). `make fix-plan` is the script's starting proposal |
 | 3 | Build a `.deb` from source in a clean `debian:bookworm-slim`, one command, patches applied | Not started |
 | 4 | Final image: install the `.deb` into a minimal Debian base, match the original | `Containerfile` drafted, never built |
 | 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Written (`test/compat_test.py`, 91 checks) and validated against the original and two altered images; not yet run on the real patched image |
@@ -75,27 +75,28 @@ truthfully. Do not overstate what a fix achieves.
   provides; what remains goes in the README's residual-risk section. xslt, geoip and
   image-filter are part of the nginx source tree; njs is a separate source (0.8.4).
 
-### Recommended by the triage, awaiting the owner's final pick
+### The two targets (decided 2026-10-05)
 
 The full reasoning is in `scans/baseline/priorities.md`, decided by judgment (reach
 first, then KEV, then EPSS weighed against both scanners' severity), not by the score.
 
-- **Version bump:** OpenSSL `3.0.11` to the fresh base's `3.0.x`, headline
-  CVE-2024-6119 (denial of service in X.509 name checks; reachable when nginx is a
-  reverse proxy that verifies upstream certificates). The strongest reachable
-  exploitation signal in the image: EPSS 66.6%, High/High. Fixed by `apt-get upgrade`.
-  Rejected alternative: CVE-2025-15467 is in CMS parsing, which nginx does not use.
-- **Backport:** two candidates, both with patches confirmed to apply cleanly to the
-  1.25.5 source (`patch -p1 --dry-run`, no build or PoC):
-  - **Recommended — CVE-2026-42945**, heap overflow in the rewrite module (potential
-    code execution, reached by nearly every config). Upstream commit `2046b45a`, one
-    line; its siblings `475732a3` + `ca4f92a2` (CVE-2026-9256) complete the family.
-    Stronger risk reduction and a real backport.
-  - **Clean fallback — CVE-2024-7347**, mp4 over-read (low, a crash, needs the `mp4`
-    directive). The only nginx CVE with a vendor-published standalone patch
-    (https://nginx.org/download/patch.2024.mp4.txt), so the lowest-risk backport.
-  Runners-up recorded in `priorities.md`: CVE-2026-27654 (DAV, EPSS 25%),
-  CVE-2026-42533 (map+regex, major), and the four 2024 HTTP/3 CVEs (medium, as a group).
+- **Version bump: CVE-2024-6119** (OpenSSL). `3.0.11` to the fresh base's `3.0.x`
+  (denial of service in X.509 name checks; reachable when nginx is a reverse proxy that
+  verifies upstream certificates). The strongest reachable exploitation signal in the
+  image: EPSS 66.6%, High/High. Fixed by `apt-get upgrade`. Rejected alternative:
+  CVE-2025-15467 is in CMS parsing, which nginx does not use.
+- **Backport: CVE-2026-42945** (chosen by the owner over the mp4 fallback). Heap
+  overflow in the rewrite module, potential code execution, reached through
+  `rewrite`/`set`/`return` with captures — code almost every config runs. The fix is
+  upstream commit `2046b45a` (landed in nginx 1.31.0, the release the advisory names),
+  a single hunk resetting `e->is_args`. Staged as `build/patches/CVE-2026-42945.patch`,
+  confirmed to apply cleanly to a pristine 1.25.5 (`patch -p1 --dry-run`); the diff was
+  read, the binary not yet built or exercised. VEX written as `status: fixed`
+  (`vex/CVE-2026-42945.openvex.json`) — the scanners never reported it, so it has
+  nothing to suppress; it is the formal record of the fix.
+  - Not taken (available as a second backport if wanted, in `priorities.md` and
+    `build/patches/README.md`): CVE-2024-7347 (mp4, the vendor-patch fallback) and
+    CVE-2026-9256 (the sibling rewrite overflow, commits `ca4f92a2` + `475732a3`).
 - **Mitigated already, not a fix:** CVE-2023-44487 (HTTP/2 Rapid Reset, KEV) is
   already covered by upstream's stream-handling limit shipped in 1.25.3. It gets a
   VEX / residual-risk note, never a patch, and must not be presented as open or as
@@ -237,8 +238,9 @@ open vulnerability or as fixed by this project without doing that.
   comparison to make it pass: either fix the image, or add the difference to `ALLOWED`
   in `test/compat_test.py` with a reason and record it in `README.md`. New scenarios
   need an `expect` so two broken servers cannot "match". See `test/README.md`.
-- When the CVE-2024-7347 backport lands, add an MP4 scenario to the test; the mp4
-  module is not exercised yet.
+- When the CVE-2026-42945 backport lands, add a rewrite scenario to the test (a
+  `rewrite`/`set`/`return` with a capture used after a replacement that has arguments),
+  so the patched code path is actually exercised. The rewrite module is not exercised yet.
 - VEX documents go in `vex/` as `<CVE>.openvex.json`, written by `scripts/make-vex.py`.
 
 ## Running things from a Claude cloud session

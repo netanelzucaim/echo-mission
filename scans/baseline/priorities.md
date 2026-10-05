@@ -109,9 +109,15 @@ are what close that gap, once the image is built.
 | CVE-2023-50387 / 50868 | libsystemd0/udev | EPSS ~100%, but these are BIND/DNSSEC resolver bugs; nginx does not run a DNSSEC validator. `unused`. |
 | CVE-2011-3389 (BEAST) | libgnutls30 | gnutls is not loaded by nginx; a `curl`-only concern. `manual`. |
 
-## Summary
+## Summary (decided 2026-10-05)
 
 - **Bump:** CVE-2024-6119 (OpenSSL) — reachable, EPSS 66.6%, High/High, fixed by the base upgrade.
-- **Backport:** CVE-2026-42945 (rewrite, code-execution potential, broad reach) recommended; CVE-2024-7347 (mp4, vendor patch) as the clean fallback. Both patches apply cleanly to 1.25.5.
+- **Backport: CVE-2026-42945 (rewrite, code-execution potential, broad reach) — chosen**
+  by the owner over the mp4 fallback. Patch `build/patches/CVE-2026-42945.patch`
+  (upstream commit `2046b45a`, nginx 1.31.0) applies cleanly to 1.25.5; VEX written as
+  `status: fixed`. CVE-2024-7347 (mp4, vendor patch) and CVE-2026-9256 (sibling rewrite
+  overflow) remain available as a second backport if wanted.
 - **Mitigated already:** CVE-2023-44487 — VEX/residual-risk note, not a fix.
+- **VEX "disappear" demo:** CVE-2023-52355 (libtiff6, not_affected) — a reported, no-fix
+  CVE, since the backported CVE is never in the scan. Proven on the baseline.
 - The number in `triage.md` sorted the candidates; reach and the advisory reading chose them.
