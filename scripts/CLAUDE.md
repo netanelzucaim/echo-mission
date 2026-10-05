@@ -5,6 +5,7 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 | Script | Make target | Purpose |
 |---|---|---|
 | `scan-baseline.sh` | `make scan-baseline` | Pull the original image, save its metadata, scan it with Trivy and Grype into `scans/baseline/` |
+| `probe-impact.sh` | `make probe REMOVE="pkg"` | Measure what removing packages and/or updating Debian packages would change; prints a table and cleans up after itself |
 | `compare-scans.py` | `make triage` | Merge a Trivy and a Grype JSON report and rank vulnerabilities by danger and reach into `triage.md` and `triage.csv` |
 
 ## scan-baseline.sh
@@ -40,6 +41,20 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 - It ranks only what the scanners report. nginx's own CVEs are not in the list.
 - The same script is also saved as the owner's `compare-vuln-scans` skill. Keep the two
   in step when changing the ranking.
+
+## probe-impact.sh
+
+- Builds three throwaway variants of `IMAGE`: packages removed, Debian packages
+  updated, and both. Scans those and the original with Trivy and Grype, merges each
+  pair with `compare-scans.py`, and prints one comparison table.
+- Always deletes the variant images and all scan output on exit, including on failure.
+  `KEEP=1` is the only way to keep them.
+- The "updated" variants need network access during `docker build`. On a network with
+  a TLS-intercepting proxy, pass `PROBE_PRELUDE` (extra Dockerfile lines, for example to
+  trust the proxy CA) and `PROBE_BUILD_FLAGS`. In the Claude cloud workspace also pass
+  `TRIVY_FLAGS="--db-repository mirror.gcr.io/aquasec/trivy-db:2"`.
+- It upgrades the original image in place, so nginx itself stays at the original
+  version. It estimates the effect of the fresh base; it is not the final image.
 
 ## Conventions
 
