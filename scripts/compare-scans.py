@@ -2,7 +2,7 @@
 """Merge a Trivy and a Grype JSON report and rank vulnerabilities by risk.
 
 Usage:
-    compare-scans.py TRIVY_JSON GRYPE_JSON [--linked FILE] [--components FILE]
+    compare-scans.py TRIVY_JSON GRYPE_JSON [--linked FILE] [--modules FILE]
                      [--out-dir DIR] [--top N]
 
 Writes into DIR:
@@ -10,9 +10,12 @@ Writes into DIR:
     triage.csv  every vulnerability, ranked
     stats.md    the statistics as Mermaid diagrams and tables (renders on GitHub)
 
---components FILE is a two-column TSV (component, package) naming the packages that
-are installed only for an optional component, for example an nginx module and the
-libraries it pulls in. With it, stats.md shows what each component costs.
+--modules FILE is a two-column TSV (module, package) naming the packages that are
+installed only for an optional module, for example an nginx module package and the
+libraries it pulls in. With it, stats.md shows what each module costs.
+
+--linked and --modules default to linked-packages.txt and modules.tsv next to
+TRIVY_JSON, or in a sibling "image" folder (../image/), whichever exists.
 
 The ranking answers "what is most dangerous and reaches the most deployments",
 not "what has the scariest severity label".
@@ -32,7 +35,7 @@ not "what has the scariest severity label".
       1.0  the affected package is a library the main program loads
            (listed in --linked), so every running container executes it;
       0.4  the package only sits in the image (a tool, or a library used by
-           an optional component);
+           an optional module);
       plus 0.05 per additional affected package, up to +0.15, capped at 1.0.
 
 Without --linked, reach cannot tell the two cases apart and every finding gets
@@ -114,12 +117,12 @@ def pie(title, slices):
     return "\n".join(lines + ["```", ""])
 
 
-def write_stats(path, rows, linked, components, t_find, g_find, names):
+def write_stats(path, rows, linked, modules, t_find, g_find, names):
     """Diagrams and tables for the whole report set. Everything is computed from the data."""
     hi = lambda e: max(e["trivy"] or 0, e["grype"] or 0) >= 3
     both = [e for e in rows if e["trivy"] is not None and e["grype"] is not None]
-    comp_pkgs = set(p for ps in components.values() for p in ps)
-    where = lambda e: "loaded" if e["linked"] else "component" if e["pkgs"] & comp_pkgs else "other"
+    mod_pkgs = set(p for ps in modules.values() for p in ps)
+    where = lambda e: "loaded" if e["linked"] else "module" if e["pkgs"] & mod_pkgs else "other"
     groups = collections.Counter(where(e) for e in rows)
     fixed = collections.Counter((where(e), bool(e["fixes"])) for e in rows)
     t_u = sum(1 for e in rows if e["trivy"] is not None)
@@ -148,9 +151,9 @@ def write_stats(path, rows, linked, components, t_find, g_find, names):
         if linked:
             w(f'    U --> L["{groups["loaded"]} in packages the main program loads"]')
             w(f'    L --> LF["{fixed[("loaded", True)]} have a fix"]')
-            if components:
-                w(f'    U --> M["{groups["component"]} in optional components\' packages"]')
-                w(f'    M --> MF["{fixed[("component", True)]} have a fix"]')
+            if modules:
+                w(f'    U --> M["{groups["module"]} in optional modules\' packages"]')
+                w(f'    M --> MF["{fixed[("module", True)]} have a fix"]')
             w(f'    U --> O["{groups["other"]} in other packages"]')
             w(f'    O --> OF["{fixed[("other", True)]} have a fix"]')
         w("```")
@@ -160,7 +163,7 @@ def write_stats(path, rows, linked, components, t_find, g_find, names):
             w()
             w(pie(f"Unique CVEs by where the package sits ({n})", [
                 ("The main program and the libraries it loads", groups["loaded"]),
-                ("Packages of optional components", groups["component"]),
+                ("Packages of optional modules", groups["module"]),
                 ("Other tools and their libraries", groups["other"])]))
             per = collections.Counter(p for e in rows for p in e["linked"])
             w(pie("CVEs in loaded packages, by package", per.most_common()))
@@ -201,16 +204,16 @@ def write_stats(path, rows, linked, components, t_find, g_find, names):
         w(f"| EPSS of 1% or more | {sum(1 for e in rows if e['epss'] >= 0.01)} |")
         w(f"| EPSS below 1% | {sum(1 for e in rows if e['epss'] < 0.01)} |")
         w()
-        if components:
-            w("## Optional components")
+        if modules:
+            w("## Optional modules")
             w()
-            w("Packages installed only because of each component. Counts overlap where two")
-            w(f"components share a package; together they account for {groups['component']}.")
+            w("Packages installed only because of each module. Counts overlap where two")
+            w(f"modules share a package; together they account for {groups['module']}.")
             w()
-            w("| Component | Packages it brings in | CVEs in them | Critical or High | With a fix |")
+            w("| Module | Packages it brings in | CVEs in them | Critical or High | With a fix |")
             w("|---|---|---|---|---|")
             table = []
-            for c, ps in components.items():
+            for c, ps in modules.items():
                 hit = [e for e in rows if e["pkgs"] & ps]
                 table.append((len(hit), c, len(ps), sum(map(hi, hit)), sum(1 for e in hit if e["fixes"])))
             for cves, c, npk, nhi, nfix in sorted(table, reverse=True):
@@ -236,10 +239,10 @@ def main():
     ap.add_argument("grype_json")
     ap.add_argument("--linked", default=None,
                     help="file listing the packages the main program loads, one per line "
-                         "(default: linked-packages.txt next to TRIVY_JSON, if it exists)")
-    ap.add_argument("--components", default=None,
-                    help="TSV of component<TAB>package for optional components "
-                         "(default: components.tsv next to TRIVY_JSON, if it exists)")
+                         "(default: linked-packages.txt next to TRIVY_JSON or in ../image/)")
+    ap.add_argument("--modules", default=None,
+                    help="TSV of module<TAB>package for optional modules "
+                         "(default: modules.tsv next to TRIVY_JSON or in ../image/)")
     ap.add_argument("--out-dir", default=None, help="default: directory of TRIVY_JSON")
     ap.add_argument("--top", type=int, default=40, help="rows in the markdown table")
     a = ap.parse_args()
@@ -247,7 +250,13 @@ def main():
     out = a.out_dir or src_dir
     os.makedirs(out, exist_ok=True)
 
-    linked_path = a.linked or os.path.join(src_dir, "linked-packages.txt")
+    def find(name):  # next to the report, or in a sibling "image" folder
+        for d in (src_dir, os.path.join(os.path.dirname(src_dir), "image")):
+            if os.path.exists(os.path.join(d, name)):
+                return os.path.join(d, name)
+        return os.path.join(src_dir, name)
+
+    linked_path = a.linked or find("linked-packages.txt")
     linked = set()
     if os.path.exists(linked_path):
         linked = set(open(linked_path).read().split())
@@ -255,13 +264,13 @@ def main():
         print(f"warning: no linked-packages file ({linked_path}); reach is not "
               "distinguishing libraries the main program loads", file=sys.stderr)
 
-    components = collections.OrderedDict()
-    comp_path = a.components or os.path.join(src_dir, "components.tsv")
-    if os.path.exists(comp_path):
-        for line in open(comp_path):
+    modules = collections.OrderedDict()
+    mod_path = a.modules or find("modules.tsv")
+    if os.path.exists(mod_path):
+        for line in open(mod_path):
             parts = line.split()
             if len(parts) >= 2:
-                components.setdefault(parts[0], set()).add(parts[1])
+                modules.setdefault(parts[0], set()).add(parts[1])
 
     vulns = {}
     t_find, g_find = collections.Counter(), collections.Counter()
@@ -323,7 +332,7 @@ def main():
                 "Limits: \"loaded\" means the library is loaded, not that the vulnerable function "
                 "is called. That still needs reading the advisory. Vulnerabilities the scanners "
                 "do not report at all are not in this list.\n")
-    write_stats(os.path.join(out, "stats.md"), rows, linked, components, t_find, g_find,
+    write_stats(os.path.join(out, "stats.md"), rows, linked, modules, t_find, g_find,
                 (os.path.basename(a.trivy_json), os.path.basename(a.grype_json)))
 
     print(f"{len(rows)} unique vulnerabilities, {len(both)} in both, "

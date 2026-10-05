@@ -77,7 +77,7 @@ scan() {  # variant, image ref
   trivy_ image --quiet --scanners vuln ${TRIVY_FLAGS:-} --input "$(TW "$d/image.tar")" --format json --output "$(TW "$d/trivy.json")"
   grype_ "docker-archive:$(GW "$d/image.tar")" -q -o "json=$(GW "$d/grype.json")"
   rm -f "$d/image.tar"
-  linked="$ROOT/scans/baseline/linked-packages.txt"
+  linked="$ROOT/scans/baseline/image/linked-packages.txt"
   python3 "$ROOT/scripts/compare-scans.py" "$d/trivy.json" "$d/grype.json" \
     $([ -f "$linked" ] && echo --linked "$linked") --out-dir "$d" >/dev/null 2>&1
 }

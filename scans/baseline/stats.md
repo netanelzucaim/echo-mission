@@ -18,7 +18,7 @@ flowchart TD
     B --> BD["193 different severity"]
     U --> L["94 in packages the main program loads"]
     L --> LF["58 have a fix"]
-    U --> M["208 in optional components' packages"]
+    U --> M["208 in optional modules' packages"]
     M --> MF["102 have a fix"]
     U --> O["195 in other packages"]
     O --> OF["79 have a fix"]
@@ -29,7 +29,7 @@ flowchart TD
 ```mermaid
 pie showData title Unique CVEs by where the package sits (497)
     "The main program and the libraries it loads" : 94
-    "Packages of optional components" : 208
+    "Packages of optional modules" : 208
     "Other tools and their libraries" : 195
 ```
 
@@ -94,12 +94,12 @@ pie showData title Is a fixed package version available (497 unique CVEs)
 | EPSS of 1% or more | 93 |
 | EPSS below 1% | 404 |
 
-## Optional components
+## Optional modules
 
-Packages installed only because of each component. Counts overlap where two
-components share a package; together they account for 208.
+Packages installed only because of each module. Counts overlap where two
+modules share a package; together they account for 208.
 
-| Component | Packages it brings in | CVEs in them | Critical or High | With a fix |
+| Module | Packages it brings in | CVEs in them | Critical or High | With a fix |
 |---|---|---|---|---|
 | `nginx-module-image-filter` | 32 | 166 | 65 | 75 |
 | `nginx-module-xslt` | 3 | 42 | 23 | 27 |
@@ -113,12 +113,12 @@ components share a package; together they account for 208.
 | `libssl3` | 49 | 25 | Yes |
 | `openssl` | 49 | 25 | No |
 | `libheif1` | 45 | 18 | No |
-| `curl` | 40 | 16 | No |
 | `libcurl4` | 40 | 16 | No |
+| `curl` | 40 | 16 | No |
 | `libexpat1` | 35 | 13 | No |
 | `libxml2` | 33 | 19 | No |
 | `libtiff6` | 33 | 8 | No |
-| `libc-bin` | 32 | 10 | No |
 | `libc6` | 32 | 10 | Yes |
+| `libc-bin` | 32 | 10 | No |
 | `libgnutls30` | 22 | 11 | No |
 | `perl-base` | 21 | 14 | No |

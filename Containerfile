@@ -1,6 +1,6 @@
 # Final image: drop-in replacement for nginx:1.25-bookworm.
 # Every setting below is copied from the original image
-# (see scans/baseline/inspect.json and scans/baseline/history.txt).
+# (see scans/baseline/image/inspect.json and scans/baseline/image/history.txt).
 # Requires the five packages in out/ (built by build/, step 3).
 FROM debian:bookworm-slim
 

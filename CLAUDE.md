@@ -51,7 +51,7 @@ truthfully. Do not overstate what a fix achieves.
 
 - **Base:** fresh `debian:bookworm-slim` plus `apt-get upgrade`. This is where all
   version-bump fixes come from.
-- **Image settings:** copied from the original (`scans/baseline/inspect.json`,
+- **Image settings:** copied from the original (`scans/baseline/image/inspect.json`,
   `history.txt`). One deliberate difference: the `maintainer` label names the owner,
   because the image is not built by NGINX.
 - **Startup scripts:** extracted unchanged from the original into `entrypoint/`.
@@ -92,7 +92,7 @@ truthfully. Do not overstate what a fix achieves.
   document nothing to suppress. Confirm after the real build.
 - **The `.deb` must be named `nginx` and register `/etc/nginx/conf.d/default.conf` as a
   conffile**, with the original's exact content. See `entrypoint/README.md`.
-- **Use the original's configure flags** from `scans/baseline/nginx-V.txt`; they decide
+- **Use the original's configure flags** from `scans/baseline/image/nginx-V.txt`; they decide
   the filesystem layout.
 - **Loaded versus unloaded packages** are described in their own section below.
 - **Targets are chosen by danger and reach, not by severity label.** The owner's rule:
@@ -106,7 +106,7 @@ vulnerability by whether nginx runs the affected code.
 
 **Loaded (weight 1.0):** the `nginx` package itself and the five libraries its binary
 loads, taken from `ldd /usr/sbin/nginx` and saved in
-`scans/baseline/linked-packages.txt`. A bug here is inside every running container.
+`scans/baseline/image/linked-packages.txt`. A bug here is inside every running container.
 
 | Package | What nginx uses it for |
 |---|---|

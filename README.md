@@ -72,7 +72,8 @@ backport for 1.25.
 The assignment requires the filesystem layout, user, working directory, ports and
 entrypoint to match the original exactly. The `Containerfile` copies those, and also
 the settings the assignment does not name, so the image behaves as a drop-in replacement.
-All values were taken from `scans/baseline/inspect.json` and `scans/baseline/history.txt`.
+All values were taken from `scans/baseline/image/inspect.json` and
+`scans/baseline/image/history.txt`.
 
 | Setting | Original | This image |
 |---|---|---|

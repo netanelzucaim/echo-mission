@@ -4,7 +4,7 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 
 | Script | Make target | Purpose |
 |---|---|---|
-| `scan-baseline.sh` | `make scan-baseline` | Pull the original image, save its metadata, scan it with Trivy and Grype into `scans/baseline/` |
+| `scan-baseline.sh` | `make scan-baseline` | Pull the original image, save its metadata into `scans/baseline/image/` and scan it with Trivy and Grype into `scans/baseline/reports/` |
 | `probe-impact.sh` | `make probe REMOVE="pkg"` | Measure what removing packages and/or updating Debian packages would change; prints a table and cleans up after itself |
 | `compare-scans.py` | `make triage` | Merge a Trivy and a Grype JSON report and rank vulnerabilities by danger and reach into `triage.md` and `triage.csv`, and write the statistics diagrams to `stats.md` |
 
@@ -14,7 +14,9 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
   them as containers.
 - Scans a `docker save` tarball so both tools see the same image bytes, then deletes it.
 - Options through the environment: `IMAGE`, `OUT`, `PLATFORM` (for example
-  `linux/amd64`).
+  `linux/amd64`), `MODULES` (optional module packages; default every `nginx-module-*`).
+- If `docker pull` fails but the image exists locally, it warns and scans the local
+  copy. Docker Hub rate limits (HTTP 429) made this necessary.
 - The containerized-scanner path has not been run successfully yet. It failed in the
   Claude cloud workspace because of the proxy certificate, and has not been tried on
   the owner's Mac.
@@ -31,17 +33,19 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
     only sits in the image, plus 0.05 per extra affected package (max +0.15).
   - The owner chose this over "Critical in both first" on 2026-10-05, because the
     top-severity findings were mostly in libraries nginx never runs.
-- Reach comes from `linked-packages.txt` next to the Trivy report (written by
+- Reach comes from `linked-packages.txt` next to the Trivy report or in `../image/` (written by
   `scan-baseline.sh` from `ldd /usr/sbin/nginx`), or from `--linked FILE`. Without it
   the script warns and treats every package as "only sits in the image".
 - "Loaded" means the library is loaded, not that the vulnerable function is called.
   Read the advisory before claiming nginx is affected.
 - Also writes `stats.md`: Mermaid diagrams and tables computed from the data. The
   owner wants diagrams produced by the script so the next image gets the same ones;
-  do not write statistics diagrams by hand. If `components.tsv` (component, package)
-  is next to the Trivy report, or `--components FILE` is given, it adds a per-component
-  table. `scan-baseline.sh` writes that file for every `nginx-module-*` package, or for
-  the packages named in `COMPONENTS`.
+  do not write statistics diagrams by hand. If `modules.tsv` (module, package) is next
+  to the Trivy report or in `../image/`, or `--modules FILE` is given, it adds a
+  per-module table. `scan-baseline.sh` writes that file for every `nginx-module-*`
+  package, or for the packages named in `MODULES`.
+- `make triage` passes `--out-dir scans/baseline` so the three result files land at the
+  top of the folder, not inside `reports/`.
 - Matches by vulnerability ID. A Grype match with a non-CVE ID is mapped to its related
   CVE when there is one.
 - It ranks only what the scanners report. nginx's own CVEs are not in the list.
