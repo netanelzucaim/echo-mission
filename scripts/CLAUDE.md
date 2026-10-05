@@ -9,6 +9,7 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 | `rescan-compare.sh` | `make rescan IMAGE=<image>` | Step 6: scan the patched image into `scans/patched/`, rank it, rescan with `vex/*.json` applied, compare with the baseline |
 | `diff-scans.py` | (called by `make rescan`) | Compare two scan folders and check the VEX result; writes `diff.md` and `diff.csv` |
 | `make-vex.py` | (run by hand) | Write an OpenVEX file for one CVE into `vex/` |
+| `fs-diff.sh` | `make fsdiff` | Compare every file in the original and patched images; exit 1 on a difference that is not explained by the newer Debian base |
 | `compare-scans.py` | `make triage` | Merge a Trivy and a Grype JSON report and rank vulnerabilities by danger and reach into `triage.md` and `triage.csv`, and write the statistics diagrams to `stats.md` |
 
 ## scan-baseline.sh
@@ -106,6 +107,17 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 - Run on the real patched image on 2026-10-05: results in `scans/patched/`, with
   CVE-2023-52355 `suppressed` and CVE-2026-42945 `never reported` in both scanners.
 - The skill `.claude/skills/rescan-compare-vex/` describes the procedure.
+
+## fs-diff.sh
+
+- The compatibility test inspects only the nginx paths. This lists every regular file
+  in both images (skipping caches, logs, docs and package lists) and reports files
+  present in one image only. It found the missing njs CLI and the leaked proxy files.
+- Differences from the newer Debian base (debian-archive keyrings, tzdata, the CA
+  certificate store) are counted as expected and do not fail. Anything else gives
+  exit code 1. Image names come from `ORIGINAL` and `IMAGE`.
+- It compares file names only, not contents; `make test` covers the contents of the
+  nginx configuration, pages and startup scripts.
 
 ## Conventions
 

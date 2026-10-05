@@ -90,6 +90,7 @@ Everything is reproducible with one command each, through the `Makefile`:
 make deb     # step 3: build nginx + the four module .debs from source, into out/
 make image   # step 4: build the final image echo-nginx:1.25-bookworm from those .debs
 make test    # step 5: prove it behaves like the original (non-zero exit on any mismatch)
+make fsdiff  # after any build change: every file in the image matches the original
 make rescan  # step 6: rescan, diff against the baseline, apply the VEX files
 ```
 

@@ -118,7 +118,7 @@ first, then KEV, then EPSS weighed against both scanners' severity), not by the 
   `rootfs/etc/apt/keyrings/` (taken from the original image, same SHA-256, mode 0644).
 - **Base-evolution differences** (debian-archive keyrings, tzdata) come from rebuilding
   on a current base, also recorded there. A full filesystem diff shows no other
-  differences; re-run one after any build change, because the compatibility test only
+  differences; re-run one (`make fsdiff`) after any build change, because the compatibility test only
   inspects the nginx paths.
 
 ## Findings worth keeping in mind
@@ -256,6 +256,34 @@ never as fixed by this project.
   replacement with args" scenario in `test/compat_test.py` (custom group); it matches
   the original for benign input, confirming the patch did not change normal behaviour.
 - VEX documents go in `vex/` as `<CVE>.openvex.json`, written by `scripts/make-vex.py`.
+
+## Adding another CVE fix
+
+The full procedure, written for the owner, is in `build/patches/README.md` under
+"Adding another fix". In short:
+
+- Every fix is a patch file `build/patches/CVE-YYYY-NNNN.patch`. `build/prepare.sh`
+  applies every `CVE-*.patch` and decides how from the paths it changes: only `src/`,
+  `auto/`, `conf/` → nginx source backport (copied into pkg-oss's quilt series); only
+  `debian/` → packaging change applied to pkg-oss (version bumps); njs source paths →
+  the script stops with an error (not wired up yet); anything mixed → error. Never edit
+  `prepare.sh` to name a single patch.
+- **Backport** (CVE in nginx's code): `git format-patch -1 <upstream commit>` from
+  github.com/nginx/nginx; prove it applies to 1.25.5 with `patch -p1 --dry-run`.
+- **Version bump** (CVE in a Debian library): never rely on the build "happening to"
+  download a fixed version. Write the minimum fixed version (from Debian's security
+  tracker, bookworm row) into the package that needs it: `Depends:` in pkg-oss
+  `debian/debian/nginx.control.in` for a library the nginx binary loads, or
+  `MODULE_DEPENDS_<module>` in `debian/Makefile.module-<module>` for a module-only
+  library. Patch against pkg-oss at `aaeb9a9`. If bookworm has no fixed version, it is
+  residual risk, not a bump.
+- Then always: `make deb`, `make image`, `make test` (0 mismatch; add a scenario with an
+  `expect` that runs a backported code path with normal input, never attack input),
+  `make fsdiff`, `make rescan`; a VEX `status: fixed` for a backport
+  (`scripts/make-vex.py`); then the README per-CVE table, `priorities.md`, the table in
+  `build/patches/README.md`, and this file.
+- In the cloud workspace, `make deb` and `make image` need the proxy overlay described
+  under "Building behind an HTTPS-only proxy"; keep it out of committed files.
 
 ## Building behind an HTTPS-only proxy
 

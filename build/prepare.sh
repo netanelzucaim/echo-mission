@@ -20,16 +20,36 @@ rm -rf pkg-oss
 git clone -q https://github.com/nginx/pkg-oss.git
 git -C pkg-oss checkout -q "$PKGOSS_COMMIT"
 
-echo "==> Injecting the backport into the quilt series"
-# pkg-oss adds every contrib/src/nginx/*.patch to debian/patches/series and
-# applies it during the build, so this is all it takes to backport our fix.
-cp patches/CVE-2026-42945.patch pkg-oss/contrib/src/nginx/
-
-echo "==> Applying the version bump"
-# CVE-2024-6119.patch raises the nginx package's minimum libssl3 version to the
-# one Debian fixed it in, so installing the package always brings a fixed OpenSSL.
-# It changes nginx's packaging (pkg-oss), not nginx's source.
-patch -p1 -d pkg-oss < patches/CVE-2024-6119.patch
+echo "==> Applying the CVE patches in patches/"
+# Every patches/CVE-*.patch is applied. What it changes decides how:
+#  - nginx source (paths src/, auto/, conf/): a backport. It is copied into
+#    pkg-oss/contrib/src/nginx/; pkg-oss adds every *.patch there to the quilt
+#    series and applies it to the nginx source during the build.
+#  - nginx's packaging (paths debian/): for example a version bump that raises a
+#    package's minimum dependency version. Applied to pkg-oss directly.
+#  - njs source (paths external/, nginx/, src/njs_*): not wired up yet; stop with
+#    a message instead of building without it. See patches/README.md.
+for p in patches/CVE-*.patch; do
+  [ -e "$p" ] || continue
+  paths=$(sed -n 's|^+++ b/||p' "$p")
+  if [ -z "$paths" ]; then
+    echo "ERROR: $p changes no files (missing '+++ b/' lines?)" >&2; exit 1
+  elif ! echo "$paths" | grep -qvE '^debian/'; then
+    echo "    $p: packaging change, applied to pkg-oss"
+    patch -p1 -d pkg-oss < "$p"
+  elif echo "$paths" | grep -qE '^(external/|nginx/|src/njs_)'; then
+    echo "ERROR: $p patches the njs source, which prepare.sh does not apply yet." >&2
+    echo "       See build/patches/README.md, 'Adding another fix'." >&2
+    exit 1
+  elif ! echo "$paths" | grep -qvE '^(src|auto|conf)/'; then
+    echo "    $p: nginx source change, added to the quilt series"
+    cp "$p" pkg-oss/contrib/src/nginx/
+  else
+    echo "ERROR: $p mixes nginx source and other paths; split it." >&2
+    echo "$paths" | sed 's/^/       /' >&2
+    exit 1
+  fi
+done
 
 echo "==> Applying packaging adjustments"
 # echo-pkg-oss.patch: (1) use a static Debian changelog instead of generating it

@@ -2,7 +2,7 @@
 IMAGE ?= echo-nginx:1.25-bookworm
 BUILD_IMAGE ?= echo-nginx-build
 
-.PHONY: scan-baseline triage fix-plan deb image test rescan
+.PHONY: scan-baseline triage fix-plan deb image test fsdiff rescan
 
 scan-baseline: ## Step 1: scan the original image with Trivy and Grype
 	./scripts/scan-baseline.sh
@@ -24,6 +24,9 @@ fix-plan: ## Step 2: propose a fix method per CVE (version bump, backport, remov
 
 test: ## Step 5: compare the patched image with the original (exit code 1 on any mismatch)
 	python3 test/compat_test.py --candidate "$(IMAGE)"
+
+fsdiff: ## After any build change: compare every file in the original and patched images (exit 1 on a real difference)
+	IMAGE="$(IMAGE)" ./scripts/fs-diff.sh
 
 rescan: ## Step 6: scan the patched image, compare with the baseline, apply vex/*.json
 	IMAGE="$(IMAGE)" ./scripts/rescan-compare.sh

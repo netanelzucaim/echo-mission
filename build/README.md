@@ -23,13 +23,16 @@ our backport into it, rather than re-inventing the packaging.
 
 1. **Fetches `pkg-oss`** at the pinned commit `aaeb9a9`, which targets nginx **1.25.5**
    and njs **0.8.4** — the versions the original image ships.
-2. **Injects the backport.** `pkg-oss` adds every `contrib/src/nginx/*.patch` to its
-   quilt `series` and applies it during the build, so dropping
-   `patches/CVE-2026-42945.patch` there is the whole backport step.
-3. **Applies the version bump**, `patches/CVE-2024-6119.patch`: it raises the nginx
-   package's minimum `libssl3` to `3.0.14-1~deb12u2`, the version Debian fixed
-   CVE-2024-6119 in, so installing the package always brings a fixed OpenSSL.
-4. **Applies `echo-pkg-oss.patch`**, three small packaging adjustments:
+2. **Applies every `patches/CVE-*.patch`**, deciding how from the paths it changes:
+   - nginx source (`src/`, `auto/`, `conf/`): a **backport**, copied into
+     `contrib/src/nginx/`, where `pkg-oss` adds it to its quilt `series` and applies
+     it during the build. Here: `CVE-2026-42945.patch`.
+   - nginx's packaging (`debian/`): for example a **version bump**, applied to pkg-oss
+     directly. Here: `CVE-2024-6119.patch`, which raises the nginx package's minimum
+     `libssl3` to `3.0.14-1~deb12u2`, the version Debian fixed the CVE in.
+   - njs source: not supported yet; the script stops with an error.
+   How to add another fix: `patches/README.md`, "Adding another fix".
+3. **Applies `echo-pkg-oss.patch`**, three small packaging adjustments:
    - use a **static Debian changelog** instead of generating it with `xslscript`
      (which `pkg-oss` fetches over the network from a host that is not always reachable);
    - build the njs **module and CLI without QuickJS**, matching the original image's
@@ -39,7 +42,7 @@ our backport into it, rather than re-inventing the packaging.
      `1.25.5+0.8.4-3~bookworm`, exactly as in the original image (pkg-oss at this commit
      says 1). All five nginx package versions then match the original.
    The static changelogs are in `changelog/`.
-5. **Vendors the njs 0.8.4 source** from the njs git tag (its `hg.nginx.org` archive URL
+4. **Vendors the njs 0.8.4 source** from the njs git tag (its `hg.nginx.org` archive URL
    is not reliably reachable), into `pkg-oss/contrib/tarballs/`.
 
 The nginx 1.25.5 source itself is downloaded by `pkg-oss` from `nginx.org` during the
