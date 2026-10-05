@@ -11,8 +11,9 @@ never edited by hand. To change one, change the script and rerun it.
   updating the base would change, prints a table and deletes its own output. Put the
   table in `README.md`; do not commit probe reports (the owner wants only the fix in
   the repo). `KEEP=1` keeps them in `scans/probe-<timestamp>/` for debugging only.
-- A folder for the patched image (suggested name `patched/`) will be added in step 6,
-  with the same file names so the two can be diffed.
+- `patched/` will be written by `make rescan IMAGE=<image>` in step 6: the same
+  layout as `baseline/`, plus `diff.md` and `diff.csv` (comparison with the baseline
+  and the VEX check) and `reports/*-vex.*` (the scans with VEX applied).
 
 ## Layout of `baseline/`
 

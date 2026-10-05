@@ -176,9 +176,11 @@ open vulnerability or as fixed by this project without doing that.
   `entrypoint/CLAUDE.md`.
 - Skills live in the repository, under `.claude/skills/`, not in the owner's account or
   Claude project: `compare-vuln-scans` (rank scan results and generate the diagrams)
-  and `probe-image-change` (measure what removing a package or updating would change).
-  They describe the procedure and point to the scripts in `scripts/`; keep the code in
-  one place.
+  and `rescan-compare-vex` (step 6: rescan, compare with the baseline, write and test
+  VEX). They describe the procedure and point to the scripts in `scripts/`; keep the
+  code in one place. The `probe-image-change` skill was removed at the owner's request
+  on 2026-10-05 and may come back; `scripts/probe-impact.sh` and `make probe` remain.
+- VEX documents go in `vex/` as `<CVE>.openvex.json`, written by `scripts/make-vex.py`.
 
 ## Running things from a Claude cloud session
 

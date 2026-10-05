@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Step 1: pull the original image and scan it with Trivy and Grype.
 # Usage: ./scripts/scan-baseline.sh        (or: make scan-baseline)
-# Optional env: IMAGE, OUT, PLATFORM (e.g. linux/amd64)
+# Optional env: IMAGE, OUT, PLATFORM (e.g. linux/amd64), MODULES, TRIVY_FLAGS
 #
 # Only Docker is required. Trivy/Grype are used from the host if installed,
 # otherwise they run as containers. Both scan the same `docker save` tarball,
@@ -75,7 +75,8 @@ else
 fi
 
 echo "==> Trivy scan"
-trivy_ image --scanners vuln --input "$TW/image.tar" --format json --output "$TW/trivy.json"
+# shellcheck disable=SC2086
+trivy_ image --scanners vuln ${TRIVY_FLAGS:-} --input "$TW/image.tar" --format json --output "$TW/trivy.json"
 trivy_ convert --format table --output "$TW/trivy.txt" "$TW/trivy.json"
 
 echo "==> Grype scan"

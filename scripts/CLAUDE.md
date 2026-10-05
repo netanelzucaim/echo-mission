@@ -6,6 +6,9 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 |---|---|---|
 | `scan-baseline.sh` | `make scan-baseline` | Pull the original image, save its metadata into `scans/baseline/image/` and scan it with Trivy and Grype into `scans/baseline/reports/` |
 | `probe-impact.sh` | `make probe REMOVE="pkg"` | Measure what removing packages and/or updating Debian packages would change; prints a table and cleans up after itself |
+| `rescan-compare.sh` | `make rescan IMAGE=<image>` | Step 6: scan the patched image into `scans/patched/`, rank it, rescan with `vex/*.json` applied, compare with the baseline |
+| `diff-scans.py` | (called by `make rescan`) | Compare two scan folders and check the VEX result; writes `diff.md` and `diff.csv` |
+| `make-vex.py` | (run by hand) | Write an OpenVEX file for one CVE into `vex/` |
 | `compare-scans.py` | `make triage` | Merge a Trivy and a Grype JSON report and rank vulnerabilities by danger and reach into `triage.md` and `triage.csv`, and write the statistics diagrams to `stats.md` |
 
 ## scan-baseline.sh
@@ -65,6 +68,23 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
   `TRIVY_FLAGS="--db-repository mirror.gcr.io/aquasec/trivy-db:2"`.
 - It upgrades the original image in place, so nginx itself stays at the original
   version. It estimates the effect of the fresh base; it is not the final image.
+
+## rescan-compare.sh, diff-scans.py, make-vex.py
+
+- `rescan-compare.sh` reuses `scan-baseline.sh` with `IMAGE` and `OUT`, so the patched
+  scan has the same `reports/` and `image/` layout as the baseline. The name
+  `scan-baseline.sh` is historical; it scans any image.
+- The VEX scan writes `reports/trivy-vex.*` and `reports/grype-vex.*` next to the plain
+  reports. `VEX=""` skips it; by default every `vex/*.json` is applied.
+- `diff-scans.py` matches by CVE ID: "no longer reported", "still reported", "new". Its
+  VEX table says per scanner `suppressed`, `never reported` or `STILL REPORTED`.
+- `make-vex.py` reads package versions from `<scan-dir>/image/packages.tsv` and uses
+  the bare package purl as the product. That form was tested to work in both Trivy
+  0.75.0 and Grype 0.120.0; the image-plus-subcomponent form did not work in Trivy.
+- Tested on 2026-10-05 against a stand-in image (the original with one module
+  removed) and throwaway VEX files, covering `suppressed` and `never reported`. Not
+  yet run on the real patched image, which does not exist.
+- The skill `.claude/skills/rescan-compare-vex/` describes the procedure.
 
 ## Conventions
 
