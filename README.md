@@ -93,12 +93,42 @@ All values were taken from `scans/baseline/inspect.json` and `scans/baseline/his
   their name on it would misstate who is responsible for it. The label is metadata
   only and nothing functional depends on it.
 
-### Dynamic modules are kept
+### Dynamic modules are kept, including image-filter
 
-The original installs four optional module packages next to nginx: xslt, geoip,
-image-filter and njs. None is loaded by default, and their libraries carry 208 of the
-497 baseline CVEs (image-filter alone 166). Dropping them was considered and rejected:
-anyone whose configuration has a `load_module` line for one of them would find nginx
-refusing to start, and a drop-in replacement must not break existing users. All four
-are therefore built from source and shipped. Their libraries are updated by the fresh
-base where Debian has a fix; the rest is listed under residual risk.
+The original installs four optional module packages next to nginx. None is loaded by
+default: the shipped configuration has no `load_module` line. Their libraries are in
+the image only because of them, and they carry 208 of the 497 unique baseline CVEs.
+
+| Module | What it does | Libraries it brings in | Baseline CVEs | Critical or High |
+|---|---|---|---|---|
+| `nginx-module-xslt` | Transforms XML responses | 3 (`libxslt1.1`, `libxml2`, `libicu72`) | 42 | 23 |
+| `nginx-module-geoip` | Country lookup from the client IP | 1 (`libgeoip1`) | 0 | 0 |
+| `nginx-module-image-filter` | Resizes, crops and rotates images on the fly | 32 (`libgd3` and its image-format, font and X11 dependencies) | 166 | 65 |
+| `nginx-module-njs` | nginx logic written in JavaScript | 4 (`libedit2`, `libbsd0`, `libxml2`, `libicu72`) | 34 | 20 |
+
+Counts overlap where modules share a library. Source: `scans/baseline/triage.csv` and
+`apt-get -s remove --auto-remove` on the module packages in the original image.
+
+**The option that was considered: remove image-filter.** It is the obvious candidate.
+It accounts for about a third of all baseline CVEs, its libraries parse complex image
+files, which is a classic source of memory bugs, and they include `libfreetype6` with
+CVE-2025-27363, the only library CVE in the image on CISA's known-exploited list.
+Nothing loads the module by default, so the compatibility test would still pass
+without it. The assignment also allows removing a vulnerable component.
+
+**Why it was rejected.** Anyone whose configuration contains
+`load_module modules/ngx_http_image_filter_module.so;` would find nginx refusing to
+start after switching images. The brief asks for "a drop-in replacement, not a
+re-imagining", and an image that breaks existing users has failed at that, however
+clean its scan looks. Compatibility was given priority over the scan result, and the
+same reasoning applies to the other three modules.
+
+**What this costs.** All four modules are built from source and shipped, and their
+libraries stay in the image. The fresh Debian base updates every one that has a fixed
+version. What remains is accepted risk and is listed under residual risk once the
+final image is scanned. The 166 figure is from the original image, so the number that
+actually remains will be lower; it has not been measured yet.
+
+**What I would do with more time.** Publish a second, slimmer variant without
+image-filter for users who do not need it, so the default stays compatible and the
+smaller attack surface is available by choice.
