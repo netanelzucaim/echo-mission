@@ -35,21 +35,21 @@ pie showData title What happened to the 497 baseline CVEs
 
 | Package | Before | After | Loaded by nginx | Baseline CVEs no longer reported |
 |---|---|---|---|---|
-| `libc6` | 2.36-9+deb12u7 | 2.36-9+deb12u14 | yes | 9 |
-| `libpcre2-8-0` | 10.42-1 | 10.42-1+deb12u2 | yes | 7 |
-| `libssl3` | 3.0.11-1~deb12u2 | 3.0.22-1~deb12u1 | yes | 42 |
-| `openssl` | 3.0.11-1~deb12u2 | 3.0.22-1~deb12u1 | no | 42 |
-| `libexpat1` | 2.5.0-1 | 2.5.0-1+deb12u4 | no | 30 |
-| `libxml2` | 2.9.14+dfsg-1.3~deb12u1 | 2.9.14+dfsg-1.3~deb12u6 | no | 24 |
-| `libgnutls30` | 3.7.9-2+deb12u2 | 3.7.9-2+deb12u7 | no | 21 |
-| `curl` | 7.88.1-10+deb12u5 | 7.88.1-10+deb12u15 | no | 14 |
-| `libcurl4` | 7.88.1-10+deb12u5 | 7.88.1-10+deb12u15 | no | 14 |
-| `libde265-0` | 1.0.11-1+deb12u2 | 1.0.11-1+deb12u3 | no | 14 |
-| `libpng16-16` | 1.6.39-2 | 1.6.39-2+deb12u6 | no | 11 |
-| `libtiff6` | 4.5.0-6+deb12u1 | 4.5.0-6+deb12u4 | no | 9 |
-| `libc-bin` | 2.36-9+deb12u7 | 2.36-9+deb12u14 | no | 9 |
-| `libgssapi-krb5-2` | 1.20.1-2+deb12u1 | 1.20.1-2+deb12u5 | no | 7 |
-| `libk5crypto3` | 1.20.1-2+deb12u1 | 1.20.1-2+deb12u5 | no | 7 |
+| `libc6` | `2.36-9+deb12u7` | `2.36-9+deb12u14` | yes | 9 |
+| `libpcre2-8-0` | `10.42-1` | `10.42-1+deb12u2` | yes | 7 |
+| `libssl3` | `3.0.11-1~deb12u2` | `3.0.22-1~deb12u1` | yes | 42 |
+| `openssl` | `3.0.11-1~deb12u2` | `3.0.22-1~deb12u1` | no | 42 |
+| `libexpat1` | `2.5.0-1` | `2.5.0-1+deb12u4` | no | 30 |
+| `libxml2` | `2.9.14+dfsg-1.3~deb12u1` | `2.9.14+dfsg-1.3~deb12u6` | no | 24 |
+| `libgnutls30` | `3.7.9-2+deb12u2` | `3.7.9-2+deb12u7` | no | 21 |
+| `curl` | `7.88.1-10+deb12u5` | `7.88.1-10+deb12u15` | no | 14 |
+| `libcurl4` | `7.88.1-10+deb12u5` | `7.88.1-10+deb12u15` | no | 14 |
+| `libde265-0` | `1.0.11-1+deb12u2` | `1.0.11-1+deb12u3` | no | 14 |
+| `libpng16-16` | `1.6.39-2` | `1.6.39-2+deb12u6` | no | 11 |
+| `libtiff6` | `4.5.0-6+deb12u1` | `4.5.0-6+deb12u4` | no | 9 |
+| `libc-bin` | `2.36-9+deb12u7` | `2.36-9+deb12u14` | no | 9 |
+| `libgssapi-krb5-2` | `1.20.1-2+deb12u1` | `1.20.1-2+deb12u5` | no | 7 |
+| `libk5crypto3` | `1.20.1-2+deb12u1` | `1.20.1-2+deb12u5` | no | 7 |
 
 ## No longer reported (244)
 

@@ -15,8 +15,8 @@ the package: without it, the nginx package accepts any OpenSSL 3.0, and the fixe
 arrives only because the build happens to download current packages. With it, the
 built `.deb` declares `libssl3 (>= 3.0.14-1~deb12u2)`, apt must install a fixed OpenSSL
 (this image gets 3.0.22), and on a system that still has 3.0.11 dpkg refuses:
-"nginx depends on libssl3 (>= 3.0.14-1~deb12u2); however: Version of libssl3 on system
-is 3.0.11-1~deb12u2". Check it with `dpkg-deb -f out/nginx_*.deb Depends`.
+`nginx depends on libssl3 (>= 3.0.14-1~deb12u2); however: Version of libssl3 on system
+is 3.0.11-1~deb12u2`. Check it with `dpkg-deb -f out/nginx_*.deb Depends`.
 
 **CVE-2026-42945.patch** (backport) is **the** backport for the assignment, chosen on 2026-10-05 (reasoning in
 `docs/triage-decision.md`). It fixes a bug in code almost every config runs, whose

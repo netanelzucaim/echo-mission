@@ -178,7 +178,7 @@ def main():
             w("| Package | Before | After | Loaded by nginx | Baseline CVEs no longer reported |")
             w("|---|---|---|---|---|")
             for p in show:
-                w(f"| `{p}` | {base_pkgs[p]} | {new_pkgs[p]} | {'yes' if p in linked else 'no'} | {fixes_per_pkg[p]} |")
+                w(f"| `{p}` | `{base_pkgs[p]}` | `{new_pkgs[p]}` | {'yes' if p in linked else 'no'} | {fixes_per_pkg[p]} |")
             w()
         if gone:
             w("Removed: " + ", ".join(f"`{p}`" for p in gone) + ".")
