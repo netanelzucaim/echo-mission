@@ -24,6 +24,7 @@ that way, and use the same layout for the patched image's folder.
 | `README.md` | Plain-language guide to the folder | by hand |
 | `stats.md` | Diagrams and tables of the statistics; never hand-edit | `make triage` |
 | `triage.md`, `triage.csv` | Both reports merged and ranked | `make triage` |
+| `fix-plan.md` | Proposed fix method per CVE, including nginx's own CVEs from upstream's advisories | `make fix-plan` |
 | `reports/trivy.json`, `reports/trivy.txt` | Trivy report | `make scan-baseline` |
 | `reports/grype.json`, `reports/grype.txt` | Grype report | `make scan-baseline` |
 | `reports/versions.txt` | Scan date, image digest, scanner versions | `make scan-baseline` |
@@ -35,6 +36,7 @@ that way, and use the same layout for the patched image's folder.
 | `image/linked-packages.txt` | `nginx` plus the packages whose libraries its binary loads; input for the reach score | `make scan-baseline` |
 | `image/modules.tsv` | Each optional module package and the packages installed only for it; input for `stats.md` | `make scan-baseline` |
 | `image/digest.txt` | Image digest and platform | `make scan-baseline` |
+| `image/nginx-security-advisories.html` | Saved copy of nginx's advisories page, input for `fix-plan.md` | `make fix-plan` (first run, or `--refresh`) |
 
 Say "modules", not "components": the owner asked for that word.
 

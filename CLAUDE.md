@@ -23,7 +23,7 @@ original for a representative set of HTTP scenarios.
 | # | Step | Status |
 |---|---|---|
 | 1 | Scan the original with Trivy and Grype, save reports | Done (`scans/baseline/`) |
-| 2 | Triage: per CVE, where it lives, is there a fix, how to fix; pick targets and justify | In progress |
+| 2 | Triage: per CVE, where it lives, is there a fix, how to fix; pick targets and justify | Method per CVE generated (`make fix-plan`, `scans/baseline/fix-plan.md`); the two targets are proposed, not yet confirmed by the owner |
 | 3 | Build a `.deb` from source in a clean `debian:bookworm-slim`, one command, patches applied | Not started |
 | 4 | Final image: install the `.deb` into a minimal Debian base, match the original | `Containerfile` drafted, never built |
 | 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Written (`test/compat_test.py`, 91 checks) and validated against the original and two altered images; not yet run on the real patched image |
@@ -75,6 +75,11 @@ truthfully. Do not overstate what a fix achieves.
   Rejected alternative: CVE-2025-15467 is in CMS parsing, which nginx does not use.
 - **Backport:** CVE-2024-7347 (mp4 module over-read). Upstream fix is in nginx
   1.27.1 / 1.26.2; 1.25.5 is affected. The upstream commit has not been read yet.
+  `fix-plan.md` shows 24 nginx advisories applying to 1.25.5 (as of 2026-10-05); this
+  is the only one with a patch file published by upstream
+  (https://nginx.org/download/patch.2024.mp4.txt), which is why it is the candidate.
+  Upstream rates it low severity. Four HTTP/3 CVEs from 2024 (medium) are fixed in
+  1.26.1 / 1.27.0 and are the natural second choice.
 
 ### Open
 
@@ -175,7 +180,8 @@ open vulnerability or as fixed by this project without doing that.
 - More specific guidance lives in `scans/CLAUDE.md`, `scripts/CLAUDE.md` and
   `entrypoint/CLAUDE.md`.
 - Skills live in the repository, under `.claude/skills/`, not in the owner's account or
-  Claude project: `compare-vuln-scans` (rank scan results and generate the diagrams)
+  Claude project: `compare-vuln-scans` (rank scan results and generate the diagrams),
+  `choose-cve-fix` (step 2: version bump, backport or remove, per CVE)
   and `rescan-compare-vex` (step 6: rescan, compare with the baseline, write and test
   VEX). They describe the procedure and point to the scripts in `scripts/`; keep the
   code in one place. The `probe-image-change` skill, `scripts/probe-impact.sh` and

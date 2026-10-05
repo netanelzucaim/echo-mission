@@ -5,7 +5,7 @@ picture that the patched image is compared with.
 
 ## Where to look
 
-Read the three files at the top. The two subfolders are raw material that scripts use;
+Read the files at the top. The two subfolders are raw material that scripts use;
 you rarely need to open them.
 
 ```
@@ -14,6 +14,7 @@ scans/baseline/
 ├── stats.md       START HERE: the numbers as diagrams and tables
 ├── triage.md      the top 40 vulnerabilities, ranked
 ├── triage.csv     all 497 vulnerabilities, ranked (opens in a spreadsheet)
+├── fix-plan.md    how each CVE would be fixed: version bump, backport or remove
 ├── reports/       raw scanner output
 └── image/         facts about the original image
 ```
@@ -22,6 +23,7 @@ scans/baseline/
 |---|---|
 | See the overall picture | `stats.md` |
 | See which vulnerabilities matter most | `triage.md` |
+| See how a CVE would be fixed, and nginx's own CVEs | `fix-plan.md` |
 | Look up one CVE or one package | `triage.csv`, or `reports/trivy.txt` |
 | Check a setting of the original image (port, entrypoint...) | `image/inspect.json` |
 | See how the original was built | `image/history.txt` |
@@ -46,6 +48,7 @@ scans/baseline/
 | `linked-packages.txt` | The 6 packages nginx itself runs: `nginx` and 5 libraries | The "reach" part of the ranking |
 | `modules.tsv` | Each of the 4 optional modules and the packages installed only for it | The per-module table in `stats.md` |
 | `digest.txt` | The image's unique fingerprint | Proving which exact image was scanned |
+| `nginx-security-advisories.html` | A saved copy of nginx's own list of security advisories | Finding nginx's CVEs, which the scanners miss |
 
 ## How the files are made
 
@@ -55,6 +58,7 @@ Nothing here is written by hand except this page.
 |---|---|
 | `make scan-baseline` | everything in `reports/` and `image/` |
 | `make triage` | `stats.md`, `triage.md`, `triage.csv` |
+| `make fix-plan` | `fix-plan.md` (and `image/nginx-security-advisories.html` the first time) |
 
 ## Things to know when reading the results
 

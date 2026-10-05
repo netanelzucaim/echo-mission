@@ -5,6 +5,7 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 | Script | Make target | Purpose |
 |---|---|---|
 | `scan-baseline.sh` | `make scan-baseline` | Pull the original image, save its metadata into `scans/baseline/image/` and scan it with Trivy and Grype into `scans/baseline/reports/` |
+| `fix-method.py` | `make fix-plan` | Step 2: propose version bump, backport, remove, accept or none for each CVE; writes `scans/baseline/fix-plan.md` |
 | `rescan-compare.sh` | `make rescan IMAGE=<image>` | Step 6: scan the patched image into `scans/patched/`, rank it, rescan with `vex/*.json` applied, compare with the baseline |
 | `diff-scans.py` | (called by `make rescan`) | Compare two scan folders and check the VEX result; writes `diff.md` and `diff.csv` |
 | `make-vex.py` | (run by hand) | Write an OpenVEX file for one CVE into `vex/` |
@@ -53,6 +54,24 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 - It ranks only what the scanners report. nginx's own CVEs are not in the list.
 - The skill `.claude/skills/compare-vuln-scans/` describes how to use this script. It
   points here and carries no copy of the code.
+
+## fix-method.py
+
+- Answers the triage step's three questions per CVE: where it lives, whether a fix
+  exists and in which version, and the fix method.
+- Two inputs: the top N scanner findings from `triage.csv` (or CVE IDs given as
+  arguments), and nginx's own advisories filtered to the shipped version. The second is
+  needed because the scanners do not report nginx's own CVEs.
+- The advisories page is downloaded once to `image/nginx-security-advisories.html` and
+  reused; `--refresh` fetches it again. Without network and without the saved copy the
+  nginx section is empty and the script warns.
+- Decision rules are in the script's docstring and in
+  `.claude/skills/choose-cve-fix/SKILL.md`. Project policy is "modules are kept", so a
+  module-only library without a fix gives ACCEPT; `--remove-modules` gives REMOVE.
+- "Where it lives" for nginx advisories comes from the module name in the advisory
+  title, checked against the configure flags in `image/nginx-V.txt`.
+- It does not read patches and does not know whether nginx calls the vulnerable
+  function. Its output is a proposal.
 
 ## rescan-compare.sh, diff-scans.py, make-vex.py
 
