@@ -26,7 +26,7 @@ original for a representative set of HTTP scenarios.
 | 2 | Triage: per CVE, where it lives, is there a fix, how to fix; pick targets and justify | Done by judgment, written in `scans/baseline/priorities.md` (the `choose-cve-fix` skill). Targets decided: bump CVE-2024-6119 (OpenSSL), backport CVE-2026-42945 (rewrite). `make fix-plan` is the script's starting proposal |
 | 3 | Build a `.deb` from source in a clean `debian:bookworm-slim`, one command, patches applied | Done (`make deb`, `build/`). Drives nginx's pkg-oss packaging with the CVE-2026-42945 backport injected into the quilt series; njs 0.8.4 built without QuickJS. Produces nginx + 4 module `.debs` |
 | 4 | Final image: install the `.deb` into a minimal Debian base, match the original | Done (`make image`, `Containerfile`). Built `echo-nginx:1.25-bookworm`; OpenSSL bump from `apt-get upgrade` (3.0.11 → 3.0.22), 291 MB vs 276 MB |
-| 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Done. 91 checks on the built image: 90 match, 1 allowed difference (maintainer label), 0 mismatch — a verified drop-in |
+| 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Done. 92 checks on the built image: 91 match, 1 allowed difference (maintainer label), 0 mismatch — a verified drop-in |
 | 6 | Bonus: rescan, diff against baseline, VEX | Done (`make rescan`, `scans/patched/`). 523 → 253 CVEs; CVE-2024-6119 gone; CVE-2023-52355 VEX suppressed in both scanners; CVE-2026-42945 VEX is status:fixed (never scanner-reported) |
 
 ### Required deliverables
@@ -241,9 +241,9 @@ open vulnerability or as fixed by this project without doing that.
   comparison to make it pass: either fix the image, or add the difference to `ALLOWED`
   in `test/compat_test.py` with a reason and record it in `README.md`. New scenarios
   need an `expect` so two broken servers cannot "match". See `test/README.md`.
-- When the CVE-2026-42945 backport lands, add a rewrite scenario to the test (a
-  `rewrite`/`set`/`return` with a capture used after a replacement that has arguments),
-  so the patched code path is actually exercised. The rewrite module is not exercised yet.
+- The CVE-2026-42945 backport is exercised by the "rewrite capture reused after a
+  replacement with args" scenario in `test/compat_test.py` (custom group); it matches
+  the original for benign input, confirming the patch did not change normal behaviour.
 - VEX documents go in `vex/` as `<CVE>.openvex.json`, written by `scripts/make-vex.py`.
 
 ## Running things from a Claude cloud session

@@ -439,6 +439,9 @@ server {
     location = /teapot      { default_type text/plain; return 418 "I am a teapot\n"; }
     location = /redirect    { return 301 /moved-here; }
     location = /rewrite     { rewrite ^ /hello.txt last; }
+    # exercises the ngx_http_rewrite_module path fixed by the CVE-2026-42945 backport:
+    # a capture used in a later directive after a rewrite replacement that has arguments.
+    location /rwcap         { rewrite ^(.*)$ /dest?c=1; set $cap $1; default_type text/plain; return 200 "cap=$cap\n"; }
     location /files/        { autoindex on; }
     location /fallback/     { try_files $uri /hello.txt; }
     location /headers       { default_type text/plain; return 200 "ua=$http_user_agent\nxff=$http_x_forwarded_for\nargs=$args\n"; }
@@ -510,6 +513,8 @@ def group_custom(r, work):
         r.request(g, "redirect with Location", get("/redirect"), expect="301 Moved Permanently")
         r.request(g, "directory without trailing slash redirects", get("/files"), expect="301 Moved Permanently")
         r.request(g, "internal rewrite", get("/rewrite"), expect="200 OK")
+        r.request(g, "rewrite capture reused after a replacement with args (CVE-2026-42945 path)",
+                  get("/rwcap/abcdef"), expect="cap=/rwcap/abcdef")
         r.request(g, "try_files fallback", get("/fallback/nothing-here"), expect="200 OK")
         r.request(g, "directory listing (autoindex)", get("/files/"), expect="b with space.txt")
         r.request(g, "custom error page", get("/no-such-page"), expect="custom not-found page")

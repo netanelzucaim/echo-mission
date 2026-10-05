@@ -47,8 +47,8 @@ The ~15 MB increase comes from `apt-get upgrade` (newer package versions) plus
 
 ### Result of the compatibility test
 
-`make test` runs 91 checks across image settings, the default site and a user-supplied
-config. On the built image: **90 match, 1 allowed difference, 0 mismatch**. The one
+`make test` runs 92 checks across image settings, the default site and a user-supplied
+config. On the built image: **91 match, 1 allowed difference, 0 mismatch** (92 checks). The one
 allowed difference is the `maintainer` label (this image is rebuilt by its owner, not by
 NGINX); it is listed in `ALLOWED` in `test/compat_test.py`. What the test covers is
 described under "Compatibility test" below.
