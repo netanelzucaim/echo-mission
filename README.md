@@ -8,7 +8,7 @@ test shows the image still behaves like the original.
 | | Original | This image (`echo-nginx:1.25-bookworm`) |
 |---|---|---|
 | nginx | 1.25.5 + njs 0.8.4 (prebuilt by nginx.org) | 1.25.5 + njs 0.8.4, **built from source here**, same versions and flags |
-| Size | 276 MB | 291 MB |
+| Image size (`docker images`) | 276 MB | 293 MB (+17 MB: newer Debian packages from `apt-get upgrade`) |
 | Compatibility test (`make test`) | the specification | 92 checks: **91 match, 1 allowed difference, 0 mismatch** |
 | CVEs reported by Trivy + Grype | 497 | **253** |
 | nginx/njs CVEs from upstream advisories (the scanners can't see these) | 26 | 25 (CVE-2026-42945 backported) |

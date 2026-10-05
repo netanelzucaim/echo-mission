@@ -29,7 +29,7 @@ truthful dead ends. Do not overstate what a fix achieves.
 | 1 | Scan the original with Trivy and Grype | `make scan-baseline`, `scans/baseline/` |
 | 2 | Triage and pick targets, by judgment | `make triage`, `docs/triage-decision.md` (`choose-cve-fix` skill) |
 | 3 | `.deb` from source in clean `debian:bookworm-slim`, patches applied | `make deb`, `build/` (pkg-oss pinned at `aaeb9a9`; njs 0.8.4 without QuickJS; nginx + 4 module `.deb`s) |
-| 4 | Final image from the `.deb` | `make image`, `Containerfile`; 291 MB vs 276 MB |
+| 4 | Final image from the `.deb` | `make image`, `Containerfile`; 293 MB vs 276 MB |
 | 5 | Compatibility test | `make test`: 92 checks, 91 match, 1 allowed (maintainer label), 0 mismatch |
 | 6 | Bonus: rescan, diff, VEX | `make rescan`, `scans/patched/diff.md`: scanner-reported 497 → 253; of 26 nginx/njs advisory CVEs 1 fixed, 25 present; CVE-2023-52355 VEX suppressed in both scanners |
 
