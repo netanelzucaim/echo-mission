@@ -16,7 +16,8 @@ scans/baseline/
 ├── triage.csv     all 521 vulnerabilities, ranked (opens in a spreadsheet)
 ├── triage-details.md  why every vulnerability sits where it does
 ├── review.tsv     the human check behind the ranking (written by hand)
-├── fix-plan.md    how each CVE would be fixed: version bump, backport or remove
+├── fix-plan.md    the script's proposed fix method per CVE (a starting point)
+├── priorities.md  THE DECISION: which CVEs to fix and how, argued by judgment
 ├── reports/       raw scanner output
 └── image/         facts about the original image
 ```
@@ -25,7 +26,8 @@ scans/baseline/
 |---|---|
 | See the overall picture | `stats.md` |
 | See which vulnerabilities matter most | `triage.md` |
-| See how a CVE would be fixed, and nginx's own CVEs | `fix-plan.md` |
+| See which CVEs were chosen to fix, and why | `priorities.md` |
+| See the script's raw fix-method proposal, and nginx's own CVEs | `fix-plan.md` |
 | Look up one CVE or one package | `triage.csv`, or `reports/trivy.txt` |
 | Know why a CVE has its rank | `triage-details.md` |
 | See or change whether nginx really runs a CVE's code | `review.tsv` |

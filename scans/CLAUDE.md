@@ -25,7 +25,8 @@ that way, and use the same layout for the patched image's folder.
 | `stats.md` | Diagrams and tables of the statistics; never hand-edit | `make triage` |
 | `triage.md`, `triage.csv`, `triage-details.md` | Both reports merged, ranked, every score explained | `make triage` |
 | `review.tsv` | Reviewed reach verdicts per CVE or package, plus nginx.org CVEs the scanners miss | by hand (`triage-cves` skill) |
-| `fix-plan.md` | Proposed fix method per CVE, including nginx's own CVEs from upstream's advisories | `make fix-plan` |
+| `fix-plan.md` | The script's proposed fix method per CVE, including nginx's own CVEs from upstream's advisories; a starting point, not the decision | `make fix-plan` |
+| `priorities.md` | The decision: which CVEs matter most and how each is fixed, argued from reach + KEV + EPSS + both severities (not from the score) | by hand (`choose-cve-fix` skill) |
 | `reports/trivy.json`, `reports/trivy.txt` | Trivy report | `make scan-baseline` |
 | `reports/grype.json`, `reports/grype.txt` | Grype report | `make scan-baseline` |
 | `reports/versions.txt` | Scan date, image digest, scanner versions | `make scan-baseline` |

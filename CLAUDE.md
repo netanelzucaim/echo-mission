@@ -23,7 +23,7 @@ original for a representative set of HTTP scenarios.
 | # | Step | Status |
 |---|---|---|
 | 1 | Scan the original with Trivy and Grype, save reports | Done (`scans/baseline/`) |
-| 2 | Triage: per CVE, where it lives, is there a fix, how to fix; pick targets and justify | Method per CVE generated (`make fix-plan`, `scans/baseline/fix-plan.md`); the two targets are proposed, not yet confirmed by the owner |
+| 2 | Triage: per CVE, where it lives, is there a fix, how to fix; pick targets and justify | Done by judgment, written in `scans/baseline/priorities.md` (the `choose-cve-fix` skill); `make fix-plan` is the script's starting proposal. Two targets recommended, awaiting the owner's final pick between the two backport candidates |
 | 3 | Build a `.deb` from source in a clean `debian:bookworm-slim`, one command, patches applied | Not started |
 | 4 | Final image: install the `.deb` into a minimal Debian base, match the original | `Containerfile` drafted, never built |
 | 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Written (`test/compat_test.py`, 91 checks) and validated against the original and two altered images; not yet run on the real patched image |
@@ -67,19 +67,31 @@ truthfully. Do not overstate what a fix achieves.
   provides; what remains goes in the README's residual-risk section. xslt, geoip and
   image-filter are part of the nginx source tree; njs is a separate source (0.8.4).
 
-### Proposed, awaiting the owner's confirmation
+### Recommended by the triage, awaiting the owner's final pick
 
-- **Version bump:** OpenSSL `3.0.11` to `3.0.22`, headline CVE-2024-6119 (denial of
-  service in X.509 name checks; reachable when nginx is a reverse proxy that verifies
-  upstream certificates). On a probe image the same bump removed 42 of 49 OpenSSL CVEs.
+The full reasoning is in `scans/baseline/priorities.md`, decided by judgment (reach
+first, then KEV, then EPSS weighed against both scanners' severity), not by the score.
+
+- **Version bump:** OpenSSL `3.0.11` to the fresh base's `3.0.x`, headline
+  CVE-2024-6119 (denial of service in X.509 name checks; reachable when nginx is a
+  reverse proxy that verifies upstream certificates). The strongest reachable
+  exploitation signal in the image: EPSS 66.6%, High/High. Fixed by `apt-get upgrade`.
   Rejected alternative: CVE-2025-15467 is in CMS parsing, which nginx does not use.
-- **Backport:** CVE-2024-7347 (mp4 module over-read). Upstream fix is in nginx
-  1.27.1 / 1.26.2; 1.25.5 is affected. The upstream commit has not been read yet.
-  `fix-plan.md` shows 24 nginx advisories applying to 1.25.5 (as of 2026-10-05); this
-  is the only one with a patch file published by upstream
-  (https://nginx.org/download/patch.2024.mp4.txt), which is why it is the candidate.
-  Upstream rates it low severity. Four HTTP/3 CVEs from 2024 (medium) are fixed in
-  1.26.1 / 1.27.0 and are the natural second choice.
+- **Backport:** two candidates, both with patches confirmed to apply cleanly to the
+  1.25.5 source (`patch -p1 --dry-run`, no build or PoC):
+  - **Recommended — CVE-2026-42945**, heap overflow in the rewrite module (potential
+    code execution, reached by nearly every config). Upstream commit `2046b45a`, one
+    line; its siblings `475732a3` + `ca4f92a2` (CVE-2026-9256) complete the family.
+    Stronger risk reduction and a real backport.
+  - **Clean fallback — CVE-2024-7347**, mp4 over-read (low, a crash, needs the `mp4`
+    directive). The only nginx CVE with a vendor-published standalone patch
+    (https://nginx.org/download/patch.2024.mp4.txt), so the lowest-risk backport.
+  Runners-up recorded in `priorities.md`: CVE-2026-27654 (DAV, EPSS 25%),
+  CVE-2026-42533 (map+regex, major), and the four 2024 HTTP/3 CVEs (medium, as a group).
+- **Mitigated already, not a fix:** CVE-2023-44487 (HTTP/2 Rapid Reset, KEV) is
+  already covered by upstream's stream-handling limit shipped in 1.25.3. It gets a
+  VEX / residual-risk note, never a patch, and must not be presented as open or as
+  fixed by this project.
 
 ### Open
 
@@ -187,7 +199,8 @@ open vulnerability or as fixed by this project without doing that.
 - Skills live in the repository, under `.claude/skills/`, not in the owner's account or
   Claude project: `compare-vuln-scans` (rank scan results and generate the diagrams),
   `triage-cves` (review whether nginx really runs the vulnerable code, in `review.tsv`),
-  `choose-cve-fix` (step 2: version bump, backport or remove, per CVE)
+  `choose-cve-fix` (step 2: decide priority and fix method per CVE by judgment —
+  reach + KEV + EPSS + both severities — not a formula; writes `priorities.md`)
   and `rescan-compare-vex` (step 6: rescan, compare with the baseline, write and test
   VEX). They describe the procedure and point to the scripts in `scripts/`; keep the
   code in one place. The `probe-image-change` skill, `scripts/probe-impact.sh` and
