@@ -225,7 +225,7 @@ The original installs four optional module packages next to nginx. None is loade
 default: the shipped configuration has no `load_module` line. Their libraries are in
 the image only because of them, and they carry 208 of the 497 unique baseline CVEs.
 
-| Module | What it does | Libraries it brings in | Baseline CVEs | Critical or High |
+| Module | What it does | Libraries it brings in | CVEs in those libraries (baseline) | Of which Critical or High |
 |---|---|---|---|---|
 | `nginx-module-xslt` | Transforms XML responses | 3 (`libxslt1.1`, `libxml2`, `libicu72`) | 42 | 23 |
 | `nginx-module-geoip` | Country lookup from the client IP | 1 (`libgeoip1`) | 0 | 0 |
@@ -233,16 +233,18 @@ the image only because of them, and they carry 208 of the 497 unique baseline CV
 | `nginx-module-njs` | nginx logic written in JavaScript | 4 (`libedit2`, `libbsd0`, `libxml2`, `libicu72`) | 34 | 20 |
 
 Counts overlap where modules share a library. "Critical or High" means rated so by at
-least one of the two scanners (by both: 20, 0, 44 and 17).
+least one of the two scanners (by both: 20, 0, 44 and 17). Source: `scans/baseline/triage.csv` and `apt-get -s remove --auto-remove` on the module packages in the original image.
 
-The table counts what the scanners report in the modules' *libraries*. It does not
-include CVEs in the module code itself, which the scanners cannot see (the same blind
+The CVEs are in the libraries, not in the modules: the libraries are written by other
+projects and packaged by Debian, and the scanners report them correctly. They are
+grouped by module because each module is why its libraries are installed, so keeping or
+removing a module keeps or removes them. The table does not include CVEs in the module
+code itself, which the scanners cannot see (the same blind
 spot as nginx). From njs's own advisories, njs 0.8.4 has one more:
 **CVE-2026-78689** (Critical), reachable only when the njs module is loaded and a script
 uses XML canonicalization (`exclusiveC14n`), so 35 for njs in all. A second njs
 advisory, CVE-2026-18329, does not apply to 0.8.4. None of nginx's own 24 advisories
-concern xslt, geoip or image-filter. Source: `scans/baseline/triage.csv` and
-`apt-get -s remove --auto-remove` on the module packages in the original image.
+concern xslt, geoip or image-filter.
 
 **What this costs, measured.** All four modules are built from source and shipped, and
 their libraries stay in the image. On 2026-10-05 three throwaway variants of
