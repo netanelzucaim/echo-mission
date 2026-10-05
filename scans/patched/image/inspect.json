@@ -1,0 +1,69 @@
+[
+    {
+        "Id": "sha256:439a1aeb48f5b6d377b730b151cf0f05ebba756af324736d42a2dc8515cd1e18",
+        "RepoTags": [
+            "echo-nginx:1.25-bookworm"
+        ],
+        "RepoDigests": [
+            "echo-nginx@sha256:439a1aeb48f5b6d377b730b151cf0f05ebba756af324736d42a2dc8515cd1e18"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-05T21:57:24.687693498+03:00",
+        "Config": {
+            "ExposedPorts": {
+                "80/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NGINX_VERSION=1.25.5",
+                "NJS_VERSION=0.8.4",
+                "NJS_RELEASE=3~bookworm",
+                "PKG_RELEASE=1~bookworm"
+            ],
+            "Entrypoint": [
+                "/docker-entrypoint.sh"
+            ],
+            "Cmd": [
+                "nginx",
+                "-g",
+                "daemon off;"
+            ],
+            "Labels": {
+                "maintainer": "Netanel Zucaim <netanelzucaim100@gmail.com>"
+            },
+            "StopSignal": "SIGQUIT",
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 291047767,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:34467cc93912af891dfee8a3902adf9b4f355a9bca4eaa46f658d1181a21de0d",
+                "sha256:5b13bd6bc252d4d63b4de1ea6fdba24661fe486950e40e1655471c484992c2db",
+                "sha256:b5c4beffd32656c014ea874b7244dbf345ee8481f8b1064f18f20b0c99eda5ca",
+                "sha256:5d6c3e8e91e89a401cc489462deac700a1a5ef17b30e05db4ae4513332b0e19e",
+                "sha256:15707b45e5217fd70cc74b3e53d8e6688ec64ece3c43068ad2187d8fb0685473",
+                "sha256:9e2db7699e2322880246edcb57ad7dcc6b196bb786f7c23f62cd2a5477dd12c9",
+                "sha256:3517928775981425851436c299c15e8e3d8d51c4336466b7e20bae5075ffaea5"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-05T18:57:30.072779981Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:439a1aeb48f5b6d377b730b151cf0f05ebba756af324736d42a2dc8515cd1e18",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "6ze3ht4vxxkuiaskmuoyc2x5g",
+                    "CreatedAt": "2026-10-05T21:57:31.633623435+03:00"
+                }
+            ]
+        }
+    }
+]

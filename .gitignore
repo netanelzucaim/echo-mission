@@ -1,3 +1,6 @@
-*.tar
-out/
-.DS_Store
+# build artifacts (the .deb is produced by build/, not committed)
+/out/
+# cloud-only proxy plumbing (see CLAUDE.md "Running things from a Claude cloud session")
+/proxy-ca.crt
+/Containerfile.cloud
+/scans/patched/reports/*.tar

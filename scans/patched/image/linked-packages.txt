@@ -1,0 +1,6 @@
+libc6
+libcrypt1
+libpcre2-8-0
+libssl3
+nginx
+zlib1g

@@ -1,0 +1,524 @@
+id,status,trivy_before,grype_before,trivy_after,grype_after,packages,loaded_by_main_program,fix_available_now,known_exploited
+CVE-2024-6119,fixed,High,High,,,libssl3 openssl,yes,,no
+CVE-2024-2511,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2026-78689,fixed,-,-,,,nginx-module-njs,no,,no
+CVE-2025-7424,fixed,High,High,,,libxslt1.1,no,,no
+CVE-2025-27113,fixed,High,High,,,libxml2,no,,no
+CVE-2026-25646,fixed,High,High,,,libpng16-16,no,,no
+CVE-2025-64720,fixed,High,High,,,libpng16-16,no,,no
+CVE-2025-24928,fixed,High,High,,,libxml2,no,,no
+CVE-2025-66293,fixed,High,High,,,libpng16-16,no,,no
+CVE-2025-24855,fixed,High,High,,,libxslt1.1,no,,no
+CVE-2024-55549,fixed,High,High,,,libxslt1.1,no,,no
+CVE-2022-49043,fixed,High,High,,,libxml2,no,,no
+CVE-2025-65018,fixed,High,High,,,libpng16-16,no,,no
+CVE-2026-22695,fixed,High,High,,,libpng16-16,no,,no
+CVE-2026-86139,fixed,High,High,,,libxml2,no,,no
+CVE-2026-22801,fixed,High,High,,,libpng16-16,no,,no
+CVE-2026-42533,fixed,-,-,,,nginx,yes,,no
+CVE-2024-28182,fixed,Medium,Medium,,,libnghttp2-14,no,,no
+CVE-2025-6021,fixed,Medium,High,,,libxml2,no,,no
+CVE-2026-33416,fixed,Medium,High,,,libpng16-16,no,,no
+CVE-2025-5222,fixed,Medium,High,,,libicu72,no,,no
+CVE-2026-33636,fixed,Medium,High,,,libpng16-16,no,,no
+CVE-2024-34459,fixed,Low,High,,,libxml2,no,,no
+CVE-2023-40403,fixed,Medium,Medium,,,libxslt1.1,no,,no
+CVE-2026-0990,fixed,Medium,Medium,,,libxml2,no,,no
+CVE-2023-45322,fixed,Medium,Medium,,,libxml2,no,,no
+CVE-2023-39615,fixed,Medium,Medium,,,libxml2,no,,no
+CVE-2026-89156,fixed,Medium,Medium,,,libpcre2-8-0,yes,,no
+CVE-2026-86137,fixed,Medium,Medium,,,libxml2,no,,no
+CVE-2025-64505,fixed,Medium,Medium,,,libpng16-16,no,,no
+CVE-2026-34757,fixed,Medium,Medium,,,libpng16-16,no,,no
+CVE-2025-9714,fixed,Medium,Medium,,,libxml2,no,,no
+CVE-2025-64506,fixed,Medium,Medium,,,libpng16-16,no,,no
+CVE-2026-9256,fixed,-,-,,,nginx,yes,,no
+CVE-2026-60005,fixed,-,-,,,nginx,yes,,no
+CVE-2026-56434,fixed,-,-,,,nginx,yes,,no
+CVE-2026-42946,fixed,-,-,,,nginx,yes,,no
+CVE-2026-42945,fixed,-,-,,,nginx,yes,,no
+CVE-2026-42055,fixed,-,-,,,nginx,yes,,no
+CVE-2026-40701,fixed,-,-,,,nginx,yes,,no
+CVE-2026-40460,fixed,-,-,,,nginx,yes,,no
+CVE-2026-32647,fixed,-,-,,,nginx,yes,,no
+CVE-2026-28753,fixed,-,-,,,nginx,yes,,no
+CVE-2026-27784,fixed,-,-,,,nginx,yes,,no
+CVE-2026-27654,fixed,-,-,,,nginx,yes,,no
+CVE-2026-1642,fixed,-,-,,,nginx,yes,,no
+CVE-2025-23419,fixed,-,-,,,nginx,yes,,no
+CVE-2024-35200,fixed,-,-,,,nginx,yes,,no
+CVE-2024-34161,fixed,-,-,,,nginx,yes,,no
+CVE-2024-32760,fixed,-,-,,,nginx,yes,,no
+CVE-2024-31079,fixed,-,-,,,nginx,yes,,no
+CVE-2024-2398,fixed,Medium,High,,,curl libcurl4,no,,no
+CVE-2024-37371,fixed,Critical,Critical,,,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no
+CVE-2026-42010,fixed,Critical,Critical,,,libgnutls30,no,,no
+CVE-2026-33845,fixed,Critical,Critical,,,libgnutls30,no,,no
+CVE-2024-13176,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2026-1757,fixed,Low,Medium,,,libxml2,no,,no
+CVE-2026-9672,fixed,High,Negligible/Unknown,,,libgd3,no,,no
+CVE-2026-7598,fixed,High,Critical,,,libssh2-1,no,,no
+CVE-2023-31484,fixed,High,High,,,perl-base,no,,no
+CVE-2025-32988,fixed,High,High,,,libgnutls30,no,,no
+CVE-2026-42009,fixed,High,High,,,libgnutls30,no,,no
+CVE-2026-33846,fixed,High,High,,,libgnutls30,no,,no
+CVE-2026-27135,fixed,High,High,,,libnghttp2-14,no,,no
+CVE-2026-3833,fixed,High,High,,,libgnutls30,no,,no
+CVE-2025-32990,fixed,High,High,,,libgnutls30,no,,no
+CVE-2026-40355,fixed,High,High,,,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no
+CVE-2026-40356,fixed,High,High,,,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no
+CVE-2024-37370,fixed,High,High,,,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no
+CVE-2026-5773,fixed,High,High,,,curl libcurl4,no,,no
+CVE-2025-31115,fixed,High,High,,,liblzma5,no,,no
+CVE-2024-7264,fixed,Medium,Medium,,,curl libcurl4,no,,no
+CVE-2024-56406,fixed,High,High,,,perl-base,no,,no
+CVE-2025-6020,fixed,High,High,,,libpam-modules libpam-modules-bin libpam-runtime libpam0g,no,,no
+CVE-2026-58050,fixed,High,High,,,libssh2-1,no,,no
+CVE-2025-68973,fixed,High,High,,,gpgv,no,,no
+CVE-2026-4878,fixed,High,High,,,libcap2,no,,no
+CVE-2026-0989,fixed,Low,Low,,,libxml2,no,,no
+CVE-2026-0992,fixed,Low,Low,,,libxml2,no,,no
+CVE-2026-5260,fixed,Medium,High,,,libgnutls30,no,,no
+CVE-2025-6170,fixed,Low,Low,,,libxml2,no,,no
+CVE-2026-42011,fixed,Medium,High,,,libgnutls30,no,,no
+CVE-2026-42013,fixed,Medium,High,,,libgnutls30,no,,no
+CVE-2025-8732,fixed,Low,Low,,,libxml2,no,,no
+CVE-2025-24528,fixed,Medium,High,,,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no
+CVE-2026-42012,fixed,Medium,High,,,libgnutls30,no,,no
+CVE-2026-66032,fixed,Medium,High,,,libssh2-1,no,,no
+CVE-2026-2219,fixed,Medium,High,,,dpkg,no,,no
+CVE-2026-86141,fixed,Low,Low,,,libxml2,no,,no
+CVE-2026-66034,fixed,Medium,High,,,libssh2-1,no,,no
+CVE-2026-58051,fixed,Medium,High,,,libssh2-1,no,,no
+CVE-2026-48142,fixed,-,-,,,nginx,yes,,no
+CVE-2026-42934,fixed,-,-,,,nginx,yes,,no
+CVE-2026-27651,fixed,-,-,,,nginx,yes,,no
+CVE-2025-53859,fixed,-,-,,,nginx,yes,,no
+CVE-2024-7347,fixed,-,-,,,nginx,yes,,no
+CVE-2025-27363,fixed,High,High,,,libfreetype6,no,,yes
+CVE-2023-50387,fixed,High,High,,,libsystemd0 libudev1,no,,no
+CVE-2024-9681,fixed,Medium,Medium,,,curl libcurl4,no,,no
+CVE-2025-32989,fixed,Medium,Medium,,,libgnutls30,no,,no
+CVE-2024-12243,fixed,Medium,Medium,,,libgnutls30,no,,no
+CVE-2025-4598,fixed,Medium,Medium,,,libsystemd0 libudev1,no,,no
+CVE-2024-12133,fixed,Medium,Medium,,,libtasn1-6,no,,no
+CVE-2026-42015,fixed,Medium,Medium,,,libgnutls30,no,,no
+CVE-2024-8096,fixed,Medium,Medium,,,curl libcurl4,no,,no
+CVE-2024-28834,fixed,Medium,Medium,,,libgnutls30,no,,no
+CVE-2025-6395,fixed,Medium,Medium,,,libgnutls30,no,,no
+CVE-2025-15661,fixed,Medium,Medium,,,libssh2-1,no,,no
+CVE-2025-14831,fixed,Medium,Medium,,,libgnutls30,no,,no
+CVE-2026-7168,fixed,Medium,Medium,,,curl libcurl4,no,,no
+CVE-2026-34743,fixed,Medium,Medium,,,liblzma5,no,,no
+CVE-2026-3783,fixed,Medium,Medium,,,curl libcurl4,no,,no
+CVE-2025-40909,fixed,Medium,Medium,,,perl-base,no,,no
+CVE-2024-22365,fixed,Medium,Medium,,,libpam-modules libpam-modules-bin libpam-runtime libpam0g,no,,no
+CVE-2026-3784,fixed,Medium,Medium,,,curl libcurl4,no,,no
+CVE-2024-26462,fixed,Medium,Medium,,,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no
+CVE-2025-6297,fixed,Low,High,,,dpkg,no,,no
+CVE-2024-28835,fixed,Medium,Medium,,,libgnutls30,no,,no
+CVE-2025-3576,fixed,Medium,Medium,,,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,,no
+CVE-2023-4641,fixed,Medium,Medium,,,login passwd,no,,no
+CVE-2026-40225,fixed,Medium,Medium,,,libsystemd0 libudev1,no,,no
+CVE-2026-42014,fixed,Medium,Medium,,,libgnutls30,no,,no
+CVE-2026-41989,fixed,Medium,Medium,,,libgcrypt20,no,,no
+CVE-2026-29111,fixed,Medium,Medium,,,libsystemd0 libudev1,no,,no
+CVE-2025-1390,fixed,Medium,Medium,,,libcap2,no,,no
+CVE-2026-4105,fixed,Medium,Medium,,,libsystemd0 libudev1,no,,no
+CVE-2026-40226,fixed,Medium,Medium,,,libsystemd0 libudev1,no,,no
+CVE-2023-50868,fixed,High,High,,,libsystemd0 libudev1,no,,no
+CVE-2025-15467,fixed,High,Critical,,,libssl3 openssl,yes,,no
+CVE-2025-14819,fixed,Low,Medium,,,curl libcurl4,no,,no
+CVE-2025-14524,fixed,Low,Medium,,,curl libcurl4,no,,no
+CVE-2025-10148,fixed,Low,Medium,,,curl libcurl4,no,,no
+CVE-2025-9820,fixed,Low,Medium,,,libgnutls30,no,,no
+CVE-2026-5958,fixed,Medium,Low,,,sed,no,,no
+CVE-2024-2004,fixed,Low,Low,,,curl libcurl4,no,,no
+CVE-2024-11053,fixed,Low,Low,,,curl libcurl4,no,,no
+CVE-2025-0167,fixed,Low,Low,,,curl libcurl4,no,,no
+CVE-2026-5419,fixed,Low,Low,,,libgnutls30,no,,no
+CVE-2023-29383,fixed,Low,Low,,,login passwd,no,,no
+CVE-2024-5171,fixed,Critical,Critical,,,libaom3,no,,no
+CVE-2024-56171,fixed,Critical,Critical,,,libxml2,no,,no
+CVE-2025-0838,fixed,Critical,Critical,,,libabsl20220623,no,,no
+CVE-2025-48174,fixed,Critical,Critical,,,libavif15,no,,no
+CVE-2025-49796,fixed,High,Critical,,,libxml2,no,,no
+CVE-2025-49794,fixed,High,Critical,,,libxml2,no,,no
+CVE-2026-45447,fixed,High,High,,,libssl3 openssl,yes,,no
+CVE-2026-28388,fixed,High,High,,,libssl3 openssl,yes,,no
+CVE-2026-28389,fixed,High,High,,,libssl3 openssl,yes,,no
+CVE-2023-52356,fixed,High,High,,,libtiff6,no,,no
+CVE-2024-28757,fixed,High,High,,,libexpat1,no,,no
+CVE-2023-52425,fixed,High,High,,,libexpat1,no,,no
+CVE-2024-45490,fixed,High,High,,,libexpat1,no,,no
+CVE-2024-7006,fixed,High,High,,,libtiff6,no,,no
+CVE-2025-59375,fixed,High,High,,,libexpat1,no,,no
+CVE-2024-25062,fixed,High,High,,,libxml2,no,,no
+CVE-2026-34182,fixed,Medium,Critical,,,libssl3 openssl,yes,,no
+CVE-2025-9900,fixed,High,High,,,libtiff6,no,,no
+CVE-2025-69421,fixed,High,High,,,libssl3 openssl,yes,,no
+CVE-2026-28387,fixed,High,High,,,libssl3 openssl,yes,,no
+CVE-2026-56211,fixed,High,High,,,libaom3,no,,no
+CVE-2026-28390,fixed,High,High,,,libssl3 openssl,yes,,no
+CVE-2023-49462,fixed,High,High,,,libheif1,no,,no
+CVE-2024-41311,fixed,High,High,,,libheif1,no,,no
+CVE-2026-66046,fixed,High,High,,,libexpat1,no,,no
+CVE-2026-56209,fixed,High,High,,,libaom3,no,,no
+CVE-2025-32415,fixed,High,High,,,libxml2,no,,no
+CVE-2026-56210,fixed,High,High,,,libaom3,no,,no
+CVE-2026-33164,fixed,High,High,,,libde265-0,no,,no
+CVE-2026-45186,fixed,High,High,,,libexpat1,no,,no
+CVE-2026-56208,fixed,High,High,,,libaom3,no,,no
+CVE-2026-93990,fixed,High,High,,,libexpat1,no,,no
+CVE-2026-86145,fixed,High,High,,,libpcre2-8-0,yes,,no
+CVE-2026-4775,fixed,High,High,,,libtiff6,no,,no
+CVE-2026-25210,fixed,High,High,,,libexpat1,no,,no
+CVE-2026-103111,fixed,High,High,,,libpcre2-8-0,yes,,no
+CVE-2026-89161,fixed,High,High,,,libpcre2-8-0,yes,,no
+CVE-2026-76957,fixed,High,High,,,libexpat1,no,,no
+CVE-2024-5535,fixed,Low,Critical,,,libssl3 openssl,yes,,no
+CVE-2026-63076,fixed,Medium,High,,,libssl3 openssl,yes,,no
+CVE-2025-9230,fixed,Medium,High,,,libssl3 openssl,yes,,no
+CVE-2024-8176,fixed,Medium,High,,,libexpat1,no,,no
+CVE-2026-31790,fixed,Medium,High,,,libssl3 openssl,yes,,no
+CVE-2026-63072,fixed,Medium,High,,,libssl3 openssl,yes,,no
+CVE-2026-45445,fixed,Medium,High,,,libssl3 openssl,yes,,no
+CVE-2026-4046,fixed,Medium,High,,,libc-bin libc6,yes,,no
+CVE-2026-0915,fixed,Medium,High,,,libc-bin libc6,yes,,no
+CVE-2025-69419,fixed,Medium,High,,,libssl3 openssl,yes,,no
+CVE-2025-4802,fixed,Medium,High,,,libc-bin libc6,yes,,no
+CVE-2026-54241,fixed,Medium,High,,,libde265-0,no,,no
+CVE-2026-54240,fixed,Medium,High,,,libde265-0,no,,no
+CVE-2026-49346,fixed,Medium,High,,,libde265-0,no,,no
+CVE-2026-49295,fixed,Medium,High,,,libde265-0,no,,no
+CVE-2026-4437,fixed,Medium,High,,,libc-bin libc6,yes,,no
+CVE-2026-75803,fixed,Low,Critical,,,libssl3 openssl,yes,,no
+CVE-2023-5678,fixed,Medium,Medium,,,libssl3 openssl,yes,,no
+CVE-2024-0727,fixed,Medium,Medium,,,libssl3 openssl,yes,,no
+CVE-2023-4039,fixed,Low,Negligible/Unknown,,,gcc-12-base libgcc-s1 libstdc++6,no,,no
+CVE-2024-4741,fixed,Low,High,,,libssl3 openssl,yes,,no
+CVE-2026-34180,fixed,Low,High,,,libssl3 openssl,yes,,no
+CVE-2023-3618,fixed,Medium,Medium,,,libtiff6,no,,no
+CVE-2024-50602,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-9076,fixed,Low,High,,,libssl3 openssl,yes,,no
+CVE-2023-29659,fixed,Medium,Medium,,,libheif1,no,,no
+CVE-2025-69420,fixed,Low,High,,,libssl3 openssl,yes,,no
+CVE-2026-7383,fixed,Low,High,,,libssl3 openssl,yes,,no
+CVE-2026-54874,fixed,Low,High,,,libssl3 openssl,yes,,no
+CVE-2025-15281,fixed,Low,High,,,libc-bin libc6,yes,,no
+CVE-2024-38950,fixed,Medium,Medium,,,libde265-0,no,,no
+CVE-2026-45382,fixed,Medium,Medium,,,libde265-0,no,,no
+CVE-2026-45383,fixed,Medium,Medium,,,libde265-0,no,,no
+CVE-2023-2908,fixed,Medium,Medium,,,libtiff6,no,,no
+CVE-2023-25433,fixed,Medium,Medium,,,libtiff6,no,,no
+CVE-2023-26966,fixed,Medium,Medium,,,libtiff6,no,,no
+CVE-2024-38949,fixed,Medium,Medium,,,libde265-0,no,,no
+CVE-2026-0861,fixed,Low,High,,,libc-bin libc6,yes,,no
+CVE-2023-26965,fixed,Medium,Medium,,,libtiff6,no,,no
+CVE-2025-0395,fixed,Medium,Medium,,,libc-bin libc6,yes,,no
+CVE-2026-49337,fixed,Medium,Medium,,,libde265-0,no,,no
+CVE-2025-48175,fixed,Medium,Medium,,,libavif15,no,,no
+CVE-2026-89160,fixed,Medium,Medium,,,libpcre2-8-0,yes,,no
+CVE-2025-8058,fixed,Medium,Medium,,,libc-bin libc6,yes,,no
+CVE-2026-72522,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-33165,fixed,Medium,Medium,,,libde265-0,no,,no
+CVE-2026-50219,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56412,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56131,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56407,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56406,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-32777,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56403,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-32776,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-32778,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56404,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56411,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56410,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56408,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56405,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2026-56409,fixed,Medium,Medium,,,libexpat1,no,,no
+CVE-2024-9143,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2023-6237,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2025-9232,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2024-4603,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2026-42766,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2026-63074,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2026-22796,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2026-42767,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2026-4438,fixed,Low,Medium,,,libc-bin libc6,yes,,no
+CVE-2026-45446,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2023-51792,fixed,Medium,Low,,,libde265-0,no,,no
+CVE-2025-68160,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2026-22795,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2025-69418,fixed,Low,Medium,,,libssl3 openssl,yes,,no
+CVE-2026-42770,fixed,Low,Low,,,libssl3 openssl,yes,,no
+CVE-2026-24515,fixed,Low,Low,,,libexpat1,no,,no
+CVE-2026-31789,fixed,Critical,Critical,,,libssl3 openssl,yes,,no
+CVE-2024-45492,fixed,Critical,Critical,,,libexpat1,no,,no
+CVE-2024-45491,fixed,Critical,Critical,,,libexpat1,no,,no
+CVE-2025-32414,fixed,High,High,,,libxml2,no,,no
+CVE-2026-89157,fixed,High,High,,,libpcre2-8-0,yes,,no
+CVE-2026-89158,fixed,Medium,Medium,,,libpcre2-8-0,yes,,no
+CVE-2023-6129,fixed,Medium,Medium,,,libssl3 openssl,yes,,no
+TEMP-1147318-639065,fixed,Negligible/Unknown,-,,,liblzma5,no,,no
+DSA-5990-1,fixed,Negligible/Unknown,-,,,libxml2,no,,no
+DSA-5979-2,fixed,Negligible/Unknown,-,,,libxslt1.1,no,,no
+DLA-4792-1,fixed,Negligible/Unknown,-,,,tzdata,no,,no
+DLA-4783-1,fixed,Negligible/Unknown,-,,,liblzma5,no,,no
+DLA-4726-1,fixed,Negligible/Unknown,-,,,ca-certificates,no,,no
+TEMP-0000000-E66AA0,fixed,Negligible/Unknown,-,,,libde265-0,no,,no
+TEMP-0000000-BB5891,fixed,Negligible/Unknown,-,,,libde265-0,no,,no
+CVE-2026-18329,fixed,-,-,,,nginx-module-njs,no,,no
+CVE-2023-44487,remaining,-,High,-,High,nginx,yes,no,yes
+CVE-2026-5450,remaining,Medium,Critical,Medium,Critical,libc-bin libc6,yes,no,no
+CVE-2026-84782,remaining,High,High,High,High,libssl3 openssl,yes,no,no
+CVE-2026-85091,remaining,Medium,-,Medium,High,zlib1g,yes,no,no
+CVE-2026-5928,remaining,Medium,High,Medium,High,libc-bin libc6,yes,no,no
+CVE-2026-5435,remaining,Medium,High,Medium,High,libc-bin libc6,yes,no,no
+CVE-2026-19499,remaining,Medium,High,Medium,High,libc-bin libc6,yes,no,no
+CVE-2023-6879,remaining,Critical,Critical,Critical,Critical,libaom3,no,no,no
+CVE-2026-6238,remaining,Medium,Medium,Medium,Medium,libc-bin libc6,yes,no,no
+CVE-2026-80489,remaining,Medium,Medium,Medium,Medium,libc-bin libc6,yes,no,no
+CVE-2026-77117,remaining,Medium,Medium,Medium,Medium,libc-bin libc6,yes,no,no
+CVE-2026-75806,remaining,Medium,Medium,Medium,Medium,libssl3 openssl,yes,no,no
+CVE-2026-8674,remaining,Medium,Medium,Medium,Medium,libc-bin libc6,yes,no,no
+CVE-2026-6791,remaining,Medium,Medium,Medium,Medium,libc-bin libc6,yes,no,no
+CVE-2026-89092,remaining,Medium,Medium,Medium,Medium,libc-bin libc6,yes,no,no
+CVE-2026-19542,remaining,Medium,Medium,Medium,Medium,libc-bin libc6,yes,no,no
+CVE-2026-75805,remaining,Medium,Medium,Medium,Medium,libssl3 openssl,yes,no,no
+CVE-2026-27171,remaining,Medium,Medium,Medium,Medium,zlib1g,yes,no,no
+CVE-2026-6653,remaining,Critical,Critical,Critical,Critical,libxml2,no,no,no
+CVE-2026-18374,remaining,Medium,Medium,Medium,Medium,libc-bin libc6,yes,no,no
+CVE-2026-86805,remaining,Medium,Medium,Medium,Medium,libc-bin libc6,yes,no,no
+CVE-2023-45853,remaining,Critical,-,Critical,-,zlib1g,yes,no,no
+CVE-2009-4487,remaining,-,Negligible/Unknown,-,Negligible/Unknown,nginx,yes,no,no
+CVE-2026-52490,remaining,High,Critical,High,Critical,libtiff6,no,no,no
+CVE-2011-3389,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libgnutls30,no,no,no
+CVE-2023-52355,remaining,High,High,High,High,libtiff6,no,no,no
+CVE-2026-32740,remaining,High,High,High,High,libheif1,no,no,no
+CVE-2023-39616,remaining,High,High,High,High,libaom3,no,no,no
+CVE-2026-32882,remaining,High,High,High,High,libheif1,no,no,no
+CVE-2026-35189,remaining,Low,Medium,Low,Medium,libssl3 openssl,yes,no,no
+CVE-2026-54872,remaining,Medium,Low,Medium,Low,libssl3 openssl,yes,no,no
+CVE-2026-77696,remaining,Medium,Low,Medium,Low,libssl3 openssl,yes,no,no
+CVE-2026-32741,remaining,High,High,High,High,libheif1,no,no,no
+CVE-2026-41071,remaining,High,High,High,High,libheif1,no,no,no
+CVE-2026-74860,remaining,High,High,High,High,libxml2,no,no,no
+CVE-2026-12912,remaining,High,High,High,High,libtiff6,no,no,no
+CVE-2025-68431,remaining,High,High,High,High,libheif1,no,no,no
+CVE-2026-6368,remaining,Medium,Low,Medium,Low,libc-bin libc6,yes,no,no
+CVE-2026-95818,remaining,Medium,Low,Medium,Low,libc-bin libc6,yes,no,no
+CVE-2026-88806,remaining,High,High,High,High,libx11-6 libx11-data,no,no,no
+CVE-2026-86143,remaining,High,High,High,High,libxml2,no,no,no
+CVE-2026-86144,remaining,High,High,High,High,libxml2,no,no,no
+CVE-2026-47178,remaining,High,High,High,High,libheif1,no,no,no
+CVE-2026-86142,remaining,High,High,High,High,libxml2,no,no,no
+CVE-2026-86140,remaining,High,High,High,High,libxml2,no,no,no
+CVE-2026-86138,remaining,High,High,High,High,libxml2,no,no,no
+CVE-2026-50142,remaining,Medium,High,Medium,High,libheif1,no,no,no
+CVE-2026-62292,remaining,Medium,High,Medium,High,libheif1,no,no,no
+CVE-2026-84447,remaining,Medium,High,Medium,High,libheif1,no,no,no
+CVE-2026-84384,remaining,Medium,High,Medium,High,libheif1,no,no,no
+CVE-2026-47247,remaining,Medium,High,Medium,High,libheif1,no,no,no
+CVE-2026-84446,remaining,Medium,High,Medium,High,libheif1,no,no,no
+CVE-2026-48029,remaining,Medium,High,Medium,High,libheif1,no,no,no
+CVE-2026-84451,remaining,High,Medium,High,Medium,libheif1,no,no,no
+CVE-2026-84450,remaining,High,Medium,High,Medium,libheif1,no,no,no
+CVE-2026-8927,remaining,High,Critical,High,Critical,curl libcurl4,no,no,no
+CVE-2023-6277,remaining,Medium,Medium,Medium,Medium,libtiff6,no,no,no
+CVE-2023-2953,remaining,High,High,High,High,libldap-2.5-0,no,no,no
+CVE-2023-32570,remaining,Medium,Medium,Medium,Medium,libdav1d6,no,no,no
+CVE-2026-97399,remaining,Low,Low,Low,Low,libc-bin libc6,yes,no,no
+CVE-2026-19931,remaining,Medium,Critical,Medium,Critical,curl libcurl4,no,no,no
+CVE-2026-11856,remaining,Medium,Critical,Medium,Critical,curl libcurl4,no,no,no
+CVE-2026-8924,remaining,Medium,Critical,Medium,Critical,curl libcurl4,no,no,no
+CVE-2026-62289,remaining,Medium,Medium,Medium,Medium,libheif1,no,no,no
+CVE-2026-10536,remaining,Medium,Critical,Medium,Critical,curl libcurl4,no,no,no
+CVE-2026-41080,remaining,Low,High,Low,High,libexpat1,no,no,no
+CVE-2026-32814,remaining,Medium,Medium,Medium,Medium,libheif1,no,no,no
+CVE-2026-41069,remaining,Medium,Medium,Medium,Medium,libheif1,no,no,no
+CVE-2026-32739,remaining,Medium,Medium,Medium,Medium,libheif1,no,no,no
+CVE-2026-41992,remaining,High,High,High,High,gzip,no,no,no
+CVE-2026-32738,remaining,Medium,Medium,Medium,Medium,libheif1,no,no,no
+CVE-2026-49271,remaining,Medium,Medium,Medium,Medium,libheif1,no,no,no
+CVE-2026-102633,remaining,Medium,Medium,Medium,Medium,libexpat1,no,no,no
+CVE-2026-9538,remaining,High,High,High,High,perl-base,no,no,no
+CVE-2025-69720,remaining,High,High,High,High,libtinfo6 ncurses-base ncurses-bin,no,no,no
+CVE-2026-12064,remaining,High,High,High,High,curl libcurl4,no,no,no
+CVE-2026-6276,remaining,High,High,High,High,curl libcurl4,no,no,no
+CVE-2026-8286,remaining,High,High,High,High,curl libcurl4,no,no,no
+CVE-2025-66382,remaining,Medium,Medium,Medium,Medium,libexpat1,no,no,no
+CVE-2026-94283,remaining,Medium,Medium,Medium,Medium,libx11-6 libx11-data,no,no,no
+CVE-2026-84448,remaining,Medium,Medium,Medium,Medium,libheif1,no,no,no
+CVE-2026-47709,remaining,Medium,Medium,Medium,Medium,libheif1,no,no,no
+CVE-2026-95512,remaining,Medium,Medium,Medium,Medium,libfreetype6,no,no,no
+CVE-2025-10911,remaining,Medium,Medium,Medium,Medium,libxslt1.1,no,no,no
+CVE-2026-76781,remaining,Medium,Medium,Medium,Medium,libxml2,no,no,no
+CVE-2026-47254,remaining,Medium,Medium,Medium,Medium,libheif1,no,no,no
+CVE-2026-4367,remaining,Medium,Medium,Medium,Medium,libxpm4,no,no,no
+CVE-2026-47714,remaining,Medium,Medium,Medium,Medium,libheif1,no,no,no
+CVE-2026-76642,remaining,High,High,High,High,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2026-78408,remaining,High,High,High,High,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2026-18495,remaining,Medium,Medium,Medium,Medium,libtiff6,no,no,no
+CVE-2026-94285,remaining,Medium,Medium,Medium,Medium,libx11-6 libx11-data,no,no,no
+CVE-2026-78410,remaining,High,High,High,High,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2026-56132,remaining,Medium,Medium,Medium,Medium,libexpat1,no,no,no
+CVE-2026-94284,remaining,Medium,Medium,Medium,Medium,libx11-6 libx11-data,no,no,no
+CVE-2026-78409,remaining,High,High,High,High,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2026-54369,remaining,High,High,High,High,libacl1,no,no,no
+CVE-2026-94287,remaining,Medium,Medium,Medium,Medium,libxpm4,no,no,no
+CVE-2018-20796,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libc-bin libc6,yes,no,no
+CVE-2026-18924,remaining,Low,Critical,Low,Critical,curl libcurl4,no,no,no
+CVE-2026-8932,remaining,Medium,High,Medium,High,curl libcurl4,no,no,no
+CVE-2026-8458,remaining,High,Medium,High,Medium,curl libcurl4,no,no,no
+CVE-2026-95619,remaining,Medium,High,Medium,High,gcc-12-base libgcc-s1 libstdc++6,no,no,no
+CVE-2026-102010,remaining,Medium,High,Medium,High,gcc-12-base libgcc-s1 libstdc++6,no,no,no
+CVE-2026-54370,remaining,Medium,High,Medium,High,libacl1,no,no,no
+CVE-2026-16742,remaining,High,Medium,High,Medium,libsystemd0 libudev1,no,no,no
+CVE-2026-84444,remaining,Negligible/Unknown,High,Negligible/Unknown,High,libheif1,no,no,no
+CVE-2026-84449,remaining,Medium,Low,Medium,Low,libheif1,no,no,no
+CVE-2026-88373,remaining,Negligible/Unknown,High,Negligible/Unknown,High,libde265-0,no,no,no
+CVE-2026-36849,remaining,High,Negligible/Unknown,High,Negligible/Unknown,libtiff6,no,no,no
+CVE-2019-1010022,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libc-bin libc6,yes,no,no
+CVE-2019-1010024,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libc-bin libc6,yes,no,no
+CVE-2025-13151,remaining,Low,High,Low,High,libtasn1-6,no,no,no
+CVE-2023-50495,remaining,Medium,Medium,Medium,Medium,libtinfo6 ncurses-base ncurses-bin,no,no,no
+CVE-2019-1010023,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libc-bin libc6,yes,no,no
+CVE-2026-6253,remaining,Medium,Medium,Medium,Medium,curl libcurl4,no,no,no
+CVE-2026-3184,remaining,Medium,Medium,Medium,Medium,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2026-6429,remaining,Medium,Medium,Medium,Medium,curl libcurl4,no,no,no
+CVE-2026-5545,remaining,Medium,Medium,Medium,Medium,curl libcurl4,no,no,no
+CVE-2026-54411,remaining,Medium,Medium,Medium,Medium,libpam-modules libpam-modules-bin libpam-runtime libpam0g,no,no,no
+CVE-2026-8376,remaining,Critical,Critical,-,Critical,perl-base,no,no,no
+CVE-2026-13608,remaining,Low,High,Low,High,curl libcurl4,no,no,no
+CVE-2026-13221,remaining,Critical,Critical,-,Critical,perl-base,no,no,no
+CVE-2026-42496,remaining,Critical,Critical,-,Critical,perl-base,no,no,no
+CVE-2026-5704,remaining,Medium,Medium,Medium,Medium,tar,no,no,no
+CVE-2026-12087,remaining,Medium,Critical,-,Critical,perl-base,no,no,no
+CVE-2026-82209,remaining,Low,High,Low,High,curl libcurl4,no,no,no
+CVE-2026-80230,remaining,Low,High,Low,High,curl libcurl4,no,no,no
+CVE-2026-4873,remaining,Medium,Medium,Medium,Medium,curl libcurl4,no,no,no
+CVE-2026-57433,remaining,High,Critical,-,Critical,perl-base,no,no,no
+CVE-2026-58055,remaining,Medium,Medium,Medium,Medium,libnghttp2-14,no,no,no
+CVE-2024-10041,remaining,Medium,Medium,Medium,Medium,libpam-modules libpam-modules-bin libpam-runtime libpam0g,no,no,no
+CVE-2026-1965,remaining,Medium,Medium,Medium,Medium,curl libcurl4,no,no,no
+CVE-2026-15534,remaining,Medium,Medium,Medium,Medium,perl-base,no,no,no
+CVE-2026-13757,remaining,Medium,Medium,Medium,Medium,libp11-kit0,no,no,no
+CVE-2025-30258,remaining,Medium,Medium,Medium,Medium,gpgv,no,no,no
+CVE-2026-42250,remaining,Medium,Medium,Medium,Medium,libbz2-1.0,no,no,no
+CVE-2026-54371,remaining,Medium,Medium,Medium,Medium,libattr1,no,no,no
+CVE-2026-13595,remaining,Medium,Medium,Medium,Medium,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2026-15059,remaining,Medium,Medium,Medium,Medium,libsystemd0 libudev1,no,no,no
+CVE-2026-18938,remaining,Medium,Medium,Medium,Medium,libp11-kit0,no,no,no
+CVE-2026-41991,remaining,Medium,Medium,Medium,Medium,gzip,no,no,no
+CVE-2026-18508,remaining,Medium,Medium,Medium,Medium,tar,no,no,no
+CVE-2026-27456,remaining,Medium,Medium,Medium,Medium,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2025-68972,remaining,Medium,Medium,Medium,Medium,gpgv,no,no,no
+CVE-2026-18477,remaining,Medium,Medium,Medium,Medium,tar,no,no,no
+CVE-2010-4756,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libc-bin libc6,yes,no,no
+CVE-2019-9192,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libc-bin libc6,yes,no,no
+CVE-2019-1010025,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libc-bin libc6,yes,no,no
+CVE-2013-0337,remaining,-,Low,-,Low,nginx,yes,no,no
+CVE-2025-27587,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libssl3 openssl,yes,no,no
+CVE-2026-82560,remaining,Negligible/Unknown,High,Negligible/Unknown,High,perl-base,no,no,no
+CVE-2026-48959,remaining,Medium,High,-,High,perl-base,no,no,no
+CVE-2026-48962,remaining,High,High,-,High,perl-base,no,no,no
+CVE-2026-42497,remaining,High,High,-,High,perl-base,no,no,no
+CVE-2025-11731,remaining,Low,Low,Low,Low,libxslt1.1,no,no,no
+CVE-2024-13978,remaining,Low,Low,Low,Low,libtiff6,no,no,no
+CVE-2026-7017,remaining,Medium,High,-,High,perl-base,no,no,no
+CVE-2026-57432,remaining,High,High,-,High,perl-base,no,no,no
+CVE-2025-6141,remaining,Low,Medium,Low,Medium,libtinfo6 ncurses-base ncurses-bin,no,no,no
+CVE-2026-53613,remaining,High,Negligible/Unknown,High,Negligible/Unknown,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2017-16232,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2016-2781,remaining,Low,Low,Low,Low,coreutils,no,no,no
+CVE-2024-56433,remaining,Low,Low,Low,Low,login passwd,no,no,no
+CVE-2026-19487,remaining,Medium,Medium,-,Medium,perl-base,no,no,no
+CVE-2026-7010,remaining,Medium,Medium,-,Medium,perl-base,no,no,no
+CVE-2017-9937,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libjbig0,no,no,no
+CVE-2026-57062,remaining,Low,Low,Low,Low,gpgv,no,no,no
+CVE-2026-40228,remaining,Low,Low,Low,Low,libsystemd0 libudev1,no,no,no
+CVE-2025-15649,remaining,Medium,Medium,-,Medium,perl-base,no,no,no
+CVE-2026-53615,remaining,Medium,Negligible/Unknown,Medium,Negligible/Unknown,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2015-9019,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libxslt1.1,no,no,no
+CVE-2017-17740,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libldap-2.5-0,no,no,no
+CVE-2022-1210,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2018-10126,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2023-49463,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libheif1,no,no,no
+CVE-2015-3276,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libldap-2.5-0,no,no,no
+CVE-2024-25269,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libheif1,no,no,no
+CVE-2021-4214,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libpng16-16,no,no,no
+CVE-2023-6228,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2023-52426,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libexpat1,no,no,no
+CVE-2023-1916,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2023-3164,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2025-8177,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2025-61144,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2025-8176,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2025-9165,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2025-8961,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2025-8534,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2026-52491,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2026-52492,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2025-8851,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2026-3713,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libpng16-16,no,no,no
+CVE-2025-61147,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libde265-0,no,no,no
+CVE-2025-28162,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libpng16-16,no,no,no
+CVE-2025-28164,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libpng16-16,no,no,no
+CVE-2026-3949,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libheif1,no,no,no
+CVE-2026-11979,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libxml2,no,no,no
+CVE-2025-61145,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2025-61143,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libtiff6,no,no,no
+CVE-2005-2541,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,tar,no,no,no
+CVE-2020-15719,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libldap-2.5-0,no,no,no
+CVE-2018-5709,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,no,no
+CVE-2018-6829,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libgcrypt20,no,no,no
+CVE-2023-31486,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,perl-base,no,no,no
+CVE-2024-2379,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,curl libcurl4,no,no,no
+CVE-2025-0725,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,curl libcurl4,no,no,no
+CVE-2011-3374,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,apt libapt-pkg6.0,no,no,no
+CVE-2024-26461,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,no,no
+CVE-2024-2236,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libgcrypt20,no,no,no
+CVE-2007-5686,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,login passwd,no,no,no
+CVE-2022-27943,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,gcc-12-base libgcc-s1 libstdc++6,no,no,no
+CVE-2024-26458,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,no,no
+CVE-2025-15079,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,curl libcurl4,no,no,no
+CVE-2011-4116,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,perl-base,no,no,no
+CVE-2026-9547,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,curl libcurl4,no,no,no
+CVE-2025-15224,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,curl libcurl4,no,no,no
+CVE-2013-4392,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libsystemd0 libudev1,no,no,no
+CVE-2022-0563,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2025-10966,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,curl libcurl4,no,no,no
+CVE-2023-31439,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libsystemd0 libudev1,no,no,no
+CVE-2017-14159,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libldap-2.5-0,no,no,no
+CVE-2017-18018,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,coreutils,no,no,no
+CVE-2023-31437,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libsystemd0 libudev1,no,no,no
+CVE-2026-53910,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,diffutils,no,no,no
+CVE-2023-31438,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libsystemd0 libudev1,no,no,no
+CVE-2022-3219,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,gpgv,no,no,no
+CVE-2025-5278,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,coreutils,no,no,no
+CVE-2026-11850,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libgssapi-krb5-2 libk5crypto3 libkrb5-3 libkrb5support0,no,no,no
+CVE-2025-14104,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,bsdutils libblkid1 libmount1 libsmartcols1 libuuid1 mount util-linux util-linux-extra,no,no,no
+CVE-2026-56392,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,coreutils,no,no,no
+CVE-2026-56391,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,coreutils,no,no,no
+CVE-2026-22185,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,libldap-2.5-0,no,no,no
+CVE-2026-102474,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,dash,no,no,no
+CVE-2026-102473,remaining,Medium,Medium,Low,Negligible/Unknown,dash,no,no,no
+CVE-2025-14017,remaining,Low,Negligible/Unknown,Low,Negligible/Unknown,curl libcurl4,no,no,no
+TEMP-0841856-B18BAF,remaining,Low,-,Low,-,bash,no,no,no
+TEMP-0628843-DBAD28,remaining,Low,-,Low,-,login passwd,no,no,no
+TEMP-0517018-A83CE6,remaining,Low,-,Low,-,sysvinit-utils,no,no,no
+TEMP-0290435-0B57B5,remaining,Low,-,Low,-,tar,no,no,no
+TEMP-1148137-126A7B,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-1148137-089975,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-0000000-F2B97A,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-0000000-DB3DE2,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-0000000-D1A721,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-0000000-BBE297,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-0000000-956D99,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-0000000-78AC20,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-0000000-4EF776,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-0000000-21F713,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-0000000-18A2CE,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+TEMP-0000000-0F03E5,remaining,Negligible/Unknown,-,Negligible/Unknown,-,libheif1,no,no,no
+CVE-2026-46675,remaining,Negligible/Unknown,Negligible/Unknown,Negligible/Unknown,Negligible/Unknown,libpng16-16,no,no,no
