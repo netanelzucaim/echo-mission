@@ -104,7 +104,7 @@ truthfully. Do not overstate what a fix achieves.
 The original image has 149 packages (Trivy counts 144 of them). The triage score (`make triage`) weights a
 vulnerability by whether nginx runs the affected code.
 
-**Loaded (weight 1.0):** the `nginx` package itself and the five libraries its binary
+**Loaded (unreviewed reach 0.6; see `scripts/CLAUDE.md`):** the `nginx` package itself and the five libraries its binary
 loads, taken from `ldd /usr/sbin/nginx` and saved in
 `scans/baseline/image/linked-packages.txt`. A bug here is inside every running container.
 
@@ -117,7 +117,7 @@ loads, taken from `ldd /usr/sbin/nginx` and saved in
 | `libc6` | Basic system functions |
 | `libcrypt1` | Password checking for basic authentication |
 
-**Unloaded (weight 0.4):** everything else. Installed, but the nginx program never
+**Unloaded (unreviewed reach 0.3 for module libraries, 0.2 otherwise):** everything else. Installed, but the nginx program never
 opens it. It still counts because a user can switch a module on, and an attacker
 already inside the container can run the tools.
 

@@ -91,7 +91,7 @@ A breakdown flowchart (scanners, agreement, where the CVEs sit, how many have a 
 - **Danger (0 to 1)** = 0.6 x exploitation + 0.4 x severity.
   - Exploitation is 1.0 if the CVE is in CISA's Known Exploited list, otherwise its EPSS probability.
   - Severity is the average of the two scanners' ratings (Critical 1, High 0.75, Medium 0.5, Low 0.25). A scanner that does not report the CVE counts as 0, so agreement raises the score.
-- **Reach (0.4 to 1)** = 1.0 if the affected package is the main program or a library it loads, 0.4 if it only sits in the image, plus 0.05 for each extra affected package (at most +0.15).
+- **Reach (0 to 1)** comes from a reviewed verdict in `review.tsv`, or a default by where the package sits. The verdicts, weights and how to review are in the `triage-cves` skill.
 
 Ties are broken by fix available, then CVSS.
 

@@ -23,7 +23,8 @@ that way, and use the same layout for the patched image's folder.
 |---|---|---|
 | `README.md` | Plain-language guide to the folder | by hand |
 | `stats.md` | Diagrams and tables of the statistics; never hand-edit | `make triage` |
-| `triage.md`, `triage.csv` | Both reports merged and ranked | `make triage` |
+| `triage.md`, `triage.csv`, `triage-details.md` | Both reports merged, ranked, every score explained | `make triage` |
+| `review.tsv` | Reviewed reach verdicts per CVE or package, plus nginx.org CVEs the scanners miss | by hand (`triage-cves` skill) |
 | `reports/trivy.json`, `reports/trivy.txt` | Trivy report | `make scan-baseline` |
 | `reports/grype.json`, `reports/grype.txt` | Grype report | `make scan-baseline` |
 | `reports/versions.txt` | Scan date, image digest, scanner versions | `make scan-baseline` |

@@ -3,11 +3,12 @@
 
 Usage:
     compare-scans.py TRIVY_JSON GRYPE_JSON [--linked FILE] [--modules FILE]
-                     [--out-dir DIR] [--top N]
+                     [--review FILE] [--out-dir DIR] [--top N]
 
 Writes into DIR:
-    triage.md   summary and the top N vulnerabilities
-    triage.csv  every vulnerability, ranked
+    triage.md          summary and the top N vulnerabilities, each explained
+    triage.csv         every vulnerability, ranked, with its explanation
+    triage-details.md  every vulnerability's explanation, in rank order
     stats.md    the statistics as Mermaid diagrams and tables (renders on GitHub)
 
 --modules FILE is a two-column TSV (module, package) naming the packages that are
@@ -16,6 +17,7 @@ libraries it pulls in. With it, stats.md shows what each module costs.
 
 --linked and --modules default to linked-packages.txt and modules.tsv next to
 TRIVY_JSON, or in a sibling "image" folder (../image/), whichever exists.
+--review defaults to review.tsv in the output folder.
 
 The ranking answers "what is most dangerous and reaches the most deployments",
 not "what has the scariest severity label".
@@ -25,27 +27,52 @@ not "what has the scariest severity label".
   danger (0..1) = 0.6 * exploitation + 0.4 * severity
       exploitation = 1.0 if the CVE is in CISA's Known Exploited list (KEV),
                      otherwise its EPSS probability (chance of exploitation
-                     in the next 30 days).
+                     in the next 30 days). EPSS describes the bug anywhere,
+                     not in this image; reach is what puts it in context.
       severity     = average of the two scanners' severities, scaled to 0..1
                      (Critical = 1, High = 0.75, Medium = 0.5, Low = 0.25).
                      A scanner that does not report the CVE counts as 0, so
-                     findings both scanners agree on score higher.
+                     findings both scanners agree on score higher. A CVE
+                     added from REVIEW (not reported by either scanner) uses
+                     the advisory's own severity instead.
 
-  reach (0.4..1) = how many deployments run the vulnerable code
-      1.0  the affected package is a library the main program loads
-           (listed in --linked), so every running container executes it;
-      0.4  the package only sits in the image (a tool, or a library used by
-           an optional module);
-      plus 0.05 per additional affected package, up to +0.15, capped at 1.0.
+  reach (0..1) = does this image actually run the vulnerable code?
+      From REVIEW, when a person checked it (see the triage-cves skill):
+          always 1.0   runs in every container, even with the default config
+          common 0.8   runs under a common setup (TLS, HTTP/2, proxy_pass)
+          config 0.5   needs a specific, less common feature switched on
+          manual 0.2   only when someone runs a tool by hand in the container
+          unused 0.05  the code is installed but nothing in the image calls it
+          n/a    0.0   cannot happen here (other CPU, other version, absent)
+          unknown      checked but not settled: the unreviewed default below
+      Otherwise, by where the package sits (not reviewed):
+          0.6  a library the main program loads (listed in --linked)
+          0.3  installed only for an optional module (listed in --modules)
+          0.2  anything else (tools and their libraries)
 
-Without --linked, reach cannot tell the two cases apart and every finding gets
-the "sits in the image" value; the script says so.
+REVIEW is a tab-separated file: id, verdict, reason, evidence, and for CVEs the
+scanners miss, package and severity. Lines starting with # are comments. An id of
+the form pkg:NAME gives a verdict for every CVE in that package; it is used only
+when every package the CVE affects has one, and a CVE-level line always wins.
+Every row gets an explanation of its score in triage.csv and triage-details.md.
 """
 import argparse, collections, csv, json, os, sys
 
 RANK = {"CRITICAL": 4, "HIGH": 3, "MEDIUM": 2, "LOW": 1, "NEGLIGIBLE": 0, "UNKNOWN": 0}
 NAME = {4: "Critical", 3: "High", 2: "Medium", 1: "Low", 0: "Negligible/Unknown"}
-REACH_LINKED, REACH_PRESENT = 1.0, 0.4
+VERDICT_REACH = {"always": 1.0, "common": 0.8, "config": 0.5, "manual": 0.2,
+                 "unused": 0.05, "n/a": 0.0}
+UNREVIEWED_REACH = {"loaded": 0.6, "module": 0.3, "other": 0.2}
+VERDICT_TEXT = {
+    "always": "runs in every container, even with the default config",
+    "common": "runs under a common setup",
+    "config": "needs a specific feature switched on",
+    "manual": "only reached when someone runs a tool by hand",
+    "unused": "installed, but nothing in the image calls the vulnerable code",
+    "n/a": "cannot happen in this image",
+    "unknown": "checked, but not settled",
+}
+ADVISORY_SEV = {"critical": 4, "major": 3, "high": 3, "medium": 2, "moderate": 2, "low": 1}
 
 
 def sev(s):
@@ -58,7 +85,7 @@ def sev_name(s):
 
 def new_entry(vid):
     return {"id": vid, "trivy": None, "grype": None, "pkgs": set(), "fixes": set(),
-            "kev": False, "epss": 0.0, "cvss": 0.0, "title": ""}
+            "kev": False, "epss": 0.0, "cvss": 0.0, "title": "", "advisory": None}
 
 
 def load_trivy(path, vulns, findings):
@@ -101,14 +128,109 @@ def load_grype(path, vulns, findings):
             e["cvss"] = max(e["cvss"], (c.get("metrics") or {}).get("baseScore") or 0.0)
 
 
-def score(e, linked):
+def load_review(path):
+    """id -> {verdict, reason, evidence, package, severity}. Missing file: empty."""
+    review = {}
+    if not os.path.exists(path):
+        return review
+    for n, line in enumerate(open(path), 1):
+        if not line.strip() or line.startswith("#"):
+            continue
+        cols = (line.rstrip("\n").split("\t") + [""] * 6)[:6]
+        if cols[0] == "id":
+            continue
+        vid, verdict, reason, evidence, package, severity = (c.strip() for c in cols)
+        if verdict not in VERDICT_REACH and verdict != "unknown":
+            sys.exit(f"{path}:{n}: unknown verdict {verdict!r}")
+        review[vid] = {"verdict": verdict, "reason": reason, "evidence": evidence,
+                       "package": package, "severity": severity.lower()}
+    return review
+
+
+def add_unreported(vulns, review):
+    """CVEs a person added to the review (e.g. from the upstream advisories) that no
+    scanner reports. They have no EPSS, so only severity counts toward danger."""
+    for vid, r in review.items():
+        if vid in vulns or not r["package"]:
+            continue
+        e = vulns[vid] = new_entry(vid)
+        e["pkgs"].add(r["package"])
+        e["advisory"] = ADVISORY_SEV.get(r["severity"], 0)
+        e["title"] = r["reason"].split(". ")[0]
+
+
+def where(e, linked, mod_pkgs):
+    return "loaded" if e["pkgs"] & linked else "module" if e["pkgs"] & mod_pkgs else "other"
+
+
+def score(e, linked, mod_pkgs, review):
     exploitation = 1.0 if e["kev"] else e["epss"]
-    severity = ((e["trivy"] or 0) + (e["grype"] or 0)) / 8.0
+    if e["advisory"] is not None:
+        severity = e["advisory"] / 4.0
+    else:
+        severity = ((e["trivy"] or 0) + (e["grype"] or 0)) / 8.0
+    e["exploitation"], e["severity"] = exploitation, severity
     e["danger"] = 0.6 * exploitation + 0.4 * severity
     e["linked"] = sorted(e["pkgs"] & linked)
-    base = REACH_LINKED if e["linked"] else REACH_PRESENT
-    e["reach"] = min(1.0, base + 0.05 * min(len(e["pkgs"]) - 1, 3))
+    e["where"] = where(e, linked, mod_pkgs)
+    e["review"] = review.get(e["id"])
+    e["scope"] = "CVE"
+    if not e["review"]:
+        per_pkg = [review.get("pkg:" + p) for p in sorted(e["pkgs"])]
+        if per_pkg and all(r and r["verdict"] in VERDICT_REACH for r in per_pkg):
+            e["review"] = max(per_pkg, key=lambda r: VERDICT_REACH[r["verdict"]])
+            e["scope"] = "package"
+    v = e["review"]["verdict"] if e["review"] else None
+    e["verdict"] = v or "not reviewed"
+    e["reach"] = VERDICT_REACH[v] if v in VERDICT_REACH else UNREVIEWED_REACH[e["where"]]
     e["score"] = 100.0 * e["danger"] * e["reach"]
+
+
+def explain(e, rank, modules):
+    """Why this CVE sits where it does, in plain sentences."""
+    pk = ", ".join(f"`{p}`" for p in sorted(e["pkgs"]))
+    out = [f"#{rank}, score {e['score']:.1f} = 100 x danger {e['danger']:.3f} x reach {e['reach']:.2f}."]
+    if e["kev"]:
+        ex = "on CISA's known-exploited list, so exploitation counts as 1.0"
+    elif e["advisory"] is not None:
+        ex = "no EPSS (the scanners do not report it), so exploitation counts as 0"
+    else:
+        ex = f"EPSS {e['epss'] * 100:.1f}% chance of exploitation in the next 30 days (anywhere, not in this image)"
+    if e["advisory"] is not None:
+        sv = f"the advisory rates it {NAME[e['advisory']]}"
+    else:
+        sv = f"Trivy {label(e['trivy'])}, Grype {label(e['grype'])}"
+        if e["trivy"] is None or e["grype"] is None:
+            sv += " (a missing scanner counts as 0)"
+    out.append(f"Danger: {ex} (x 0.6 = {0.6 * e['exploitation']:.3f}); severity {sv} "
+               f"(x 0.4 = {0.4 * e['severity']:.3f}).")
+    r = e["review"]
+    if r and r["verdict"] in VERDICT_REACH:
+        scope = "" if e["scope"] == "CVE" else " for the whole package, not this CVE alone"
+        out.append(f"Reach {e['reach']:.2f}, reviewed{scope} as **{r['verdict']}** "
+                   f"({VERDICT_TEXT[r['verdict']]}): {r['reason']}")
+    else:
+        if e["where"] == "loaded":
+            why = (f"nginx loads {', '.join('`%s`' % p for p in e['linked'])}, but whether it calls "
+                   "the vulnerable code was not checked")
+        elif e["where"] == "module":
+            mods = sorted(m for m, ps in modules.items() if e["pkgs"] & ps)
+            why = (f"{pk} is installed only for {', '.join('`%s`' % m for m in mods)}, "
+                   "which no default config loads")
+        else:
+            why = f"{pk} is used by other programs in the image, not by nginx"
+        tag = "checked but not settled" if r else "not reviewed"
+        out.append(f"Reach {e['reach']:.2f} ({tag}, default for where the package sits): {why}."
+                   + (f" Note: {r['reason']}" if r else ""))
+    if r and r["evidence"]:
+        out.append(f"Evidence: {r['evidence']}.")
+    if e["advisory"] is not None:
+        out.append("Fix: newer upstream version or a backported patch (not a distro package).")
+    elif e["fixes"]:
+        out.append(f"Fix: a fixed package exists ({', '.join(sorted(e['fixes']))}).")
+    else:
+        out.append("Fix: no fixed package version yet.")
+    return " ".join(out)
 
 
 def pie(title, slices):
@@ -229,6 +351,15 @@ def write_stats(path, rows, linked, modules, t_find, g_find, names):
             w(f"| `{p}` | {c} | {nhi} | {'Yes' if p in linked else 'No'} |")
 
 
+SCORE_NOTE = (
+    "Score = 100 x danger x reach. Danger = 0.6 x exploitation (1 if known exploited, else "
+    "EPSS) + 0.4 x severity. Reach comes from a person's review of whether this image runs "
+    "the vulnerable code (always 1.0, common 0.8, config 0.5, manual 0.2, unused 0.05, n/a 0); "
+    "without a review it is 0.6 for a library nginx loads, 0.3 for a module-only package and "
+    "0.2 for anything else. The weights are judgment calls, not measurements. Vulnerabilities "
+    "that neither the scanners nor the review list are not here.\n")
+
+
 def label(x):
     return "-" if x is None else NAME[x]
 
@@ -243,6 +374,8 @@ def main():
     ap.add_argument("--modules", default=None,
                     help="TSV of module<TAB>package for optional modules "
                          "(default: modules.tsv next to TRIVY_JSON or in ../image/)")
+    ap.add_argument("--review", default=None,
+                    help="TSV of reviewed reach verdicts (default: review.tsv in the output folder)")
     ap.add_argument("--out-dir", default=None, help="default: directory of TRIVY_JSON")
     ap.add_argument("--top", type=int, default=40, help="rows in the markdown table")
     a = ap.parse_args()
@@ -276,68 +409,100 @@ def main():
     t_find, g_find = collections.Counter(), collections.Counter()
     load_trivy(a.trivy_json, vulns, t_find)
     load_grype(a.grype_json, vulns, g_find)
+    review_path = a.review or os.path.join(out, "review.tsv")
+    review = load_review(review_path)
+    if not review:
+        print(f"warning: no review file ({review_path}); every reach is the unreviewed default",
+              file=sys.stderr)
+    add_unreported(vulns, review)
+    mod_pkgs = set(p for ps in modules.values() for p in ps)
     for e in vulns.values():
-        score(e, linked)
+        score(e, linked, mod_pkgs, review)
     rows = sorted(vulns.values(), key=lambda e: (e["score"], bool(e["fixes"]), e["cvss"], e["id"]),
                   reverse=True)
+    for i, e in enumerate(rows, 1):
+        e["why"] = explain(e, i, modules)
+    stale = sorted(k for k in set(review) - set(vulns) if not k.startswith("pkg:"))
+    if stale:
+        print(f"warning: {len(stale)} reviewed IDs are not in the reports and have no package "
+              f"column: {', '.join(stale[:5])}", file=sys.stderr)
 
     both = [e for e in rows if e["trivy"] is not None and e["grype"] is not None]
     in_linked = [e for e in rows if e["linked"]]
 
     with open(os.path.join(out, "triage.csv"), "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["rank", "id", "score", "danger", "reach", "loaded_by_main_program", "trivy",
-                    "grype", "packages", "fix_available", "fixed_versions", "known_exploited",
-                    "epss", "cvss", "title"])
+        w.writerow(["rank", "id", "score", "danger", "reach", "verdict", "loaded_by_main_program",
+                    "trivy", "grype", "advisory_severity", "packages", "fix_available",
+                    "fixed_versions", "known_exploited", "epss", "cvss", "title", "explanation"])
         for i, e in enumerate(rows, 1):
             w.writerow([i, e["id"], f'{e["score"]:.1f}', f'{e["danger"]:.3f}', f'{e["reach"]:.2f}',
-                        "yes" if e["linked"] else "no", label(e["trivy"]), label(e["grype"]),
-                        " ".join(sorted(e["pkgs"])), "yes" if e["fixes"] else "no",
-                        " ".join(sorted(e["fixes"])), "yes" if e["kev"] else "no",
-                        f'{e["epss"]:.4f}', e["cvss"], e["title"]])
+                        e["verdict"], "yes" if e["linked"] else "no", label(e["trivy"]),
+                        label(e["grype"]), label(e["advisory"]), " ".join(sorted(e["pkgs"])),
+                        "yes" if e["fixes"] else "no", " ".join(sorted(e["fixes"])),
+                        "yes" if e["kev"] else "no", f'{e["epss"]:.4f}', e["cvss"], e["title"],
+                        e["why"]])
 
+    reviewed = [e for e in rows if e["review"] and e["verdict"] in VERDICT_REACH]
+    by_cve = sum(1 for e in reviewed if e["scope"] == "CVE")
+    verdicts = collections.Counter(e["verdict"] for e in rows)
     with open(os.path.join(out, "triage.md"), "w") as f:
-        f.write("# Trivy vs Grype: vulnerabilities ranked by danger and reach\n\n")
-        f.write(f"Inputs: `{os.path.basename(a.trivy_json)}`, `{os.path.basename(a.grype_json)}`. "
-                "Full list: `triage.csv`.\n\n")
+        f.write("# Vulnerabilities ranked by danger and reach\n\n")
+        f.write(f"Inputs: `{os.path.basename(a.trivy_json)}`, `{os.path.basename(a.grype_json)}`"
+                f"{', `' + os.path.basename(review_path) + '`' if review else ''}. "
+                "Full list: `triage.csv`; every score explained: `triage-details.md`.\n\n")
         f.write("| | Count |\n|---|---|\n")
-        f.write(f"| Unique vulnerabilities (either scanner) | {len(rows)} |\n")
-        f.write(f"| Reported by both | {len(both)} |\n")
-        f.write(f"| Trivy only | {sum(1 for e in rows if e['grype'] is None)} |\n")
-        f.write(f"| Grype only | {sum(1 for e in rows if e['trivy'] is None)} |\n")
-        f.write(f"| Both report, different severity | {sum(1 for e in both if e['trivy'] != e['grype'])} |\n")
+        f.write(f"| Unique vulnerabilities | {len(rows)} |\n")
+        f.write(f"| Reported by both scanners | {len(both)} |\n")
+        f.write(f"| Trivy only | {sum(1 for e in rows if e['trivy'] is not None and e['grype'] is None)} |\n")
+        f.write(f"| Grype only | {sum(1 for e in rows if e['grype'] is not None and e['trivy'] is None)} |\n")
+        f.write(f"| Added from the review, missed by both scanners | {sum(1 for e in rows if e['advisory'] is not None)} |\n")
         f.write(f"| Critical in both | {sum(1 for e in both if e['trivy'] == 4 and e['grype'] == 4)} |\n")
         f.write(f"| Known exploited (KEV) | {sum(1 for e in rows if e['kev'])} |\n")
         f.write(f"| In a library the main program loads | {len(in_linked)} |\n")
-        f.write(f"| ...of those, with a fix available | {sum(1 for e in in_linked if e['fixes'])} |\n\n")
+        f.write(f"| ...of those, with a fix available | {sum(1 for e in in_linked if e['fixes'])} |\n")
+        f.write(f"| Reach checked by a person | {len(reviewed)} ({by_cve} one by one, "
+                f"{len(reviewed) - by_cve} through a package-level verdict) |\n\n")
+        f.write("Reach verdicts: " + ", ".join(
+            f"{k} {verdicts[k]}" for k in list(VERDICT_REACH) + ["unknown", "not reviewed"] if verdicts[k])
+            + ".\n\n")
         if linked:
             f.write("Libraries the main program loads: " + ", ".join(f"`{p}`" for p in sorted(linked)) + ".\n\n")
         else:
             f.write("No linked-packages file was given, so reach does not separate libraries the "
                     "main program loads from packages that only sit in the image.\n\n")
-        f.write(f"## Top {min(a.top, len(rows))}\n\n")
-        f.write("| # | ID | Score | Loaded | Trivy | Grype | Packages | Fix | KEV | EPSS |\n"
+        top = rows[: a.top]
+        f.write(f"## Top {len(top)}\n\n")
+        f.write("| # | ID | Score | Danger | Reach | Verdict | Packages | Fix | KEV | EPSS |\n"
                 "|---|---|---|---|---|---|---|---|---|---|\n")
-        for i, e in enumerate(rows[: a.top], 1):
+        for i, e in enumerate(top, 1):
             pk = sorted(e["pkgs"])
-            pk = ", ".join(pk[:4]) + (f" (+{len(pk) - 4})" if len(pk) > 4 else "")
-            f.write(f"| {i} | {e['id']} | {e['score']:.1f} | {'yes' if e['linked'] else 'no'} | "
-                    f"{label(e['trivy'])} | {label(e['grype'])} | {pk} | "
-                    f"{'yes' if e['fixes'] else 'no'} | {'yes' if e['kev'] else ''} | "
-                    f"{e['epss'] * 100:.1f}% |\n")
-        f.write("\nScore = 100 x danger x reach. Danger = 0.6 x exploitation (1 if known exploited, "
-                "else EPSS) + 0.4 x severity (average of both scanners). Reach = 1.0 if the main "
-                "program loads the affected library, 0.4 if the package only sits in the image, "
-                "plus a small bonus per extra affected package.\n\n"
-                "Limits: \"loaded\" means the library is loaded, not that the vulnerable function "
-                "is called. That still needs reading the advisory. Vulnerabilities the scanners "
-                "do not report at all are not in this list.\n")
-    write_stats(os.path.join(out, "stats.md"), rows, linked, modules, t_find, g_find,
+            pk = ", ".join(pk[:3]) + (f" (+{len(pk) - 3})" if len(pk) > 3 else "")
+            fix = "upstream" if e["advisory"] is not None else "yes" if e["fixes"] else "no"
+            epss = "-" if e["advisory"] is not None else f"{e['epss'] * 100:.1f}%"
+            f.write(f"| {i} | {e['id']} | {e['score']:.1f} | {e['danger']:.2f} | {e['reach']:.2f} | "
+                    f"{e['verdict']} | {pk} | {fix} | {'yes' if e['kev'] else ''} | {epss} |\n")
+        f.write(f"\n## Why each is ranked where it is\n\n")
+        for i, e in enumerate(top, 1):
+            f.write(f"**{e['id']}**: {e['why']}\n\n")
+        f.write(SCORE_NOTE)
+
+    with open(os.path.join(out, "triage-details.md"), "w") as f:
+        f.write("# Every vulnerability, explained\n\n")
+        f.write("Generated by `scripts/compare-scans.py`; do not edit. Rank order, highest score "
+                "first. To change a reach verdict, edit `review.tsv` and rerun `make triage`.\n\n")
+        for i, e in enumerate(rows, 1):
+            f.write(f"### {i}. {e['id']}{' - ' + e['title'] if e['title'] else ''}\n\n{e['why']}\n\n")
+        f.write(SCORE_NOTE)
+    # stats.md describes what the scanners found; CVEs added from the review are left out
+    write_stats(os.path.join(out, "stats.md"), [e for e in rows if e["advisory"] is None], linked, modules, t_find, g_find,
                 (os.path.basename(a.trivy_json), os.path.basename(a.grype_json)))
 
     print(f"{len(rows)} unique vulnerabilities, {len(both)} in both, "
           f"{len(in_linked)} in libraries the main program loads")
-    print(f"wrote triage.md, triage.csv and stats.md in {out}")
+    print(f"{len(reviewed)} with a reviewed reach, "
+          f"{sum(1 for e in rows if e['advisory'] is not None)} added from the review")
+    print(f"wrote triage.md, triage.csv, triage-details.md and stats.md in {out}")
 
 
 if __name__ == "__main__":
