@@ -9,6 +9,8 @@ never edited by hand. To change one, change the script and rerun it.
   and `make triage`.
 - `probe-libraries/`: a fresh base with the libraries but no nginx, scanned to measure
   what the version bumps alone achieve. Built by hand, see its `README.md`.
+- `probe-libraries-no-image-filter/`: the same probe without image-filter's library,
+  to measure what removing that module would remove (it is not what is shipped).
 - A folder for the patched image (suggested name `patched/`) will be added in step 6,
   with the same file names so the two can be diffed.
 

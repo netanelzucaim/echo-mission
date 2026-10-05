@@ -139,9 +139,22 @@ see `scans/probe-libraries/`):
 So keeping image-filter leaves 89 CVEs in its libraries, not 166, and none of the 89
 has a fixed version in Debian bookworm today. Most are in `libheif1` (42) and
 `libtiff6` (24). The known-exploited CVE-2025-27363 in `libfreetype6` is among the
-ones the update fixes. These 89 are accepted risk for the sake of compatibility. The
-numbers come from the probe, not the final image, and will be re-measured in the
-final scan.
+ones the update fixes.
+
+**What removing image-filter would have achieved, measured.** A second probe without
+image-filter's library (`scans/probe-libraries-no-image-filter/`) confirms that
+removal clears all of them:
+
+| Image | Packages | Unique CVEs | Critical or High | In image-filter's libraries |
+|---|---|---|---|---|
+| Original | 144 | 497 | 203 | 166 |
+| Fresh base, all four modules' libraries (shipped choice) | 144 | 250 | 79 | 89 |
+| Fresh base, without image-filter | 113 | 161 | 54 | 0 |
+
+Removing the module takes 31 libraries with it and would cut the remaining CVEs by a
+further 89 (25 of them Critical or High), from 250 to 161. That is the measured price
+of keeping it, accepted for the sake of compatibility. All numbers come from probes
+without nginx, not from the final image, and will be re-measured in the final scan.
 
 **What I would do with more time.** Publish a second, slimmer variant without
 image-filter for users who do not need it, so the default stays compatible and the
