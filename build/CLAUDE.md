@@ -14,8 +14,10 @@ njs). The human guide is `build/README.md`; the patch list is `build/patches/REA
   git tag. It compiles nothing; the Dockerfile runs `make` afterwards.
 - `echo-pkg-oss.patch` does three things: static Debian changelogs (pkg-oss would fetch
   `xslscript` over the network), njs module **and** CLI built without QuickJS (the
-  original's `/usr/bin/njs` links only libedit), and njs package release 3 (matching the
-  original's version string).
+  original's `/usr/bin/njs` links only libedit; this also drops pkg-oss's checksum check
+  of the njs tarball, which is packed from the git tag), and njs package release 3
+  (matching the original's version string). It is not a CVE fix, so it is not in
+  `patches/`.
 - The packages must match the original: package name `nginx`, versions identical
   (`1.25.5-1~bookworm`, njs `1.25.5+0.8.4-3~bookworm`), the configure flags in
   `scans/baseline/image/nginx-V.txt`, and `/etc/nginx/conf.d/default.conf` registered as

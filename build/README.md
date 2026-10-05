@@ -37,7 +37,10 @@ our backport into it, rather than re-inventing the packaging.
      (which `pkg-oss` fetches over the network from a host that is not always reachable);
    - build the njs **module and CLI without QuickJS**, matching the original image's
      njs 0.8.4 (its `ngx_http_js_module.so` links no QuickJS and its `/usr/bin/njs` links
-     only libedit — both verified with `ldd`). The njs package still ships `/usr/bin/njs`;
+     only libedit — both verified with `ldd`). The njs package still ships `/usr/bin/njs`.
+     This also drops pkg-oss's checksum check of the njs tarball: ours is packed from
+     the njs git tag (step 4), so it cannot match the checksum of nginx's release
+     tarball. The nginx source itself is still checksum-verified;
    - set the njs package's **release number to 3**, so its version is
      `1.25.5+0.8.4-3~bookworm`, exactly as in the original image (pkg-oss at this commit
      says 1). All five nginx package versions then match the original.

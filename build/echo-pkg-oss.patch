@@ -1,3 +1,14 @@
+Build adjustments to nginx's packaging (pkg-oss @ aaeb9a9). Not a CVE fix, so it is
+not in patches/. Applied by prepare.sh after the CVE patches. Three changes:
+
+1. debian/Makefile: do not generate the Debian changelogs with xslscript, which
+   pkg-oss downloads during the build; prepare.sh writes static ones instead.
+2. debian/Makefile.module-njs: build the njs module and CLI without QuickJS, as in the
+   original image (its njs 0.8.4 links no QuickJS). This also drops the checksum check
+   of the njs tarball, which prepare.sh packs from the njs git tag.
+3. debian/Makefile.module-njs: package release 3, so the njs package version is
+   1.25.5+0.8.4-3~bookworm, the same as in the original image.
+
 --- a/debian/Makefile
 +++ b/debian/Makefile
 @@ -150,8 +150,7 @@
