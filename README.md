@@ -233,13 +233,6 @@ the image only because of them, and they carry 208 of the 497 unique baseline CV
 Counts overlap where modules share a library. Source: `scans/baseline/triage.csv` and
 `apt-get -s remove --auto-remove` on the module packages in the original image.
 
-**Why image-filter is kept.** Anyone whose configuration contains
-`load_module modules/ngx_http_image_filter_module.so;` would find nginx refusing to
-start after switching images. The brief asks for "a drop-in replacement, not a
-re-imagining", and an image that breaks existing users has failed at that, however
-clean its scan looks. Compatibility was given priority over the scan result, and the
-same reasoning applies to the other three modules.
-
 **What this costs, measured.** All four modules are built from source and shipped, and
 their libraries stay in the image. On 2026-10-05 three throwaway variants of
 the original image were built (image-filter removed, Debian packages updated, and
