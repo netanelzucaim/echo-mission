@@ -19,7 +19,7 @@ built `.deb` declares `libssl3 (>= 3.0.14-1~deb12u2)`, apt must install a fixed 
 is 3.0.11-1~deb12u2". Check it with `dpkg-deb -f out/nginx_*.deb Depends`.
 
 **CVE-2026-42945.patch** (backport) is **the** backport for the assignment, chosen on 2026-10-05 (reasoning in
-`scans/baseline/priorities.md`). It fixes a bug in code almost every config runs, whose
+`docs/triage-decision.md`). It fixes a bug in code almost every config runs, whose
 worst case is code execution. The patch is one hunk: it resets `e->is_args` in
 `ngx_http_script_regex_end_code`, so a capture used after a rewrite replacement that
 contained arguments is no longer escaped into an undersized buffer.
@@ -39,14 +39,14 @@ patch -p1 --dry-run < build/patches/CVE-2026-42945.patch
 
 - **CVE-2024-7347** (mp4 over-read, low): nginx's own vendor-published patch
   (`nginx.org/download/patch.2024.mp4.txt`). The clean fallback that was not chosen; it
-  is in git history and described in `priorities.md`.
+  is in git history and described in `docs/triage-decision.md`.
 - **CVE-2026-9256** (rewrite overlapping-captures overflow, a sibling of CVE-2026-42945):
   upstream commits `ca4f92a2` + `475732a3` (nginx 1.31.1). A natural second rewrite
   backport if more coverage is wanted.
 
 ## Adding another fix
 
-Pick the CVE first (the `choose-cve-fix` skill and `scans/baseline/priorities.md`).
+Pick the CVE first (the `choose-cve-fix` skill and `docs/triage-decision.md`).
 Then follow the part that matches where the CVE lives. Name the file after the CVE,
 `CVE-YYYY-NNNN.patch`, and put it in this folder. `build/prepare.sh` applies every
 `CVE-*.patch` here and decides how from the paths the patch changes, so no script
@@ -108,4 +108,4 @@ patch in `MODULE_PATCHES_njs` in `debian/Makefile.module-njs` (through
    `python3 scripts/make-vex.py --cve CVE-YYYY-NNNN --package nginx --scan-dir scans/patched --note "..."`,
    then run `make rescan` again.
 7. Add the CVE to the per-CVE table in the main `README.md`, to
-   `scans/baseline/priorities.md`, and to the table at the top of this file.
+   `docs/triage-decision.md`, and to the table at the top of this file.

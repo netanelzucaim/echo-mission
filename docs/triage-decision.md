@@ -1,8 +1,13 @@
 # Which CVEs to fix, and how — the decision
 
+Back to the [README](../README.md). Evidence behind it: the ranking in
+[`scans/baseline/triage.csv`](../scans/baseline/triage.csv) and the reach review in
+[`scans/baseline/review.tsv`](../scans/baseline/review.tsv).
+
 This is the triage answer: the CVEs that matter most for **this** image and the
 method for each. It is written by judgment, following the `choose-cve-fix` skill.
-The danger-and-reach number in `triage.md` was only the starting sort; the order
+The danger-and-reach number in
+[`scans/baseline/triage.md`](../scans/baseline/triage.md) was only the starting sort; the order
 below is argued from four facts per CVE — **reach** (does this image run the code),
 **known-exploited** (KEV), **chance of exploitation** (EPSS), and **severity** as
 Trivy and Grype each rate it.
@@ -14,7 +19,7 @@ ranges from nginx.org advisories, scanner severities from the baseline scan).
 
 1. **Reach first.** A Critical bug in code the image never runs is not a priority.
    Everything below is reachable in this build (the relevant modules are compiled —
-   `image/nginx-V.txt` has `--with-http_mp4_module`, `--with-http_v3_module`,
+   `scans/baseline/image/nginx-V.txt` has `--with-http_mp4_module`, `--with-http_v3_module`,
    `--with-http_dav_module`, and the rewrite/script engine is always built).
 2. **Known-exploited next.** One KEV entry is reachable (CVE-2023-44487) and it is
    handled specially — see below.

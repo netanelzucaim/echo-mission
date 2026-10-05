@@ -56,7 +56,7 @@ OpenSSL bug is reached whenever nginx verifies an upstream server's certificate 
 the highest exploitation estimate of anything nginx loads. The rewrite bug sits in code
 almost every configuration runs (`rewrite`, `set`, `return` with captures) and can lead
 to code execution. Rejected candidates, such as an OpenSSL CMS bug nginx never calls,
-and the full argument are in [`scans/baseline/priorities.md`](scans/baseline/priorities.md).
+and the full argument are in **[`docs/triage-decision.md`](docs/triage-decision.md)**.
 
 **Why 244 CVEs went away when only two are claimed.** The image is built on a fresh
 `debian:bookworm-slim` with `apt-get upgrade` and every dependency at its newest
@@ -117,7 +117,7 @@ differences: [`docs/image-config.md`](docs/image-config.md).
   needs the module loaded and a script using `exclusiveC14n`; there is no fix on the
   0.8.x line here, so it is accepted, not fixed.
 - **The other nginx CVEs are not fixed in this pass.** Most need a specific feature or
-  module (mp4, DAV, HTTP/3…). Reasoning per CVE in `scans/baseline/priorities.md`.
+  module (mp4, DAV, HTTP/3…). Reasoning per CVE in [`docs/triage-decision.md`](docs/triage-decision.md).
 - **CVE-2023-44487** (HTTP/2 Rapid Reset, known exploited) is reported by Grype but was
   already mitigated upstream in 1.25.3. It is neither open nor claimed as a fix here.
 - **The backport is proven by applying and exercising it, not by triggering the bug.**
@@ -167,5 +167,5 @@ that a command can check was checked: patch applicability, the installed OpenSSL
 version, the test, the file diff, the rescan and the VEX result. Where something is
 assumed, the text says so. The decisions (which CVEs to target, keeping the modules, how
 to read the scanners) were made by me, with the reasoning in
-[`scans/baseline/priorities.md`](scans/baseline/priorities.md). The project-specific
+[`docs/triage-decision.md`](docs/triage-decision.md). The project-specific
 skills Claude followed are in `.claude/skills/`.

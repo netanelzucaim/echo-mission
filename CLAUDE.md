@@ -27,7 +27,7 @@ truthful dead ends. Do not overstate what a fix achieves.
 | # | Step | Where |
 |---|---|---|
 | 1 | Scan the original with Trivy and Grype | `make scan-baseline`, `scans/baseline/` |
-| 2 | Triage and pick targets, by judgment | `make triage`, `scans/baseline/priorities.md` (`choose-cve-fix` skill) |
+| 2 | Triage and pick targets, by judgment | `make triage`, `docs/triage-decision.md` (`choose-cve-fix` skill) |
 | 3 | `.deb` from source in clean `debian:bookworm-slim`, patches applied | `make deb`, `build/` (pkg-oss pinned at `aaeb9a9`; njs 0.8.4 without QuickJS; nginx + 4 module `.deb`s) |
 | 4 | Final image from the `.deb` | `make image`, `Containerfile`; 291 MB vs 276 MB |
 | 5 | Compatibility test | `make test`: 92 checks, 91 match, 1 allowed (maintainer label), 0 mismatch |
@@ -37,7 +37,7 @@ truthful dead ends. Do not overstate what a fix achieves.
 
 ## Decisions (do not undo without the owner)
 
-- **The two targets** (2026-10-05; reasoning in `scans/baseline/priorities.md`, by
+- **The two targets** (2026-10-05; reasoning in `docs/triage-decision.md`, by
   reach first, then KEV, then EPSS against both severities, not by the score):
   - **Version bump: CVE-2024-6119** (OpenSSL X.509 DoS, EPSS 66.6%, High/High, reached
     when nginx verifies upstream certificates). `build/patches/CVE-2024-6119.patch` makes
@@ -112,10 +112,10 @@ truthful dead ends. Do not overstate what a fix achieves.
   reason and record it. New scenarios need an `expect` (`test/README.md`).
 - The patched image is tagged `echo-nginx:1.25-bookworm` (the Makefile's `IMAGE`).
 - VEX documents go in `vex/` as `<CVE>.openvex.json`, written by `scripts/make-vex.py`.
-- Generated files (`scans/**` except `review.tsv` and `priorities.md`) are never edited
+- Generated files (`scans/**` except `review.tsv`) are never edited
   by hand. Layout: `scans/README.md`. Script details: `scripts/CLAUDE.md`.
 - Skills, in `.claude/skills/`: `triage-cves` (merge scans, review reach, rank, diagrams),
-  `choose-cve-fix` (decide targets and methods by judgment, write `priorities.md`),
+  `choose-cve-fix` (decide targets and methods by judgment, write `docs/triage-decision.md`),
   `rescan-compare-vex` (step 6). They describe procedures and point to `scripts/`.
 - Commit as Netanel Zucaim with the Claude co-author trailer, then push to `origin main`.
 
@@ -133,7 +133,7 @@ Full procedure: `build/patches/README.md`, "Adding another fix". In short:
   the package that needs it: `Depends:` in pkg-oss `debian/debian/nginx.control.in`, or
   `MODULE_DEPENDS_<module>=,<lib> (>= <ver>)` in `debian/Makefile.module-<module>`. No
   fixed version in bookworm → residual risk, not a bump.
-- Then `make all`, a VEX for a backport, and update the README table, `priorities.md`
+- Then `make all`, a VEX for a backport, and update the README table, `docs/triage-decision.md`
   and `build/patches/README.md`.
 
 ## Building behind an HTTPS-only proxy (cloud workspace only)
