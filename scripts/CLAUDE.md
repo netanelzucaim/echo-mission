@@ -49,8 +49,8 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 - Matches by vulnerability ID. A Grype match with a non-CVE ID is mapped to its related
   CVE when there is one.
 - It ranks only what the scanners report. nginx's own CVEs are not in the list.
-- The same script is also saved as the owner's `compare-vuln-scans` skill. Keep the two
-  in step when changing the ranking.
+- The skill `.claude/skills/compare-vuln-scans/` describes how to use this script. It
+  points here and carries no copy of the code.
 
 ## probe-impact.sh
 
