@@ -20,7 +20,6 @@ RUN apt-get update \
 WORKDIR /build
 COPY prepare.sh echo-pkg-oss.patch ./
 COPY patches/ ./patches/
-COPY changelog/ ./changelog/
 
 # Fetch upstream source, inject the backport, vendor njs, apply packaging tweaks.
 RUN sh ./prepare.sh

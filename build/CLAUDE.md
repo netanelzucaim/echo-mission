@@ -10,7 +10,7 @@ njs). The human guide is `build/README.md`; the patch list is `build/patches/REA
   shipped nginx 1.25.5 with njs 0.8.4. Its latest commit targets nginx 1.31 and needs
   QuickJS, so do not move the pin.
 - `prepare.sh` clones pkg-oss, applies every `patches/CVE-*.patch`, applies
-  `echo-pkg-oss.patch`, copies `changelog/`, and vendors the njs 0.8.4 source from its
+  `echo-pkg-oss.patch`, writes the five static changelogs, and vendors the njs 0.8.4 source from its
   git tag. It compiles nothing; the Dockerfile runs `make` afterwards.
 - `echo-pkg-oss.patch` does three things: static Debian changelogs (pkg-oss would fetch
   `xslscript` over the network), njs module **and** CLI built without QuickJS (the

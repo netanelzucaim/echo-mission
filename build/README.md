@@ -41,7 +41,9 @@ our backport into it, rather than re-inventing the packaging.
    - set the njs package's **release number to 3**, so its version is
      `1.25.5+0.8.4-3~bookworm`, exactly as in the original image (pkg-oss at this commit
      says 1). All five nginx package versions then match the original.
-   The static changelogs are in `changelog/`.
+   `prepare.sh` then writes the five static changelogs (one per package, because
+   pkg-oss builds each package separately and `dpkg-buildpackage` reads each package's
+   version from its changelog).
 4. **Vendors the njs 0.8.4 source** from the njs git tag (its `hg.nginx.org` archive URL
    is not reliably reachable), into `pkg-oss/contrib/tarballs/`.
 
@@ -55,7 +57,6 @@ build, with `pkg-oss`'s own SHA512 checksum verification.
 | `Dockerfile` | Clean build (no environment-specific settings); runs `prepare.sh` then `make` |
 | `prepare.sh` | Fetches and assembles the source tree (our orchestration script) |
 | `echo-pkg-oss.patch` | The three packaging adjustments above, applied to `pkg-oss` |
-| `changelog/` | Static Debian changelog templates (one per package) |
 | `patches/CVE-2024-6119.patch` | The version bump: minimum `libssl3` version in the nginx package |
 | `patches/CVE-2026-42945.patch` | The backport, applied to the nginx source by `pkg-oss` |
 | `patches/README.md` | What each patch fixes, how it was verified, and how to add another fix |

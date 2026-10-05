@@ -52,16 +52,35 @@ for p in patches/CVE-*.patch; do
 done
 
 echo "==> Applying packaging adjustments"
-# echo-pkg-oss.patch: (1) use a static Debian changelog instead of generating it
+# echo-pkg-oss.patch: (1) use a static Debian changelog (written below) instead of generating it
 # with xslscript (which pkg-oss fetches over the network); (2) build the njs
 # module and CLI without QuickJS, matching the original image's njs 0.8.4;
 # (3) set the njs package release to 3, matching the original's version string.
 patch -p1 -d pkg-oss < echo-pkg-oss.patch
-cp changelog/nginx.deb-changelog            pkg-oss/debian/
-cp changelog/nginx-module-xslt.deb-changelog        pkg-oss/debian/
-cp changelog/nginx-module-geoip.deb-changelog       pkg-oss/debian/
-cp changelog/nginx-module-image-filter.deb-changelog pkg-oss/debian/
-cp changelog/nginx-module-njs.deb-changelog         pkg-oss/debian/
+
+# The static changelogs, one per package (dpkg-buildpackage reads each package's
+# version from its changelog). The %%...%% placeholders are filled in by pkg-oss, so
+# the versions come out identical to the original image's.
+changelog() {  # changelog FILE FIRST-LINE ENTRY
+  printf '%s\n\n%s\n\n -- Netanel Zucaim <netanelzucaim100@gmail.com>  Tue, 16 Apr 2024 12:00:00 +0000\n' \
+    "$2" "$3" > "pkg-oss/debian/$1.deb-changelog"
+}
+changelog nginx \
+  'nginx (%%BASE_VERSION%%-%%BASE_RELEASE%%~%%CODENAME%%) %%CODENAME%%; urgency=low' \
+  '  * nginx 1.25.5 rebuilt from source for the Echo mission, with two CVE fixes:
+    - CVE-2026-42945 (rewrite module buffer overflow): upstream fix backported,
+      see build/patches/CVE-2026-42945.patch;
+    - CVE-2024-6119 (OpenSSL): requires libssl3 >= 3.0.14-1~deb12u2, the fixed
+      Debian version, see build/patches/CVE-2024-6119.patch.'
+for m in xslt geoip image-filter; do
+  changelog "nginx-module-$m" \
+    'nginx-module-%%MODULE%% (%%BASE_VERSION%%-%%BASE_RELEASE%%~%%CODENAME%%) %%CODENAME%%; urgency=low' \
+    '  * nginx 1.25.5 dynamic module rebuilt from source for the Echo mission.'
+done
+changelog nginx-module-njs \
+  'nginx-module-%%MODULE%% (%%VERSION_PREFIX%%%%MODULE_VERSION%%-%%MODULE_RELEASE%%~%%CODENAME%%) %%CODENAME%%; urgency=low' \
+  '  * njs 0.8.4 dynamic module rebuilt from source for the Echo mission
+    (built without QuickJS, matching the original image).'
 
 echo "==> Vendoring njs $NJS_TAG source"
 # The njs module is a separate upstream. We vendor the source tarball from the
