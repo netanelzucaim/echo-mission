@@ -67,6 +67,18 @@ replacement, and the assignment asks for a package built from source. Debian's
 backported patches for 1.22 are public and are a useful reference when writing the
 backport for 1.25.
 
+## Compatibility test
+
+`make test` boots the original image and the patched image side by side, sends both
+the same requests and compares status line, headers and body, plus image settings,
+file layout, logs and shutdown behaviour. It exits non-zero on any mismatch.
+[`test/README.md`](test/README.md) defines what "working correctly" means, lists the
+91 checks, and says what is not covered.
+
+The test has been validated against the original image (everything matches) and
+against two deliberately altered images (it fails, as it should). It has not been run
+against the patched image yet, because that image is not built.
+
 ## Image configuration: what matches the original and what does not
 
 The assignment requires the filesystem layout, user, working directory, ports and

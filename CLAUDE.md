@@ -26,7 +26,7 @@ original for a representative set of HTTP scenarios.
 | 2 | Triage: per CVE, where it lives, is there a fix, how to fix; pick targets and justify | In progress |
 | 3 | Build a `.deb` from source in a clean `debian:bookworm-slim`, one command, patches applied | Not started |
 | 4 | Final image: install the `.deb` into a minimal Debian base, match the original | `Containerfile` drafted, never built |
-| 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Not started |
+| 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Written (`test/compat_test.py`, 91 checks) and validated against the original and two altered images; not yet run on the real patched image |
 | 6 | Bonus: rescan, diff against baseline, VEX document for the backported CVE | Not started |
 
 ### Required deliverables
@@ -181,6 +181,14 @@ open vulnerability or as fixed by this project without doing that.
   code in one place. The `probe-image-change` skill, `scripts/probe-impact.sh` and
   `make probe` were removed at the owner's request on 2026-10-05. They are in git
   history (last present in commit 2287013) if they are wanted again.
+- The patched image is tagged `echo-nginx:1.25-bookworm` (the Makefile's `IMAGE`).
+  `make test` and `make rescan` use it.
+- The compatibility test treats the original image as the specification. Never relax a
+  comparison to make it pass: either fix the image, or add the difference to `ALLOWED`
+  in `test/compat_test.py` with a reason and record it in `README.md`. New scenarios
+  need an `expect` so two broken servers cannot "match". See `test/README.md`.
+- When the CVE-2024-7347 backport lands, add an MP4 scenario to the test; the mp4
+  module is not exercised yet.
 - VEX documents go in `vex/` as `<CVE>.openvex.json`, written by `scripts/make-vex.py`.
 
 ## Running things from a Claude cloud session
