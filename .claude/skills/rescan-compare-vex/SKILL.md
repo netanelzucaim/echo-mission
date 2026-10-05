@@ -36,9 +36,17 @@ Trivy and Grype match on package name and version. A backport changes the code b
    - `STILL REPORTED`: the statement did not match. Fix the package name or version and rerun.
 6. **Report to the user:** the before/after table, how many CVEs are gone and how many remain, the VEX result per scanner, and anything new. Then put the headline numbers and the per-CVE evidence links in `README.md`.
 
-## Expect "never reported" for nginx's own CVEs
+## Expect "never reported" for nginx's own CVEs — and pick a reported CVE for the "disappear" demo
 
-In this project the scanners compare the nginx.org package with Debian's version numbers and conclude it is already fixed, so CVEs such as CVE-2024-7347 are not reported even before patching. The VEX file is then correct but has nothing to remove. Do not hide this and do not fake a "before" finding. Report it as a finding, keep the VEX file as the formal record of the fix, and point to the patch and to a test that exercises the fixed code as the real evidence.
+In this project the scanners compare the nginx.org package with Debian's version numbers and conclude it is already fixed, so CVEs such as CVE-2024-7347 are not reported even before patching. The VEX file is then correct but has nothing to remove. Do not hide this and do not fake a "before" finding. Report it as a finding, keep the VEX file as the formal record of the fix (`--status fixed`), and point to the patch and to a test that exercises the fixed code as the real evidence.
+
+That leaves the bonus's "show the CVE actually disappear" with nothing to show, because the backported CVE was never in the report. So **demonstrate the mechanic on a second CVE** that the scanners *do* report. Choose it with three tests, all required:
+
+1. **Reported by the scanners** — otherwise there is nothing to suppress.
+2. **No upstream fix available** — otherwise the base `apt-get upgrade` removes it from the patched scan on its own, and again there is nothing left for VEX to do. (Check the `fix_available`/`fixed_versions` columns in `triage.csv`.)
+3. **Honestly `not_affected`** — the vulnerable code really is unreachable in this build, with evidence, so the statement is true. A reviewed `unused`/`n/a` verdict in `review.tsv` is the place to find these.
+
+Worked example, verified on 2026-10-05 against the baseline image: **CVE-2023-52355** (libtiff6, High in both, no fix). image-filter links libtiff only through libgd, but its code asks libgd for JPEG/GIF/PNG/WebP, never TIFF, and the module is not loaded by default — so `not_affected` with justification `vulnerable_code_not_in_execute_path`. `vex/CVE-2023-52355.openvex.json` made it disappear from **both** scanners (Trivy dropped it; Grype moved it to `ignoredMatches`). This is the honest way to satisfy the bonus: the demonstrated CVE is a true not-affected finding, not the backport dressed up.
 
 ## Rules
 

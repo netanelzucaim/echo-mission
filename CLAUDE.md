@@ -27,7 +27,7 @@ original for a representative set of HTTP scenarios.
 | 3 | Build a `.deb` from source in a clean `debian:bookworm-slim`, one command, patches applied | Not started |
 | 4 | Final image: install the `.deb` into a minimal Debian base, match the original | `Containerfile` drafted, never built |
 | 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Written (`test/compat_test.py`, 91 checks) and validated against the original and two altered images; not yet run on the real patched image |
-| 6 | Bonus: rescan, diff against baseline, VEX document for the backported CVE | Not started |
+| 6 | Bonus: rescan, diff against baseline, VEX | VEX mechanic proven on the baseline: `vex/CVE-2023-52355.openvex.json` makes that CVE disappear from both Trivy and Grype (verified 2026-10-05). Rescan/diff of the patched image: after the build |
 
 ### Required deliverables
 
@@ -115,6 +115,19 @@ first, then KEV, then EPSS weighed against both scanners' severity), not by the 
   nginx CVEs from https://nginx.org/en/security_advisories.html, not from the reports.
   A backported fix may therefore show no before/after scan difference, leaving the VEX
   document nothing to suppress. Confirm after the real build.
+  - **So the VEX "disappear" demo runs on a different CVE than the backport.** The
+    brief's bonus says to VEX "one of your backport-patched CVEs" and show it vanish
+    from the rescan. That cannot work here: the backport fixes an nginx CVE the
+    scanners never reported, so there is nothing to make disappear. Resolution: the
+    demonstrated CVE is **CVE-2023-52355** (libtiff6) — reported by both scanners,
+    **no upstream fix** (so the base upgrade cannot remove it on its own), and
+    genuinely `not_affected` (image-filter asks libgd for JPEG/GIF/PNG/WebP only,
+    never TIFF; the module is not loaded by default). `vex/CVE-2023-52355.openvex.json`
+    makes it disappear from both scanners (proven 2026-10-05 against the baseline
+    image). A VEX for the backported CVE is still written, as `status: fixed`, to
+    answer the brief literally — it just won't change the scan, and the README says so.
+    The rule for picking a demo CVE (reported + no fix + honestly not_affected) is in
+    `.claude/skills/rescan-compare-vex/SKILL.md`.
 - **Rule: for a package the distribution did not build, take CVEs from its upstream
   project, never from the distribution's data.** `scans/baseline/image/foreign-packages.tsv`
   lists them (nginx and its four modules); the triage warns if their upstream CVEs are
