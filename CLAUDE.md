@@ -132,13 +132,3 @@ Full procedure: `build/patches/README.md`, "Adding another fix". In short:
   fixed version in bookworm → residual risk, not a bump.
 - Then `make all`, a VEX for a backport, and update the README table, `docs/triage-decision.md`
   and `build/patches/README.md`.
-
-## Building behind an HTTPS-only proxy (cloud workspace only)
-
-- `docker build` needs `--network host --build-arg https_proxy=$HTTPS_PROXY`, the proxy
-  CA (`/root/.ccr/ca-bundle.crt`) trusted inside the build, and `https://` apt sources.
-  The key fetch needs `hkps://keyserver.ubuntu.com` with `gnupg1-curl` (the proxy does
-  not pass hkp on port 80). Use a throwaway overlay of the `Containerfile` that does this
-  and removes the CA and apt settings at the end; keep all of it out of committed files.
-- Trivy and Grype run as host binaries in `/usr/local/bin`, because their containers
-  cannot verify the proxy's certificate.
