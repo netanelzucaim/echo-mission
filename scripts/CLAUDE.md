@@ -6,7 +6,7 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 |---|---|---|
 | `scan-baseline.sh` | `make scan-baseline` | Pull the original image, save its metadata, scan it with Trivy and Grype into `scans/baseline/` |
 | `probe-impact.sh` | `make probe REMOVE="pkg"` | Measure what removing packages and/or updating Debian packages would change; prints a table and cleans up after itself |
-| `compare-scans.py` | `make triage` | Merge a Trivy and a Grype JSON report and rank vulnerabilities by danger and reach into `triage.md` and `triage.csv` |
+| `compare-scans.py` | `make triage` | Merge a Trivy and a Grype JSON report and rank vulnerabilities by danger and reach into `triage.md` and `triage.csv`, and write the statistics diagrams to `stats.md` |
 
 ## scan-baseline.sh
 
@@ -36,6 +36,12 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
   the script warns and treats every package as "only sits in the image".
 - "Loaded" means the library is loaded, not that the vulnerable function is called.
   Read the advisory before claiming nginx is affected.
+- Also writes `stats.md`: Mermaid diagrams and tables computed from the data. The
+  owner wants diagrams produced by the script so the next image gets the same ones;
+  do not write statistics diagrams by hand. If `components.tsv` (component, package)
+  is next to the Trivy report, or `--components FILE` is given, it adds a per-component
+  table. `scan-baseline.sh` writes that file for every `nginx-module-*` package, or for
+  the packages named in `COMPONENTS`.
 - Matches by vulnerability ID. A Grype match with a non-CVE ID is mapped to its related
   CVE when there is one.
 - It ranks only what the scanners report. nginx's own CVEs are not in the list.

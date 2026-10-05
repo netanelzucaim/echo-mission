@@ -38,6 +38,22 @@ RUN=(docker run --rm ${PLATFORM:+--platform "$PLATFORM"} --entrypoint "")
     r=$(readlink -f "$p")
     dpkg -S "$r" 2>/dev/null || dpkg -S "${r#/usr}" 2>/dev/null || dpkg -S "$p" 2>/dev/null
   done | cut -d: -f1 | sort -u' > "$OUT_ABS/linked-packages.txt"
+# Optional components: packages that are installed only because of them. One line per
+# component and package. Default: every nginx-module-* package in the image.
+COMPONENTS="${COMPONENTS:-$("${RUN[@]}" "$IMAGE" dpkg-query -W -f='${db:Status-Abbrev}${Package}\n' 'nginx-module-*' 2>/dev/null | sed -n 's/^ii *//p' | tr '\n' ' ')}"
+: > "$OUT_ABS/components.tsv"
+if [ -n "${COMPONENTS// /}" ]; then
+  "${RUN[@]}" "$IMAGE" sh -c '
+    only=$(apt-get -s remove --auto-remove "$@" 2>/dev/null | awk "/^Remv/ {print \$2}" | sort -u)
+    for c in "$@"; do
+      apt-cache depends --recurse --installed --no-recommends --no-suggests --no-conflicts \
+        --no-breaks --no-replaces --no-enhances "$c" 2>/dev/null | grep -v "^ " | grep -v "^<" | sort -u |
+      while read -r p; do
+        [ "$p" = "$c" ] && continue
+        echo "$only" | grep -qx "$p" && printf "%s\t%s\n" "$c" "$p"
+      done
+    done' sh $COMPONENTS > "$OUT_ABS/components.tsv"
+fi
 
 echo "==> Saving image tarball"
 docker save "$IMAGE" -o "$OUT_ABS/image.tar"
