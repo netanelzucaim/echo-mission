@@ -54,6 +54,14 @@ truthfully. Do not overstate what a fix achieves.
 - **Image settings:** copied from the original (`scans/baseline/image/inspect.json`,
   `history.txt`). One deliberate difference: the `maintainer` label names the owner,
   because the image is not built by NGINX.
+  - **What "match exactly" covers.** The brief requires the new image to match the
+    original's **filesystem layout, user, working directory, ports and entrypoint**
+    exactly — labels are **not** in that list. So changing the `maintainer` label is
+    within the brief, and it is a correct, honest change (this image is not NGINX's).
+    Do **not** "fix" the maintainer label back to NGINX's to chase a byte-for-byte
+    match: that would be the only inaccurate thing in the image. The compatibility
+    test encodes this — `maintainer` is in `ALLOWED` in `test/compat_test.py`, every
+    other setting must match.
 - **Startup scripts:** extracted unchanged from the original into `entrypoint/`.
 - **Kerberos CVE-2024-37371:** considered and rejected by the owner as the headline
   bump. The library is only present because `curl` depends on it; nginx never calls it.
