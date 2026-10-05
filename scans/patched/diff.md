@@ -172,8 +172,7 @@ Each scanner was run twice on the patched image, without and with the VEX file(s
 - **suppressed**: reported without the VEX file, gone with it. The VEX file works.
 - **never reported**: the scanner did not report this CVE for this package even
   without the VEX file, so there was nothing to suppress. For nginx built from
-  nginx.org sources this is expected: see "the scanners miss nginx's own CVEs" in
-  the main README.
+  nginx.org sources this is expected: see docs/scanner-blind-spot.md.
 - **STILL REPORTED**: the VEX statement did not match. Check the package name and
   version in the product purl.
 

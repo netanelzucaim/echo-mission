@@ -1,1 +1,6 @@
-# not checked: apt-get update failed (no network?)
+# package	installed	newest in the distribution	why	maintainer
+nginx	1.25.5-1~bookworm	1.22.1-9+deb12u10	newer than anything the distribution offers	NGINX Packaging <nginx-packaging@f5.com>
+nginx-module-geoip	1.25.5-1~bookworm	-	the distribution has no such package	NGINX Packaging <nginx-packaging@f5.com>
+nginx-module-image-filter	1.25.5-1~bookworm	-	the distribution has no such package	NGINX Packaging <nginx-packaging@f5.com>
+nginx-module-njs	1.25.5+0.8.4-3~bookworm	-	the distribution has no such package	NGINX Packaging <nginx-packaging@f5.com>
+nginx-module-xslt	1.25.5-1~bookworm	-	the distribution has no such package	NGINX Packaging <nginx-packaging@f5.com>
