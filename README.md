@@ -55,6 +55,30 @@ Two things are easy to mix up:
   listed for the modules under "Dynamic modules" below are in those libraries (libtiff,
   libxml2…), not in the module code. They are part of the 497.
 
+### Where the Debian libraries are, and when they run
+
+All library packages install their files into one folder,
+`/usr/lib/x86_64-linux-gnu/` (357 shared library files in this image), for example
+`libtiff.so.6`, `libheif.so.1`, `libxml2.so.2`, `libgd.so.3` and `libssl.so.3`.
+Debian records every installed package and the files it owns in
+`/var/lib/dpkg/status` (149 packages); that file is what Trivy and Grype read to decide
+what is in the image. `dpkg -S <file>` names the package a file belongs to.
+
+Being installed is not the same as running. A library's code runs only when a program
+loads it:
+
+- **The main nginx program** loads six libraries: libc, libcrypt, libpcre2, libssl,
+  libcrypto and zlib (`ldd /usr/sbin/nginx`). These are the packages the triage treats
+  as reached by every running container.
+- **A module loads its own chain.** `ngx_http_image_filter_module.so` loads libgd, which
+  loads libpng, libjpeg, libtiff, libheif and the rest
+  (`ldd /usr/lib/nginx/modules/ngx_http_image_filter_module.so`). That happens only when
+  a configuration loads the module, and even then image-filter asks libgd only for
+  JPEG, GIF, PNG and WebP, so the TIFF and HEIF code is installed but never called.
+
+This difference between installed and used is why the triage ranks CVEs by reach, not
+by count.
+
 ## Build and run
 
 Everything is reproducible with one command each, through the `Makefile`:
