@@ -96,9 +96,6 @@ truthful dead ends. Do not overstate what a fix achieves.
 
 ## Rules for working in this repo
 
-- Explain in plain language. The owner is learning this domain: short sentences, define
-  terms, one idea at a time. For Hebrew, start paragraphs with a Hebrew word so they
-  render right-to-left.
 - Never claim a fix or a match that has not been verified by a command. Say what was
   checked and what was assumed.
 - Record deliberate differences from the original in `docs/image-config.md` (and the
