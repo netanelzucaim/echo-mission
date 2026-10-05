@@ -9,19 +9,22 @@ test proves the image still behaves like the original.
 
 | CVE | Where it lives | Severity | Fix method | Evidence |
 |---|---|---|---|---|
-| **CVE-2024-6119** | OpenSSL (`libssl3`), which nginx loads | High / High (Trivy / Grype), EPSS 66.6% | **Version bump** — `apt-get upgrade` on the fresh base takes OpenSSL 3.0.11 → 3.0.22 | Gone from both scanners in the rescan (`scans/patched/diff.md`); `nginx -V` reports OpenSSL 3.0.22. [Debian tracker: fixed in 3.0.14-1~deb12u2](https://security-tracker.debian.org/tracker/CVE-2024-6119) |
+| **CVE-2024-6119** | OpenSSL (`libssl3`), which nginx loads | High / High (Trivy / Grype), EPSS 66.6% | **Version bump** — `build/patches/CVE-2024-6119.patch` makes the nginx package require `libssl3 (>= 3.0.14-1~deb12u2)`, Debian's fixed version; the image build installs 3.0.22 (was 3.0.11) | Gone from both scanners in the rescan (`scans/patched/diff.md`); `nginx -V` reports OpenSSL 3.0.22; installing the `.deb` on the original image (OpenSSL 3.0.11) is refused by dpkg. [Debian tracker: fixed in 3.0.14-1~deb12u2](https://security-tracker.debian.org/tracker/CVE-2024-6119) |
 | **CVE-2026-42945** | nginx `ngx_http_rewrite_module` (built from source here) | medium, potential code execution | **Backport** — upstream commit `2046b45a` (nginx 1.31.0) onto 1.25.5 | [nginx advisory](https://nginx.org/en/security_advisories.html) (vulnerable 0.6.27–1.30.0) · [upstream fix 2046b45a](https://github.com/nginx/nginx/commit/2046b45aa0c6e712c216b9075886f3f26e9b4ca9) · `build/patches/CVE-2026-42945.patch`, applied in the from-source build and exercised by `make test`; VEX `status: fixed` in `vex/`. Not scanner-visible — see "the scanners miss nginx's own CVEs" below. |
 
 Why these two: full reasoning in `scans/baseline/priorities.md`. Targets are chosen by
 how likely a CVE is to be exploited here and how much of the deployment runs the code
 (reach), not by severity label alone.
 
-**Two fixes are claimed, but many more CVEs went away.** The version bump works by
-rebuilding on a fresh Debian base and running `apt-get upgrade`, which updates *every*
-Debian package to its patched version, not only OpenSSL. So the scanner-reported CVEs
+**Two fixes are claimed, but many more CVEs went away.** The image is built against
+Debian's current packages: a fresh base, `apt-get update` and `upgrade`, and every
+dependency installed at its newest version. That updates *every* Debian package to its
+patched version, not only OpenSSL. So the scanner-reported CVEs
 fell from **497 to 253** (244 no longer reported: OpenSSL, libexpat, libxml2, gnutls,
 curl and others). Only CVE-2024-6119 is claimed, because it is the one that was
-deliberately chosen and verified; the others are a side effect of the same upgrade.
+deliberately chosen, verified, and written into the package as a minimum version, so it
+cannot silently regress; the others are a side effect of building against current
+Debian packages.
 The 26 nginx and njs CVEs the scanners cannot see are counted separately: 1 is fixed
 (the backport), 25 are still present (see `scans/patched/diff.md`).
 
@@ -398,6 +401,12 @@ What remains after the two fixes, honestly:
   hand from upstream advisories; the patched scan never lists them, so they looked
   gone. Only one was fixed. The comparison now counts scanner-reported CVEs only
   (497 → 253) and lists the 26 advisory CVEs with their real status.
+- **A version bump that only happened by chance.** The first version claimed OpenSSL
+  was bumped by `apt-get upgrade`. In fact a fresh `debian:bookworm-slim` has no
+  OpenSSL at all; it was installed as a dependency of nginx at whatever version was
+  current, and nothing required a fixed one. Now `build/patches/CVE-2024-6119.patch`
+  writes the minimum fixed version into the nginx package, and dpkg refuses to install
+  it next to the vulnerable 3.0.11.
 - **Proving the backport by triggering the bug.** Not done on purpose: building a
   trigger is exploit work. The evidence is that the upstream fix applies cleanly, the
   patched code path is exercised by `make test` with matching output, and the build log

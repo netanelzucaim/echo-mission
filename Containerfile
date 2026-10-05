@@ -20,7 +20,10 @@ RUN set -x \
  && groupadd --system --gid 101 nginx \
  && useradd --system --gid nginx --no-create-home --home /nonexistent \
       --comment "nginx user" --shell /bin/false --uid 101 nginx \
- # current Debian packages = the version-bump fixes
+ # current Debian packages: the base's own packages are upgraded, and the .debs'
+ # dependencies are installed at their newest versions. The nginx .deb requires
+ # libssl3 >= 3.0.14-1~deb12u2 (build/patches/CVE-2024-6119.patch), so apt must
+ # install a fixed OpenSSL here or the build fails.
  && apt-get update \
  && apt-get upgrade -y \
  # patched nginx, its four modules, and the helper packages the original keeps

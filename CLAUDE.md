@@ -25,7 +25,7 @@ original for a representative set of HTTP scenarios.
 | 1 | Scan the original with Trivy and Grype, save reports | Done (`scans/baseline/`) |
 | 2 | Triage: per CVE, where it lives, is there a fix, how to fix; pick targets and justify | Done by judgment, written in `scans/baseline/priorities.md` (the `choose-cve-fix` skill). Targets decided: bump CVE-2024-6119 (OpenSSL), backport CVE-2026-42945 (rewrite). `make fix-plan` is the script's starting proposal |
 | 3 | Build a `.deb` from source in a clean `debian:bookworm-slim`, one command, patches applied | Done (`make deb`, `build/`). Drives nginx's pkg-oss packaging with the CVE-2026-42945 backport injected into the quilt series; njs 0.8.4 built without QuickJS. Produces nginx + 4 module `.debs` |
-| 4 | Final image: install the `.deb` into a minimal Debian base, match the original | Done (`make image`, `Containerfile`). Built `echo-nginx:1.25-bookworm`; OpenSSL bump from `apt-get upgrade` (3.0.11 → 3.0.22), 291 MB vs 276 MB |
+| 4 | Final image: install the `.deb` into a minimal Debian base, match the original | Done (`make image`, `Containerfile`). Built `echo-nginx:1.25-bookworm`; OpenSSL bump (3.0.11 → 3.0.22) enforced by `build/patches/CVE-2024-6119.patch`, 291 MB vs 276 MB |
 | 5 | Compatibility test in Go or Python, `make test`, non-zero exit on mismatch | Done. 92 checks on the built image: 91 match, 1 allowed difference (maintainer label), 0 mismatch — a verified drop-in |
 | 6 | Bonus: rescan, diff against baseline, VEX | Done (`make rescan`, `scans/patched/`). Scanner-reported CVEs 497 → 253 (base upgrade); of 26 nginx/njs advisory CVEs, 1 fixed (backport), 25 still present; CVE-2024-6119 gone; CVE-2023-52355 VEX suppressed in both scanners; CVE-2026-42945 VEX is status:fixed (never scanner-reported) |
 
@@ -49,8 +49,11 @@ truthfully. Do not overstate what a fix achieves.
 
 ### Decided
 
-- **Base:** fresh `debian:bookworm-slim` plus `apt-get upgrade`. This is where all
-  version-bump fixes come from.
+- **Base:** fresh `debian:bookworm-slim`, `apt-get update` and `upgrade`, with the
+  `.debs`' dependencies installed at their newest versions. This is where the Debian
+  package fixes come from. A fresh bookworm-slim has no `libssl3`; it is installed as a
+  dependency of the nginx package, which `build/patches/CVE-2024-6119.patch` makes
+  require `libssl3 (>= 3.0.14-1~deb12u2)`.
 - **Image settings:** copied from the original (`scans/baseline/image/inspect.json`,
   `history.txt`). One deliberate difference: the `maintainer` label names the owner,
   because the image is not built by NGINX.
@@ -83,7 +86,8 @@ first, then KEV, then EPSS weighed against both scanners' severity), not by the 
 - **Version bump: CVE-2024-6119** (OpenSSL). `3.0.11-1~deb12u2` to `3.0.22-1~deb12u1`
   (denial of service in X.509 name checks; reachable when nginx is a reverse proxy that
   verifies upstream certificates). The strongest reachable exploitation signal in the
-  image: EPSS 66.6%, High/High. Fixed by `apt-get upgrade`. Verified 2026-10-05 on a
+  image: EPSS 66.6%, High/High. Fixed by `build/patches/CVE-2024-6119.patch`, which raises the nginx package's
+  minimum `libssl3` to the fixed version; on a system with 3.0.11 dpkg refuses to install it. Verified 2026-10-05 on a
   bookworm system: Debian fixed it in 3.0.14-1~deb12u2, and bookworm-security now offers
   3.0.22-1~deb12u1, so the fresh base's upgrade installs an OpenSSL well past the fix.
   Final confirmation is the rescan of the built image. Rejected alternative:

@@ -25,6 +25,12 @@ echo "==> Injecting the backport into the quilt series"
 # applies it during the build, so this is all it takes to backport our fix.
 cp patches/CVE-2026-42945.patch pkg-oss/contrib/src/nginx/
 
+echo "==> Applying the version bump"
+# CVE-2024-6119.patch raises the nginx package's minimum libssl3 version to the
+# one Debian fixed it in, so installing the package always brings a fixed OpenSSL.
+# It changes nginx's packaging (pkg-oss), not nginx's source.
+patch -p1 -d pkg-oss < patches/CVE-2024-6119.patch
+
 echo "==> Applying packaging adjustments"
 # echo-pkg-oss.patch: (1) use a static Debian changelog instead of generating it
 # with xslscript (which pkg-oss fetches over the network); (2) build the njs
