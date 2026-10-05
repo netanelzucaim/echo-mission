@@ -116,9 +116,9 @@ modules share a package; together they account for 208.
 | `curl` | 40 | 16 | No |
 | `libcurl4` | 40 | 16 | No |
 | `libexpat1` | 35 | 13 | No |
-| `libxml2` | 33 | 19 | No |
 | `libtiff6` | 33 | 8 | No |
-| `libc6` | 32 | 10 | Yes |
+| `libxml2` | 33 | 19 | No |
 | `libc-bin` | 32 | 10 | No |
+| `libc6` | 32 | 10 | Yes |
 | `libgnutls30` | 22 | 11 | No |
 | `perl-base` | 21 | 14 | No |

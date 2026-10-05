@@ -5,8 +5,7 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 | Script | Make target | Purpose |
 |---|---|---|
 | `scan-baseline.sh` | `make scan-baseline` | Pull the original image, save its metadata into `scans/baseline/image/` and scan it with Trivy and Grype into `scans/baseline/reports/` |
-| `fix-method.py` | `make fix-plan` | Step 2: propose version bump, backport, remove, accept or none for each CVE; writes `scans/baseline/fix-plan.md` |
-| `rescan-compare.sh` | `make rescan IMAGE=<image>` | Step 6: scan the patched image into `scans/patched/`, rank it, rescan with `vex/*.json` applied, compare with the baseline |
+| `rescan-compare.sh` | `make rescan IMAGE=<image>` | Step 6: scan the patched image into `scans/patched/`, merge the reports into `triage.csv`, rescan with `vex/*.json` applied, compare with the baseline |
 | `diff-scans.py` | (called by `make rescan`) | Compare two scan folders and check the VEX result; writes `diff.md` and `diff.csv` |
 | `make-vex.py` | (run by hand) | Write an OpenVEX file for one CVE into `vex/` |
 | `fs-diff.sh` | `make fsdiff` | Compare every file in the original and patched images; exit 1 on a difference that is not explained by the newer Debian base |
@@ -43,7 +42,8 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
     review is in `.claude/skills/triage-cves/`. Changed on 2026-10-05 from "loaded 1.0,
     other 0.4", because "loaded" put CMS and 32-bit-only OpenSSL bugs at the top.
   - `review.tsv` can also add CVEs no scanner reports (nginx.org advisories).
-  - Every CVE gets an explanation: `triage-details.md` and the `explanation` column.
+  - Every CVE gets an explanation in the `explanation` column of `triage.csv`; the
+    top 40 also in `triage.md`.
   - The owner chose this over "Critical in both first" on 2026-10-05, because the
     top-severity findings were mostly in libraries nginx never runs.
 - Reach comes from `linked-packages.txt` next to the Trivy report or in `../image/` (written by
@@ -66,27 +66,11 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
   distribution" section into `triage.md`. If such a package has no CVE added from its
   upstream advisories, it prints a WARNING: the scanners' answer for that package is
   not valid, because they compare it with the distribution's version numbers.
-- The skill `.claude/skills/compare-vuln-scans/` describes how to use this script. It
-  points here and carries no copy of the code.
-
-## fix-method.py
-
-- Answers the triage step's three questions per CVE: where it lives, whether a fix
-  exists and in which version, and the fix method.
-- Two inputs: the top N scanner findings from `triage.csv` (or CVE IDs given as
-  arguments), and nginx's own advisories filtered to the shipped version. The second is
-  needed because the scanners do not report nginx's own CVEs.
-- The advisories page is downloaded once to `image/nginx-security-advisories.html` and
-  reused; `--refresh` fetches it again. Without network and without the saved copy the
-  nginx section is empty and the script warns.
-- Decision rules are in the script's docstring and in
-  `.claude/skills/choose-cve-fix/SKILL.md`. Project policy is "modules are kept", so a
-  module-only library without a fix gives ACCEPT; `--remove-modules` gives REMOVE.
-- "Where it lives" for nginx advisories comes from the module name in the advisory
-  title, checked against the configure flags in `image/nginx-V.txt`.
-- It shows each CVE's reviewed reach verdict from `triage.csv` (written by
-  `make triage` from `review.tsv`), so run `make triage` before `make fix-plan`.
-- It does not read patches. Its output is a proposal.
+- `--csv-only` writes only `triage.csv`; `make rescan` uses it for the patched scan,
+  which needs no ranking or diagrams of its own.
+- Ties in the diagrams' tables are sorted by name, so reruns produce identical files.
+- The skill `.claude/skills/triage-cves/` describes how to use this script and how to
+  review reach. It points here and carries no copy of the code.
 
 ## rescan-compare.sh, diff-scans.py, make-vex.py
 

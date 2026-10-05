@@ -1,6 +1,6 @@
 # Vulnerabilities ranked by danger and reach
 
-Inputs: `trivy.json`, `grype.json`, `review.tsv`. Full list: `triage.csv`; every score explained: `triage-details.md`.
+Inputs: `trivy.json`, `grype.json`, `review.tsv`. Full list, every score explained: `triage.csv`.
 
 | | Count |
 |---|---|

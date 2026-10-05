@@ -5,3 +5,4 @@ proxy-ca.crt
 Dockerfile.cloud
 Containerfile.cloud
 /scans/patched/reports/*.tar
+__pycache__/

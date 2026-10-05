@@ -103,7 +103,7 @@ patch in `MODULE_PATCHES_njs` in `debian/Makefile.module-njs` (through
    `expect`, as the rewrite scenario does.
 4. `make fsdiff` must report no unexpected differences.
 5. `make rescan`. A version-bumped CVE should be "no longer reported". A backported
-   nginx CVE never appears in the scans (the blind spot in the main README).
+   nginx CVE never appears in the scans (`docs/scanner-blind-spot.md`).
 6. For a backport, write its VEX record:
    `python3 scripts/make-vex.py --cve CVE-YYYY-NNNN --package nginx --scan-dir scans/patched --note "..."`,
    then run `make rescan` again.

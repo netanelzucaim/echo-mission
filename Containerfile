@@ -26,6 +26,25 @@ RUN set -x \
  # install a fixed OpenSSL here or the build fails.
  && apt-get update \
  && apt-get upgrade -y \
+ # nginx.org's apt signing key, fetched exactly as the original image's build does
+ # (scans/baseline/image/history.txt), so /etc/apt/keyrings matches. Nothing here uses
+ # it: nginx is built from source, not installed from nginx.org's repository.
+ && apt-get install --no-install-recommends --no-install-suggests -y gnupg1 ca-certificates \
+ && NGINX_GPGKEY=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62; \
+    NGINX_GPGKEY_PATH=/etc/apt/keyrings/nginx-archive-keyring.gpg; \
+    export GNUPGHOME="$(mktemp -d)"; \
+    found=''; \
+    for server in \
+        hkp://keyserver.ubuntu.com:80 \
+        pgp.mit.edu \
+    ; do \
+        echo "Fetching GPG key $NGINX_GPGKEY from $server"; \
+        gpg1 --keyserver "$server" --keyserver-options timeout=10 --recv-keys "$NGINX_GPGKEY" && found=yes && break; \
+    done; \
+    test -z "$found" && echo >&2 "error: failed to fetch GPG key $NGINX_GPGKEY" && exit 1; \
+    gpg1 --export "$NGINX_GPGKEY" > "$NGINX_GPGKEY_PATH" ; \
+    rm -rf "$GNUPGHOME"; \
+    apt-get remove --purge --auto-remove -y gnupg1 \
  # patched nginx, its four modules, and the helper packages the original keeps
  && apt-get install --no-install-recommends --no-install-suggests -y \
       /tmp/debs/*.deb gettext-base curl ca-certificates \
@@ -36,12 +55,8 @@ RUN set -x \
  && mkdir /docker-entrypoint.d
 
 # Startup scripts, extracted unchanged from the original image
-COPY --chmod=0755 entrypoint/docker-entrypoint.sh /
-COPY --chmod=0755 entrypoint/docker-entrypoint.d/ /docker-entrypoint.d/
-
-# nginx.org's apt signing key, copied byte-for-byte from the original image so the
-# filesystem layout matches exactly. Nothing here uses it: nginx is built from source.
-COPY --chmod=0644 rootfs/etc/apt/keyrings/nginx-archive-keyring.gpg /etc/apt/keyrings/
+COPY --chmod=0755 rootfs/docker-entrypoint.sh /
+COPY --chmod=0755 rootfs/docker-entrypoint.d/ /docker-entrypoint.d/
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 

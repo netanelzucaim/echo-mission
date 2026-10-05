@@ -6,7 +6,7 @@
 #
 # What it does, in order:
 #   1. Scans IMAGE with Trivy and Grype into OUT (same layout as scans/baseline/).
-#   2. Ranks the result and writes the diagrams   -> OUT/triage.md, triage.csv, stats.md
+#   2. Lists the result in one table              -> OUT/triage.csv (input for step 4)
 #   3. Scans again with every VEX file applied    -> OUT/reports/trivy-vex.*, grype-vex.*
 #   4. Compares with the baseline and checks VEX  -> OUT/diff.md, diff.csv
 #
@@ -32,8 +32,8 @@ if [ -z "${VEX+x}" ]; then VEX="$(ls vex/*.json 2>/dev/null | tr '\n' ' ' || tru
 echo "==> 1/4 Scanning $IMAGE into $OUT"
 IMAGE="$IMAGE" OUT="$OUT" TRIVY_FLAGS="${TRIVY_FLAGS:-}" ./scripts/scan-baseline.sh
 
-echo "==> 2/4 Ranking and diagrams"
-python3 scripts/compare-scans.py "$OUT/reports/trivy.json" "$OUT/reports/grype.json" --out-dir "$OUT"
+echo "==> 2/4 Merging the two reports"
+python3 scripts/compare-scans.py "$OUT/reports/trivy.json" "$OUT/reports/grype.json" --out-dir "$OUT" --csv-only
 
 REP="$(cd "$OUT/reports" && pwd)"
 rm -f "$REP"/trivy-vex.* "$REP"/grype-vex.*
@@ -63,4 +63,4 @@ fi
 echo "==> 4/4 Comparing with $BASELINE"
 python3 scripts/diff-scans.py "$BASELINE" "$OUT" ${VEX_ARGS[@]+"${VEX_ARGS[@]}"}
 echo
-echo "Read $OUT/diff.md first, then $OUT/stats.md."
+echo "Read $OUT/diff.md."
