@@ -59,6 +59,14 @@ truthfully. Do not overstate what a fix achieves.
   bump. The library is only present because `curl` depends on it; nginx never calls it.
   It is still upgraded by the fresh base, just not claimed as one of the two fixes.
 
+- **Dynamic modules: keep all four.** Decided by the owner on 2026-10-05: customers
+  whose configs load a module must keep working, so compatibility wins over removing
+  the vulnerable libraries. The image must ship `nginx-module-xslt`, `-geoip`,
+  `-image-filter` and `-njs`, built from source, with the same `.so` files in
+  `/usr/lib/nginx/modules/`. Their libraries get whatever fixes the fresh base
+  provides; what remains goes in the README's residual-risk section. xslt, geoip and
+  image-filter are part of the nginx source tree; njs is a separate source (0.8.4).
+
 ### Proposed, awaiting the owner's confirmation
 
 - **Version bump:** OpenSSL `3.0.11` to `3.0.22`, headline CVE-2024-6119 (denial of
@@ -70,12 +78,6 @@ truthfully. Do not overstate what a fix achieves.
 
 ### Open
 
-- **Dynamic modules.** The original installs five packages: `nginx` plus
-  `nginx-module-xslt`, `-geoip`, `-image-filter`, `-njs`. None is loaded by default (no
-  `load_module` line). Keeping them means building five packages; dropping them removes
-  37 libraries and about a quarter of the baseline findings but breaks configs that
-  load a module. If njs is dropped, remove `NJS_VERSION` and `NJS_RELEASE` from the
-  `Containerfile`.
 - **Signing key leftover.** The original contains
   `/etc/apt/keyrings/nginx-archive-keyring.gpg`; the new image will not. Document it as
   a deliberate filesystem difference or copy it in.

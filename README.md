@@ -93,9 +93,12 @@ All values were taken from `scans/baseline/inspect.json` and `scans/baseline/his
   their name on it would misstate who is responsible for it. The label is metadata
   only and nothing functional depends on it.
 
-### Open decisions
+### Dynamic modules are kept
 
-- **Dynamic modules.** The original installs five packages: `nginx` plus the xslt,
-  geoip, image-filter and njs modules. Whether to build or drop the four modules is
-  not decided yet. If njs is dropped, `NJS_VERSION` and `NJS_RELEASE` will be removed
-  from the environment as well.
+The original installs four optional module packages next to nginx: xslt, geoip,
+image-filter and njs. None is loaded by default, and their libraries carry 208 of the
+497 baseline CVEs (image-filter alone 166). Dropping them was considered and rejected:
+anyone whose configuration has a `load_module` line for one of them would find nginx
+refusing to start, and a drop-in replacement must not break existing users. All four
+are therefore built from source and shipped. Their libraries are updated by the fresh
+base where Debian has a fix; the rest is listed under residual risk.
