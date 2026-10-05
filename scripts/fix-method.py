@@ -189,7 +189,8 @@ def main():
     plan = []          # dicts: id, where, fix, method, why, source, score
 
     # --- 1. scanner findings
-    chosen = [by_id[c] for c in wanted if c in by_id] if wanted else rows[: a.top]
+    scanner_rows = [r for r in rows if r["trivy"] != "-" or r["grype"] != "-"]
+    chosen = [by_id[c] for c in wanted if c in by_id and by_id[c] in scanner_rows] if wanted else scanner_rows[: a.top]
     for c in wanted:
         if c not in by_id and c not in advisories:
             print(f"warning: {c} is in neither the scan nor nginx's advisories", file=sys.stderr)
@@ -232,6 +233,7 @@ def main():
                        "building this library from source.")
         plan.append({"id": r["id"], "where": where, "fix": fix, "method": method, "why": why,
                      "sev": f"{r['trivy']} / {r['grype']}", "score": float(r["score"]), "source": "scanners",
+                     "reach": f"{r['verdict']} ({r['reach']})" if r.get("verdict") else "not reviewed",
                      "kev": r["known_exploited"] == "yes"})
 
     # --- 2. nginx's own advisories that apply to the installed version
@@ -242,12 +244,16 @@ def main():
         if not in_ranges(nginx_version, ad["vulnerable"]):
             continue
         feature, state = feature_of(ad["title"], configure)
-        seen = "reported by a scanner" if cid in by_id else "not reported by either scanner"
+        row = by_id.get(cid)      # review.tsv can add nginx.org CVEs to triage.csv; those have no scanner rating
+        scanned = bool(row) and (row["trivy"] != "-" or row["grype"] != "-")
+        seen = "reported by a scanner" if scanned else "not reported by either scanner"
+        reach = f"{row['verdict']} ({row['reach']})" if row and row.get("verdict") else "not reviewed"
         method = "NONE" if state == "NOT compiled in" else "BACKPORT"
         why = ""
         nginx_rows.append({"id": cid, "title": ad["title"], "severity": ad["severity"], "vulnerable": ad["vulnerable"],
                            "fixed_in": ad["not_vulnerable"], "patch": ad["patch"], "advisory": ad["advisory"],
-                           "feature": feature, "state": state, "method": method, "why": why, "seen": seen})
+                           "feature": feature, "state": state, "method": method, "why": why, "seen": seen,
+                           "reach": reach})
     sev_rank = {"critical": 0, "high": 1, "major": 1, "medium": 2, "low": 3}
     nginx_rows.sort(key=lambda r: (ORDER[r["method"]], sev_rank.get(r["severity"].lower(), 9), r["id"]))
     plan.sort(key=lambda r: (ORDER[r["method"]], -r["score"]))
@@ -285,18 +291,19 @@ def main():
             w("The scanners compare the nginx.org package with Debian's version numbers, so most of these")
             w("do not appear in the scan reports.")
             w()
-            w("| CVE | What | Severity (upstream) | Where it lives | Vulnerable versions | Fixed upstream in | Method | Upstream patch | In scan reports |")
-            w("|---|---|---|---|---|---|---|---|---|")
+            w("| CVE | What | Severity (upstream) | Where it lives | Reach verdict | Vulnerable versions | Fixed upstream in | Method | Upstream patch | In scan reports |")
+            w("|---|---|---|---|---|---|---|---|---|---|")
             for r in nginx_rows:
                 patch = f"[patch]({r['patch']})" if r["patch"] else "none published; take it from the fix commit"
                 cve = f"[{r['id']}]({r['advisory']})" if r["advisory"] else r["id"]
-                w(f"| {cve} | {r['title']} | {r['severity']} | {r['feature']}, {r['state']} | {r['vulnerable']} | "
+                w(f"| {cve} | {r['title']} | {r['severity']} | {r['feature']}, {r['state']} | {r['reach']} | {r['vulnerable']} | "
                   f"{r['fixed_in']} | **{r['method']}** | {patch} | {r['seen']} |")
             w()
             line = ".".join(nginx_version.split(".")[:2])
             w(f"Why BACKPORT: the image must stay a replacement for nginx {line}, so moving to a newer nginx")
             w(f"release is not an option. The upstream fix is adapted to {nginx_version} and kept as a patch file.")
-            w("A row marked NONE is about a feature this build does not contain.")
+            w("A row marked NONE is about a feature this build does not contain. \"Reach verdict\" is the reviewed")
+            w("answer to \"does this image run the vulnerable code\", from `review.tsv` (see the `triage-cves` skill).")
             w()
             ready = [r for r in nginx_rows if r["method"] == "BACKPORT" and r["patch"]]
             if ready:
@@ -306,11 +313,11 @@ def main():
         w("## Scanner findings" + ("" if wanted else f": top {len(chosen)} by danger and reach"))
         w()
         if plan:
-            w("| CVE | Trivy / Grype | Where it lives | Fix available | Method | Why |")
-            w("|---|---|---|---|---|---|")
+            w("| CVE | Trivy / Grype | Where it lives | Reach verdict | Fix available | Method | Why |")
+            w("|---|---|---|---|---|---|---|")
             for r in plan:
                 kev = " (known exploited)" if r["kev"] else ""
-                w(f"| {r['id']}{kev} | {r['sev']} | {r['where']} | {r['fix']} | **{r['method']}** | {r['why']} |")
+                w(f"| {r['id']}{kev} | {r['sev']} | {r['where']} | {r['reach']} | {r['fix']} | **{r['method']}** | {r['why']} |")
             w()
         else:
             w("None selected.")

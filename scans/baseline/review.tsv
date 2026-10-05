@@ -1,0 +1,189 @@
+# Reviewed reach verdicts for the baseline image (nginx 1.25.5, Debian 12, amd64).
+# Read by scripts/compare-scans.py (make triage). Written by hand, following
+# .claude/skills/triage-cves/SKILL.md. One line per CVE, tab-separated.
+#
+# verdict: always | common | config | manual | unused | n/a | unknown (see the skill for the meaning and weights)
+# evidence: where the claim can be checked. "src/..." paths are in the nginx-1.25.5 source tarball from nginx.org.
+# package, severity: only for CVEs the scanners do not report (nginx.org advisories); left empty otherwise.
+#
+# Reviewed on 2026-10-05: every CVE in a package nginx loads, every known-exploited CVE,
+# every CVE with EPSS >= 5%, and every nginx.org advisory whose range includes 1.25.5.
+id	verdict	reason	evidence	package	severity
+CVE-2023-44487	common	HTTP/2 Rapid Reset reaches nginx only when HTTP/2 is switched on (the image's default config serves HTTP/1.1 on port 80), but most TLS sites switch it on. nginx 1.25.3 added "improved detection of misbehaving clients when using HTTP/2", upstream's response to this attack; whether that fully closes it was not checked against an advisory.	CHANGES line 49 (1.25.3)
+CVE-2024-6119	config	nginx calls X509_check_host() only after verifying an upstream server's certificate, which happens only with proxy_ssl_verify on (or the grpc/uwsgi/stream equivalents); off by default.	src/event/ngx_event_openssl.c:4886; src/http/ngx_http_upstream.c:1804; src/stream/ngx_stream_proxy_module.c:1140
+CVE-2025-15467	unused	CMS message parsing. nginx never calls OpenSSL's CMS functions.	no CMS_ calls in nginx-1.25.5/src
+CVE-2024-2511	config	Needs the non-default SSL_OP_NO_TICKET option with TLSv1.3. nginx sets it only when ssl_session_tickets is off; the default is on.	src/http/modules/ngx_http_ssl_module.c:857-861
+CVE-2026-31789	n/a	Heap overflow only on 32-bit platforms. The image is linux/amd64.	advisory text; image/digest.txt
+CVE-2026-45447	unused	PKCS#7 / S-MIME signature verification. nginx never calls PKCS7 functions.	no PKCS7 calls in nginx-1.25.5/src
+CVE-2026-28388	unused	Needs delta CRL processing (X509_V_FLAG_USE_DELTAS). With ssl_crl nginx sets only CRL_CHECK and CRL_CHECK_ALL.	src/event/ngx_event_openssl.c:1026
+CVE-2026-28389	unused	CMS EnvelopedData parsing. nginx never calls CMS functions.	no CMS_ calls in nginx-1.25.5/src
+CVE-2026-34182	unused	CMS AuthEnvelopedData. nginx never calls CMS functions.	no CMS_ calls in nginx-1.25.5/src
+CVE-2025-69421	unused	PKCS#12 file parsing. nginx loads certificates and keys from PEM and never calls PKCS12 functions.	no PKCS12 calls in nginx-1.25.5/src
+CVE-2026-28387	unused	DANE TLSA client authentication. nginx never enables DANE.	no SSL_dane calls in nginx-1.25.5/src
+CVE-2026-28390	unused	CMS EnvelopedData parsing. nginx never calls CMS functions.	no CMS_ calls in nginx-1.25.5/src
+CVE-2026-5450	unused	scanf with %mc. nginx never calls scanf; other programs in the image could, only when someone runs them by hand.	no scanf calls in nginx-1.25.5/src
+CVE-2026-86145	unused	pcre2_dfa_match(). nginx uses pcre2_match() only.	src/core/ngx_regex.c
+CVE-2026-84782	unused	DTLS retransmission. nginx has no DTLS; its QUIC code is separate.	no DTLS in nginx-1.25.5/src
+CVE-2026-89157	n/a	32-bit platforms only, and in pcre2_pattern_convert(), which nginx never calls.	advisory text; no pcre2_pattern_convert in src
+CVE-2026-103111	unused	Needs an attacker-controlled regular expression. nginx compiles only the regexes in its own config; requests supply the subject, not the pattern.	src/core/ngx_regex.c
+CVE-2026-89161	unused	pcre2_jit_match() with a copied subject. nginx calls pcre2_match(), never pcre2_jit_match().	src/core/ngx_regex.c:672 (only pcre2_jit_compile)
+CVE-2024-5535	unused	Needs SSL_select_next_proto() with an empty list. nginx calls it with its own non-empty ALPN list.	src/http/modules/ngx_http_ssl_module.c:489
+CVE-2026-63076	unused	CMP protocol. nginx never uses CMP.	no OSSL_CMP calls in nginx-1.25.5/src
+CVE-2025-9230	unused	CMS password-based decryption. nginx never calls CMS functions.	no CMS_ calls in nginx-1.25.5/src
+CVE-2026-31790	unused	RSASVE key encapsulation. Not used by TLS or by nginx.	advisory text
+CVE-2026-63072	unused	CMS decryption (CMS_decrypt). nginx never calls CMS functions.	no CMS_ calls in nginx-1.25.5/src
+CVE-2026-45445	unused	AES-OCB through EVP_Cipher(). TLS has no OCB cipher suites, and nginx's QUIC code uses EVP_CipherUpdate/Final.	src/event/quic/ngx_event_quic_protection.c:495-532
+CVE-2026-4046	unused	iconv() with IBM1390/IBM1399. nginx never calls iconv.	no iconv calls in nginx-1.25.5/src
+CVE-2026-0915	unused	getnetbyaddr(). nginx never calls it.	no getnetbyaddr calls in nginx-1.25.5/src
+CVE-2025-69419	unused	PKCS12_get_friendlyname(). nginx never calls PKCS12 functions.	no PKCS12 calls in nginx-1.25.5/src
+CVE-2025-4802	unused	Affects statically linked setuid programs. nginx is dynamically linked and not setuid; that the image has no static setuid programs is assumed, not checked.	advisory text; image/linked-packages.txt
+CVE-2026-5928	unused	ungetwc() on wide streams. nginx never calls it.	no ungetwc calls in nginx-1.25.5/src
+CVE-2026-5435	unused	Deprecated debug functions ns_printrr/fp_nquery. nginx never calls them.	no ns_printr calls in nginx-1.25.5/src
+CVE-2026-4437	unused	gethostbyaddr(). nginx never calls it; it uses its own resolver and getaddrinfo() at startup.	src/core/ngx_inet.c
+CVE-2026-19499	unused	strfmon(). nginx never calls it.	no strfmon calls in nginx-1.25.5/src
+CVE-2026-75803	unknown	EVP_Cipher() on an empty AEAD ciphertext. nginx's own QUIC code uses EVP_CipherUpdate/Final; whether OpenSSL's TLS record layer reaches EVP_Cipher() for ChaCha20-Poly1305 records was not checked.	src/event/quic/ngx_event_quic_protection.c:495-532
+CVE-2023-5678	unused	X9.42 DH key checks via DH_generate_key/DH_check_pub_key. nginx never calls them, and the OpenSSL advisory says the TLS implementation is not affected.	no DH_check calls in nginx-1.25.5/src; advisory text
+CVE-2024-0727	unused	PKCS#12 parsing. nginx never calls PKCS12 functions.	no PKCS12 calls in nginx-1.25.5/src
+CVE-2024-4741	unused	Only applications calling SSL_free_buffers() are affected. nginx never calls it.	no SSL_free_buffers calls in nginx-1.25.5/src
+CVE-2023-6129	n/a	POLY1305 on PowerPC CPUs only. The image is amd64.	advisory text
+CVE-2024-2398	manual	libcurl HTTP/2 push. Only the curl tool uses libcurl; nginx has its own HTTP code.	image/linked-packages.txt
+CVE-2026-34180	unused	Needs an ASN.1 element over 2 GB. nginx decodes ASN.1 only from TLS peers, whose certificate chains OpenSSL caps far below that, and from local files.	advisory text
+CVE-2026-9076	unused	CMS password-based decryption. nginx never calls CMS functions.	no CMS_ calls in nginx-1.25.5/src
+CVE-2025-69420	unused	TimeStamp response verification. nginx never calls TS functions.	no TS_RESP calls in nginx-1.25.5/src
+CVE-2026-7383	unused	Integer overflow in ASN1_mbstring_ncopy() that needs a string of hundreds of millions of characters; TLS input to nginx is far smaller. Size bound taken from the advisory, not tested.	advisory text
+CVE-2026-54874	unused	DTLS. nginx has no DTLS.	no DTLS in nginx-1.25.5/src
+CVE-2025-15281	unused	wordexp(). nginx never calls it.	no wordexp calls in nginx-1.25.5/src
+CVE-2026-6238	unused	Deprecated debug functions ns_printrr/fp_nquery. nginx never calls them.	no ns_printr calls in nginx-1.25.5/src
+CVE-2026-80489	unused	iconv() with EUC_JISX0213. nginx never calls iconv.	no iconv calls in nginx-1.25.5/src
+CVE-2026-77117	unused	iconv() with SHIFT_JISX0213. nginx never calls iconv.	no iconv calls in nginx-1.25.5/src
+CVE-2026-0861	unused	Needs an attacker-controlled alignment near 2^62 for memalign. nginx passes fixed alignments (16 bytes, the page size, or directio_alignment from its config).	src/core/ngx_palloc.c:258; src/core/ngx_output_chain.c:472; src/core/ngx_radix_tree.c:475
+CVE-2026-75806	unused	DTLS 1.2. nginx has no DTLS.	no DTLS in nginx-1.25.5/src
+CVE-2025-0395	unused	Overflow while printing a failed assert(). nginx never calls assert().	no assert( calls in nginx-1.25.5/src
+CVE-2026-8674	config	resolv.conf with a search domain of about 200 characters makes getaddrinfo() abort. nginx calls getaddrinfo() at startup when the config names a host; resolv.conf is set by whoever runs the container, not by a remote attacker.	src/core/ngx_inet.c
+CVE-2026-6791	unused	wordexp() with a long ~username. nginx never calls wordexp.	no wordexp calls in nginx-1.25.5/src
+CVE-2026-89156	config	pcre2_match() reading invalid UTF after a JIT fallback. Needs pcre_jit on and a pattern in UTF mode ((*UTF) in the config); the URI it matches is attacker-controlled.	src/core/ngx_regex.c:672; no PCRE2_UTF set by nginx
+CVE-2026-89160	unused	Needs the PCRE2_MATCH_INVALID_UTF option. nginx never sets it.	src/core/ngx_regex.c:159-163
+CVE-2026-89092	n/a	Crash in the nscd service. nscd is not installed in the image.	image/packages.tsv
+CVE-2026-89158	n/a	32-bit platforms only (pcre2_compile_32). The image is amd64 and nginx uses the 8-bit library.	advisory text; image/linked-packages.txt
+CVE-2026-19542	unused	tdelete() on a very deep tree. nginx never calls tdelete.	no tdelete calls in nginx-1.25.5/src
+CVE-2026-75805	unused	CMP client. nginx never uses CMP.	no OSSL_CMP calls in nginx-1.25.5/src
+CVE-2025-8058	unused	POSIX regcomp(). nginx uses PCRE2, not regcomp.	no regcomp calls in nginx-1.25.5/src
+CVE-2026-27171	unused	crc32_combine64(). nginx calls deflate/inflate, never crc32_combine.	no crc32_combine calls in nginx-1.25.5/src
+CVE-2026-18374	unused	fopen() with an attacker-controlled ",ccs=" mode. nginx never calls fopen.	no fopen calls in nginx-1.25.5/src
+CVE-2026-86805	unused	Local privilege escalation through setuid programs with $ORIGIN in RPATH. Needs a local attacker; nginx is not setuid.	advisory text
+CVE-2023-45853	n/a	MiniZip is a separate library (Debian's libminizip), not part of zlib1g. Trivy alone reports it.	advisory text; image/packages.tsv
+CVE-2011-3389	manual	BEAST against TLS 1.0 CBC in GnuTLS. Only tools that use GnuTLS (apt's HTTPS transport) could reach it; nginx uses OpenSSL.	image/linked-packages.txt
+CVE-2024-9143	unused	Low-level GF(2^m) curve APIs with explicit parameters. TLS uses named curves; the OpenSSL advisory says the protocols are not affected.	advisory text
+CVE-2009-4487	n/a	Terminal escape sequences in logs, reported against nginx 0.7.64. nginx 1.25.5 escapes non-printable characters in its access log, and the image sends logs to stdout.	src/http/modules/ngx_http_log_module.c:139; image/history.txt (ln -sf /dev/stdout)
+CVE-2023-6237	unused	EVP_PKEY_public_check() on RSA keys. nginx never calls it; the OpenSSL advisory says TLS is not affected.	advisory text
+CVE-2025-9232	unused	OpenSSL's HTTP client with no_proxy and an IPv6 host. nginx has its own OCSP HTTP client and never calls OpenSSL's.	no OSSL_HTTP or OCSP_sendreq calls in nginx-1.25.5/src
+CVE-2024-4603	unused	DSA key checks via EVP_PKEY_param_check/public_check. nginx never calls them.	no EVP_PKEY_public_check calls in nginx-1.25.5/src
+CVE-2026-42766	unused	CMS password-based decryption. nginx never calls CMS functions.	no CMS_ calls in nginx-1.25.5/src
+CVE-2024-13176	config	ECDSA signing timing leak. Needs an ECDSA certificate (the advisory names P-521 as the realistic case) and local or very low-latency timing access.	advisory text
+CVE-2026-63074	unused	CMP server extraCerts cache. nginx never uses CMP.	no OSSL_CMP calls in nginx-1.25.5/src
+CVE-2026-22796	unused	PKCS#7 signature verification. nginx never calls PKCS7 functions.	no PKCS7 calls in nginx-1.25.5/src
+CVE-2026-42767	unused	CMP client. nginx never uses CMP.	no OSSL_CMP calls in nginx-1.25.5/src
+CVE-2026-4438	unused	gethostbyaddr(). nginx never calls it.	no gethostbyaddr calls in nginx-1.25.5/src
+CVE-2026-35189	config	Memory growth from a certificate with many CRL distribution points. nginx parses peer certificates only when it asks clients for one (ssl_verify_client) or talks to https upstreams.	advisory text
+CVE-2026-54872	config	ECDSA timing leak on curves without a dedicated implementation. Needs an ECDSA certificate on such a curve plus precise timing access.	advisory text
+CVE-2026-77696	unused	SM2 signatures. nginx's TLS does not negotiate SM2 (assumed from OpenSSL 3.0 defaults, not tested).	advisory text
+CVE-2026-45446	unused	AES-SIV and AES-GCM-SIV. Not used by TLS or nginx.	advisory text
+CVE-2025-68160	unused	BIO_f_linebuffer filter. nginx never uses it.	no BIO_f_linebuffer in nginx-1.25.5/src
+CVE-2026-22795	unused	PKCS#12 parsing. nginx never calls PKCS12 functions.	no PKCS12 calls in nginx-1.25.5/src
+CVE-2026-6368	unused	wordexp(). nginx never calls it.	no wordexp calls in nginx-1.25.5/src
+CVE-2025-69418	unused	Low-level OCB API. Not used by TLS or nginx.	advisory text
+CVE-2026-95818	unused	Loader overflow in setuid programs with $ORIGIN in RPATH. Needs a local attacker; nginx is not setuid.	advisory text
+CVE-2026-97399	n/a	strncasecmp optimized for Power8. The image is amd64.	advisory text
+CVE-2026-42770	unused	DHX (X9.42) peer keys. TLS key exchange uses plain DH or ECDH, not DHX.	advisory text
+CVE-2026-85091	n/a	Affects zlib 1.3.1.2 to 1.3.2. The image has zlib 1.2.13.	image/packages.tsv (zlib1g 1:1.2.13.dfsg-1)
+CVE-2018-20796	unused	glibc POSIX regex recursion. nginx uses PCRE2, not glibc regex.	no regcomp calls in nginx-1.25.5/src
+CVE-2019-1010022	unused	Stack-guard bypass that only helps exploit another overflow. Upstream treats it as a non-security bug.	advisory text
+CVE-2019-1010024	unused	ASLR weakening that only helps exploit another bug. Upstream treats it as a non-security bug.	advisory text
+CVE-2019-1010023	unused	Needs a victim to run ldd on attacker files. Nothing in the container does that.	advisory text
+CVE-2010-4756	unused	glob() CPU use on crafted patterns. nginx calls glob() only for wildcard include lines in its own config.	src/core/ngx_conf_file.c
+CVE-2019-9192	unused	glibc POSIX regex recursion, disputed by upstream. nginx uses PCRE2.	no regcomp calls in nginx-1.25.5/src
+CVE-2019-1010025	unused	Guessing thread heap addresses. Upstream says ASLR bypass alone is not a vulnerability.	advisory text
+CVE-2013-0337	n/a	World-readable log files. In this image the log files are links to stdout and stderr.	image/history.txt (ln -sf /dev/stdout)
+CVE-2025-27587	n/a	Timing attack on PowerPC only. The image is amd64.	advisory text
+CVE-2023-50387	unused	KeyTrap is a DNSSEC validator bug. It is filed against the systemd source package because of systemd-resolved, which is not in libsystemd0 and does not run in the container.	image/packages.tsv
+CVE-2023-50868	unused	DNSSEC NSEC3 validator bug, filed against systemd for systemd-resolved, which is not in libsystemd0 and does not run in the container.	image/packages.tsv
+CVE-2025-27363	unused	FreeType font parsing. Only image-filter pulls in FreeType (through libgd), and that module never draws text: it only reads, resizes, rotates, crops and writes JPEG/GIF/PNG/WebP.	src/http/modules/ngx_http_image_filter_module.c (gdImage* calls, no gdImageString*)
+CVE-2024-28182	manual	nghttp2 CONTINUATION flood. libnghttp2 is used only by curl; nginx has its own HTTP/2 code.	image/linked-packages.txt
+CVE-2024-7264	manual	libcurl ASN.1 date parser. Only the curl tool uses libcurl.	image/linked-packages.txt
+CVE-2017-17740	n/a	Bug in the slapd LDAP server. Only the libldap client library is installed.	image/packages.tsv
+CVE-2017-16232	unused	libtiff memory leaks. image-filter reads only JPEG, GIF, PNG and WebP, never TIFF.	src/http/modules/ngx_http_image_filter_module.c
+CVE-2015-3276	n/a	In OpenLDAP's Mozilla NSS TLS code (tls_m.c). Debian builds libldap with GnuTLS instead (assumed from Debian's build, not checked).	advisory text
+CVE-2026-42533	config	Buffer overflow when using map with a regular expression. Needs a map block that uses a regex.	https://nginx.org/en/security_advisories.html	nginx	major
+CVE-2026-60005	config	Memory disclosure in the slice module. Needs the slice directive.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-56434	config	Use-after-free in the SSI module. Needs ssi on.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-42055	config	Buffer overflow in the gRPC proxy module. Needs grpc_pass.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-48142	config	Buffer over-read in the charset module. Needs charset conversion configured.	https://nginx.org/en/security_advisories.html	nginx	low
+CVE-2026-9256	config	Buffer overflow in the rewrite module. Needs rewrite rules; the exact trigger in the advisory was not read.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-42945	config	Buffer overflow in the rewrite module. Needs rewrite rules; the exact trigger in the advisory was not read.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-42946	config	Buffer over-read in the scgi and uwsgi modules. Needs scgi_pass or uwsgi_pass.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-42934	config	Buffer over-read in the charset module. Needs charset conversion configured.	https://nginx.org/en/security_advisories.html	nginx	low
+CVE-2026-40460	config	HTTP/3 address spoofing. Needs listen ... quic.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-40701	config	Resolver use-after-free in OCSP. Needs OCSP stapling or ssl_ocsp with a resolver.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-27654	config	Buffer overflow in the DAV module. Needs dav_methods.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-27784	config	Buffer overflow in the mp4 module. Needs the mp4 directive.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-32647	config	Buffer overflow in the mp4 module. Needs the mp4 directive.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-27651	config	NULL dereference with CRAM-MD5 or APOP. Needs the mail proxy configured.	https://nginx.org/en/security_advisories.html	nginx	low
+CVE-2026-28753	config	Injection in auth_http and XCLIENT. Needs the mail proxy configured.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2026-1642	config	SSL upstream injection. Needs proxying to an https upstream.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2025-53859	config	Buffer over-read in the SMTP mail module. Needs the mail proxy configured.	https://nginx.org/en/security_advisories.html	nginx	low
+CVE-2025-23419	config	TLS session reuse can bypass client-certificate checks. Needs several TLS servers sharing a session cache or ticket keys, with client certificates.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2024-7347	config	Buffer over-read in the mp4 module. Needs the mp4 directive.	https://nginx.org/en/security_advisories.html	nginx	low
+CVE-2024-32760	config	Buffer overwrite in HTTP/3. Needs listen ... quic.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2024-31079	config	Stack overflow and use-after-free in HTTP/3. Needs listen ... quic.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2024-35200	config	NULL pointer dereference in HTTP/3. Needs listen ... quic.	https://nginx.org/en/security_advisories.html	nginx	medium
+CVE-2024-34161	config	Memory disclosure in HTTP/3. Needs listen ... quic.	https://nginx.org/en/security_advisories.html	nginx	medium
+#
+# CVE-level refinements for module libraries (reviewed on 2026-10-05, top of the ranking only).
+CVE-2024-56171	unused	Use-after-free during XML Schema validation. The xslt module never validates against a schema.	src/http/modules/ngx_http_xslt_filter_module.c (no xmlSchema calls)		
+CVE-2025-32415	unused	Under-read during XML Schema validation. The xslt module never validates against a schema.	src/http/modules/ngx_http_xslt_filter_module.c (no xmlSchema calls)		
+CVE-2025-49796	unused	Schematron processing. The xslt module never uses Schematron.	src/http/modules/ngx_http_xslt_filter_module.c		
+CVE-2025-49794	unused	Schematron processing. The xslt module never uses Schematron.	src/http/modules/ngx_http_xslt_filter_module.c		
+CVE-2024-25062	unused	XML Reader interface with DTD validation and XInclude. The xslt module uses the push parser, not the Reader.	src/http/modules/ngx_http_xslt_filter_module.c (xmlCreatePushParserCtxt)		
+CVE-2026-74860	n/a	Only with libxml2's Python bindings. The image has no Python.	image/packages.tsv		
+CVE-2025-32414	n/a	In libxml2's Python bindings. The image has no Python.	image/packages.tsv		
+CVE-2024-45492	n/a	Integer overflow on 32-bit platforms only. The image is amd64.	advisory text		
+CVE-2024-45491	n/a	Integer overflow on 32-bit platforms only. The image is amd64.	advisory text		
+CVE-2026-52490	n/a	In the tiffcrop command-line tool, which is not installed (libtiff-tools is absent).	image/packages.tsv		
+#
+# Package-level verdicts for the libraries of the four optional modules (pkg:NAME).
+# They apply to every CVE in the package unless a CVE line above says otherwise.
+# Not checked per CVE: a specific CVE may need an API the module never calls.
+pkg:libgd3	config	Used only when the image-filter module is loaded and a location has image_filter; it then decodes JPEG, GIF, PNG or WebP images from responses.	src/http/modules/ngx_http_image_filter_module.c (gdImageCreateFrom{Jpeg,Gif,Png,Webp}Ptr)		
+pkg:libpng16-16	config	libgd decodes PNG with it when image_filter processes a PNG response.	src/http/modules/ngx_http_image_filter_module.c (gdImageCreateFromPngPtr)		
+pkg:libjpeg62-turbo	config	libgd decodes JPEG with it when image_filter processes a JPEG response.	src/http/modules/ngx_http_image_filter_module.c (gdImageCreateFromJpegPtr)		
+pkg:libwebp7	config	libgd decodes WebP with it when image_filter processes a WebP response.	src/http/modules/ngx_http_image_filter_module.c (gdImageCreateFromWebpPtr)		
+pkg:libtiff6	unused	libgd links it for TIFF, but image-filter only asks libgd for JPEG, GIF, PNG and WebP.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libjbig0	unused	Used only by libtiff, which image-filter never reaches.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:liblerc4	unused	Used only by libtiff, which image-filter never reaches.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libdeflate0	unused	Used only by libtiff, which image-filter never reaches; nginx's own gzip uses zlib.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libheif1	unused	libgd links it for HEIF/AVIF, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libavif15	unused	libgd links it for AVIF, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libaom3	unused	AV1 codec behind HEIF/AVIF, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libdav1d6	unused	AV1 decoder behind HEIF/AVIF, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libgav1-1	unused	AV1 decoder behind AVIF, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:librav1e0	unused	AV1 encoder behind AVIF, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libsvtav1enc1	unused	AV1 encoder behind AVIF, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libyuv0	unused	Colour conversion for AVIF, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libabsl20220623	unused	C++ support library for the AV1 codecs, which image-filter never reaches.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libde265-0	unused	H.265 decoder behind HEIF, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libx265-199	unused	H.265 encoder behind HEIF, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libnuma1	unused	Used by the x265 encoder, which image-filter never reaches.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libfreetype6	unused	libgd uses FreeType only to draw text; image-filter never draws text.	src/http/modules/ngx_http_image_filter_module.c (no gdImageString* calls)		
+pkg:libfontconfig1	unused	libgd uses fontconfig only to find fonts for drawing text; image-filter never draws text.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:fontconfig-config	unused	Configuration for fontconfig, which image-filter never reaches.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:fonts-dejavu-core	unused	Font files, read only when text is drawn; image-filter never draws text.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libexpat1	unused	Only fontconfig uses Expat here (to read its config), and image-filter never reaches fontconfig.	image/modules.tsv; src/http/modules/ngx_http_image_filter_module.c		
+pkg:libxpm4	unused	libgd links it for XPM images, which image-filter never asks for.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libx11-6	unused	Pulled in by libxpm, which image-filter never reaches; nothing in the image talks to an X server.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libx11-data	unused	Data for libX11, which nothing in the image uses.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libxcb1	unused	X protocol library behind libX11, which nothing in the image uses.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libxau6	unused	X authorization library behind libX11, which nothing in the image uses.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libxdmcp6	unused	X display manager library behind libX11, which nothing in the image uses.	src/http/modules/ngx_http_image_filter_module.c		
+pkg:libxml2	config	Parsed when the xslt module is loaded and a location uses xslt_stylesheet: the response body is parsed as XML with entity substitution and DTD loading switched on. njs also uses it, but only for scripts that load its xml module.	src/http/modules/ngx_http_xslt_filter_module.c:384-385		
+pkg:libxslt1.1	config	Applies the admin's stylesheet to the response XML when the xslt module is loaded and xslt_stylesheet is set.	src/http/modules/ngx_http_xslt_filter_module.c (xsltApplyStylesheet)		
+pkg:libicu72	config	libxml2 uses it to convert the character encoding an XML document declares, so it is reached the same way as libxml2.	image/modules.tsv		

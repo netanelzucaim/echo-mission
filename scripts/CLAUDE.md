@@ -32,8 +32,13 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
 - Ranking is by danger and reach, not by severity label: `score = 100 x danger x reach`.
   - Danger = 0.6 x exploitation (1 if in CISA KEV, else the EPSS probability) + 0.4 x
     severity (average of both scanners, a missing scanner counts as 0).
-  - Reach = 1.0 if the affected package is `nginx` itself or a library its binary loads, 0.4 if it
-    only sits in the image, plus 0.05 per extra affected package (max +0.15).
+  - Reach comes from a reviewed verdict in `review.tsv` (always 1.0, common 0.8, config
+    0.5, manual 0.2, unused 0.05, n/a 0), per CVE or per package (`pkg:NAME`). Without one:
+    0.6 for a library nginx loads, 0.3 for a module-only package, 0.2 otherwise. How to
+    review is in `.claude/skills/triage-cves/`. Changed on 2026-10-05 from "loaded 1.0,
+    other 0.4", because "loaded" put CMS and 32-bit-only OpenSSL bugs at the top.
+  - `review.tsv` can also add CVEs no scanner reports (nginx.org advisories).
+  - Every CVE gets an explanation: `triage-details.md` and the `explanation` column.
   - The owner chose this over "Critical in both first" on 2026-10-05, because the
     top-severity findings were mostly in libraries nginx never runs.
 - Reach comes from `linked-packages.txt` next to the Trivy report or in `../image/` (written by
@@ -70,8 +75,9 @@ Helper scripts. Each one is wired to a `make` target; add a target for any new s
   module-only library without a fix gives ACCEPT; `--remove-modules` gives REMOVE.
 - "Where it lives" for nginx advisories comes from the module name in the advisory
   title, checked against the configure flags in `image/nginx-V.txt`.
-- It does not read patches and does not know whether nginx calls the vulnerable
-  function. Its output is a proposal.
+- It shows each CVE's reviewed reach verdict from `triage.csv` (written by
+  `make triage` from `review.tsv`), so run `make triage` before `make fix-plan`.
+- It does not read patches. Its output is a proposal.
 
 ## rescan-compare.sh, diff-scans.py, make-vex.py
 
